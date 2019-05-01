@@ -1,4 +1,4 @@
-package company;
+package user;
 
 public class CompanyDTO {
 	private int cid;

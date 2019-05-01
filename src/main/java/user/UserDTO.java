@@ -1,4 +1,4 @@
-package company;
+package user;
 
 public class UserDTO {
 	private String uid;
@@ -52,5 +52,9 @@ public class UserDTO {
 	public void setUcomRole(int ucomRole) {
 		this.ucomRole = ucomRole;
 	}
-	
+	@Override
+	public String toString() {
+		return "UserDTO [uid=" + uid + ", uname=" + uname + ", ucomId=" + ucomId + ", ucomName=" + ucomName
+				+ ", ucomRole=" + ucomRole + "]";
+	}
 }

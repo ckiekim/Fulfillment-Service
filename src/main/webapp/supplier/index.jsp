@@ -1,5 +1,5 @@
 <html>
 <body>
-<h2>Hello Admin!</h2>
+<h2>Hello Supplier!</h2>
 </body>
 </html>

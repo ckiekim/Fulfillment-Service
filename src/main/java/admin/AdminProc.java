@@ -1,4 +1,4 @@
-package company;
+package admin;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,12 +14,15 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@WebServlet("/company/comServlet")
-public class CompanyProc extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	private static final Logger LOG = LoggerFactory.getLogger(CompanyProc.class);
+import user.*;
 
-    public CompanyProc() {
+@WebServlet("/admin/adminServlet")
+public class AdminProc extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    private static final Logger LOG = LoggerFactory.getLogger(AdminProc.class);
+   
+    public AdminProc() {
+        super();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -31,27 +34,19 @@ public class CompanyProc extends HttpServlet {
 	}
 
 	protected void doAction(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		CompanyDAO comDao = new CompanyDAO();
 		RequestDispatcher rd = null;
 		request.setCharacterEncoding("UTF-8");
 		HttpSession session = request.getSession();
 		String action = request.getParameter("action");
 		
-		if (action.equals("prepareForm")) {
-			LOG.trace("prepareForm:");
-			List<CompanyDTO> cList = comDao.getAllCompanies();
+		if (action.equals("userList")) {
+			UserDAO uDao = new UserDAO();
+			List<UserDTO> uList = uDao.getAllUsers();
+			List<CompanyDTO> cList = uDao.getAllCompanies();
+			request.setAttribute("userList", uList);
 			request.setAttribute("companyList", cList);
-			rd = request.getRequestDispatcher("register.jsp");
+			rd = request.getRequestDispatcher("../admin/userList.jsp");
 	        rd.forward(request, response);
-		} else if (action.equals("register")) {
-			String uid = request.getParameter("uid");
-			String upass = request.getParameter("upass");
-			String uname = request.getParameter("uname");
-			int ucomId = Integer.parseInt(request.getParameter("ucomId"));
-			LOG.debug("register: {}, {}, {}, {}", uid, upass, uname, ucomId);
-			UserDTO uDto = new UserDTO(uid, upass, uname, ucomId);
-			comDao.registerUser(uDto);
-			response.sendRedirect("../company/login.jsp");
 		}
 	}
 }
