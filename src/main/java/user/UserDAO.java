@@ -23,13 +23,12 @@ public class UserDAO {
 	public static final int ROLE_LOGISTICS = 2;
 	public static final int ROLE_SUPPLIER = 3;
 	Connection conn;
-	PreparedStatement pstmt;
+	PreparedStatement pStmt;
 	ResultSet rs;
 	
 	public void registerUser(UserDTO uDto) {
 		conn = DBManager.getConnection();
     	String query = "insert into users values (?, ?, ?, ?);";
-    	PreparedStatement pStmt = null;
     	try {
     		String hashedPassword = BCrypt.hashpw(uDto.getUpass(), BCrypt.gensalt());
 			pStmt = conn.prepareStatement(query);
@@ -43,8 +42,6 @@ public class UserDAO {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (pStmt != null && !pStmt.isClosed()) 
-					pStmt.close();
 				conn.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -52,14 +49,36 @@ public class UserDAO {
 		}
 	}
 	
+	public int getCompanyCode(String name) {
+		int companyId = 0;
+		conn = DBManager.getConnection();
+		String query = "select cid from companies where cname like ? and crole=4;";
+    	try {
+			pStmt = conn.prepareStatement(query);
+			pStmt.setString(1, name+"%");
+			rs = pStmt.executeQuery();
+			while (rs.next()) {
+				companyId = rs.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return companyId;
+	}
+	
 	public List<CompanyDTO> getAllCompanies() {
 		conn = DBManager.getConnection();
 		String query = "select * from companies where crole < 4;";
-		PreparedStatement pStmt = null;
 		List<CompanyDTO> cList = new ArrayList<CompanyDTO>();
     	try {
 			pStmt = conn.prepareStatement(query);
-			ResultSet rs = pStmt.executeQuery();
+			rs = pStmt.executeQuery();
 			
 			while (rs.next()) {
 				CompanyDTO cDto = new CompanyDTO();
@@ -76,8 +95,6 @@ public class UserDAO {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (pStmt != null && !pStmt.isClosed()) 
-					pStmt.close();
 				conn.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -90,8 +107,6 @@ public class UserDAO {
 		conn = DBManager.getConnection();
 		String query = "select u.uid, u.uname, u.ucomId, c.cname, c.crole " + 
 				"from users as u inner join companies as c on u.ucomId = c.cid;";
-		PreparedStatement pStmt = null;
-		ResultSet rs = null;
 		List<UserDTO> userList = new ArrayList<UserDTO>();
 		try {
 			pStmt = conn.prepareStatement(query);
@@ -110,9 +125,6 @@ public class UserDAO {
 			e.printStackTrace();
 		} finally {
 			try {
-				rs.close();
-				if (pStmt != null && !pStmt.isClosed()) 
-					pStmt.close();
 				conn.close();
 			} catch (SQLException se) {
 				se.printStackTrace();
@@ -126,8 +138,6 @@ public class UserDAO {
 		conn = DBManager.getConnection();
 		String query = "select u.uname, u.ucomId, c.cname, c.crole from users as u " + 
 				"inner join companies as c on u.ucomId = c.cid where uid=?;";
-		PreparedStatement pStmt = null;
-		ResultSet rs = null;
 		UserDTO uDto = new UserDTO();
 		uDto.setUid(uid);
 		try {
@@ -144,9 +154,6 @@ public class UserDAO {
 			e.printStackTrace();
 		} finally {
 			try {
-				rs.close();
-				if (pStmt != null && !pStmt.isClosed()) 
-					pStmt.close();
 				conn.close();
 			} catch (SQLException se) {
 				se.printStackTrace();
@@ -160,8 +167,6 @@ public class UserDAO {
 		LOG.trace("uid, upass = {}, {}", uid, upass);
 		conn = DBManager.getConnection();
 		String query = "select upass from users where uid=?;";
-		PreparedStatement pStmt = null;
-		ResultSet rs = null;
 		String hashedPassword = "";
 		try {
 			pStmt = conn.prepareStatement(query);
@@ -179,9 +184,6 @@ public class UserDAO {
 			e.printStackTrace();
 		} finally {
 			try {
-				rs.close();
-				if (pStmt != null && !pStmt.isClosed()) 
-					pStmt.close();
 				conn.close();
 			} catch (SQLException se) {
 				se.printStackTrace();

@@ -1,0 +1,31 @@
+pid,pname,pprice,pstock,pimage,pcategory
+3001,공기청정기,300000,30,air_cleaner.jpg,가전
+3002,TV,1000000,30,tv.jpg,가전
+3003,청소기,100000,30,vacuum.jpg,가전
+3004,세탁기,600000,30,washer.jpg,가전
+3005,건조기,800000,30,dryer.jpg,가전
+3006,의류 스타일러,900000,30,styler.jpg,가전
+3007,인덕션 레인지,450000,30,induction.jpg,가전
+3008,전자레인지,250000,30,range.jpg,가전
+3009,노트북,1200000,30,notebook.jpg,가전
+3010,전기밥솥,150000,30,cooker.jpg,가전
+4001,글러브,80000,50,glove.jpg,스포츠
+4002,알루미늄 배트,200000,50,aluminium_bat.jpg,스포츠
+4003,나무 배트,240000,50,wood_bat.jpg,스포츠
+4004,마스크,120000,50,mask.jpg,스포츠
+4005,프로텍터,180000,50,protector.jpg,스포츠
+4006,헬멧,160000,50,helmet.jpg,스포츠
+4007,유니폼,50000,50,uniform.jpg,스포츠
+4008,모자,24000,50,cap.jpg,스포츠
+4009,렉가드,98000,50,leg_guard.jpg,스포츠
+4010,장갑,32000,50,hand_glove.jpg,스포츠
+5001,쌀,62000,20,rice.jpg,식품
+5002,사과,48000,20,apple.jpg,식품
+5003,배,62000,20,pear.jpg,식품
+5004,한우,160000,20,beef.jpg,식품
+5005,감,28000,20,persimmon.jpg,식품
+5006,귤,35000,20,tangerine.jpg,식품
+5007,수박,15000,20,watermelon.jpg,식품
+5008,멜론,42000,20,melon.jpg,식품
+5009,토마토,30000,20,tomato.jpg,식품
+5010,김치,38000,20,kimchi.jpg,식품

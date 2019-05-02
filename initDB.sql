@@ -31,7 +31,7 @@ create table invoices (
   vaddr varchar(40) not null,
   vcomId int unsigned not null,
   vdate datetime default current_timestamp,
-  vtotal int unsigned not null,
+  vtotal int unsigned default 0,
   foreign key(vcomId) references companies(cid)
 ) auto_increment=10001 default charset=utf8;
 

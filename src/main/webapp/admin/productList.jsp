@@ -17,8 +17,8 @@
 		<div class="row" style="margin-top: 100px">
 			<div class="col-md-2">
 				<div class="list-group">
-					<a href="#" class="list-group-item active">사용자 조회</a>
-					<a href="adminServlet?action=productList&category=가전" class="list-group-item">제품 조회</a>
+					<a href="adminServlet?action=userList" class="list-group-item">사용자 조회</a>
+					<a href="#" class="list-group-item active">제품 조회</a>
 					<a href="adminServlet?action=invoice&page=1" class="list-group-item">주문</a>
 					<a href="#" class="list-group-item">출고</a>
 					<a href="#" class="list-group-item">입고</a>
@@ -28,31 +28,47 @@
 			</div>
 			<div class="col-md-10">
 				<div class="row" style="margin-left: 30px">
-					<div class="col-md-12"><h3>사용자 조회</h3></div>
+					<div class="col-md-12"><h3>제품 조회</h3></div>
 					<div class="col-md-12"><hr></div>
-					<div class="col-md-9">
+					<div class="col-md-10">
 						<div class="panel panel-primary">
 							<table class="table table-striped">
 								<tr class="active">
-									<th class="col-md-2">사용자ID</th>
-									<th class="col-md-2">사용자명</th>
-									<th class="col-md-3">회사명</th>
-									<th class="col-md-2">역할</th>
+									<th class="col-md-2">품목코드</th>
+									<th class="col-md-3">제품명</th>
+									<th class="col-md-2">가격</th>
+									<th class="col-md-1">재고수량</th>
+									<th class="col-md-2">카테고리</th>
 								</tr>
-								<c:set var="uList" value="${requestScope.userList}"/>
-								<c:forEach var="user" items="${uList}">
+								<c:set var="pList" value="${requestScope.productList}"/>
+								<c:forEach var="product" items="${pList}">
 								<tr>
-									<td>${user.uid}</td>
-									<td>${user.uname}</td>
-									<td><a data-target="#modal${user.ucomId}" data-toggle="modal">
-											${user.ucomName}</a></td>
-									<td>${user.ucomRole}</td>
+									<td>${product.pid}</td>
+									<td><a data-target="#modal${product.pid}" data-toggle="modal">
+											${product.pname}</a></td>
+									<td>${product.pprice}</td>
+									<td>${product.pstock}</td>
+									<td>${product.pcategory}</td>
 								</tr>
 								</c:forEach>
+								<tr align="center"><td colspan="5">
+									<div class="btn-group">
+										<button type="button" class="btn btn-primary">카테고리</button>
+										<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+										    <span class="caret"></span>
+										    <span class="sr-only">Toggle Dropdown</span>
+										</button>
+										<ul class="dropdown-menu" role="menu">
+										    <li><a href="adminServlet?action=productList&category=가전">가전</a></li>
+										    <li><a href="adminServlet?action=productList&category=스포츠">스포츠</a></li>
+										    <li><a href="adminServlet?action=productList&category=식품">식품</a></li>
+										</ul>
+									</div>
+								</td></tr>
 							</table>
 						</div>
 					</div>
-					<div class="col-md-3"></div>
+					<div class="col-md-2"></div>
 				</div>
 			</div>
 		</div>
@@ -61,23 +77,21 @@
 	<%@ include file="../common/_bottom.jspf" %>
 	
 	<div class="row">
-	<c:set var="cList" value="${requestScope.companyList}"/>
-	<c:forEach var="cDto" items="${cList}">
-		<div class="modal" id="modal${cDto.cid}" tabindex="-1">
+	<c:forEach var="product" items="${pList}">
+		<div class="modal" id="modal${product.pid}" tabindex="-1">
 			<div class="modal-dialog modal-md">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title">${cDto.cname}</h4>
+						<h4 class="modal-title">${product.pname}</h4>
 					</div>
 					<div class="modal-body" style="text-align:center;">
 						<table class="table table-default">
 							<tr class="info"><td>항목</td><td>내용</td></tr>
-							<tr><td>아이디</td><td>${cDto.cid}</td></tr>
-							<tr><td>역할</td><td>${cDto.crole}</td></tr>
-							<tr><td>전화</td><td>${cDto.ctel}</td></tr>
-							<tr><td>팩스</td><td>${cDto.cfax}</td></tr>
-							<tr><td>이메일</td><td>${cDto.cmail}</td></tr>
+							<tr><td>아이디</td><td>${product.pid}</td></tr>
+							<tr><td>가격</td><td>${product.pprice}</td></tr>
+							<tr><td>사진</td><td width="300" height="300">
+								<img src="../img/${product.pimage}"></td></tr>
 						</table>
 					</div>
 				</div>
