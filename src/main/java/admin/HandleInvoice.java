@@ -35,7 +35,7 @@ public class HandleInvoice {
 							+ " " + s.substring(8,10) + ":" + s.substring(10) + ":00";
 			String mall = invFile.getName().substring(12, 14);
 			int mallId = uDao.getCompanyCode(mall);
-			LOG.trace("{}, {}", date, mallId);
+			LOG.debug("{}, {}", date, mallId);
 			try {
 				reader = new FileReader(invFile);
 				br = new BufferedReader(reader);
@@ -48,7 +48,7 @@ public class HandleInvoice {
 							writeDB(vDto, sList);
 						}
 						toOrder = true;
-						vDto = new InvoiceDTO(str[0], str[1], str[2], mallId, date);
+						vDto = new InvoiceDTO(str[0], str[1], str[2], mallId, date, selectLogis(str[2]));
 						LOG.trace(vDto.toString());
 						sList = new ArrayList<SoldProductDTO>();
 					}
@@ -78,6 +78,7 @@ public class HandleInvoice {
 	void writeDB(InvoiceDTO vDto, List<SoldProductDTO> sList) {
 		InvoiceDAO vDao = new InvoiceDAO();
 		SoldProductDAO sDao = new SoldProductDAO();
+		ProductDAO pDao = new ProductDAO();
 		
 		vDao.insertInvoice(vDto);
 		vDto = vDao.getLastInvoice();
@@ -85,14 +86,49 @@ public class HandleInvoice {
 		for (SoldProductDTO sDto: sList) {
 			sDto.setSinvId(vDto.getVid());
 			sDao.insertSoldProduct(sDto);
+			ProductDTO pDto = pDao.getProductById(sDto.getSprodId());
+			int criteria = pDto.getPstock() - sDto.getSquantity();
+			LOG.trace("{}, {}, {}", criteria, pDto.getPstock(), sDto.getSquantity());
+			if (criteria < 0) {
+				vDto.setVstatus(1);		// 0-출고대기, 1-출고지연(재고부족), 2-출고실행, 3-출고완료
+			} else if (criteria < 10) {
+				// 발주 요청 목록에 등록
+			}
 		}
 		int total = 0;
 		sList = sDao.getSoldProducts(vDto.getVid());
 		for (SoldProductDTO sDto: sList) {
 			total += sDto.getSprice() * sDto.getSquantity();
-			LOG.debug(sDto.toString());
+			LOG.trace(sDto.toString());
 		}
 		vDto.setVtotal(total);
+		LOG.trace(vDto.toString());
 		vDao.updateInvoice(vDto);
+	}
+	
+	int selectLogis(String addr) {
+		int logisId = 0;
+		char ad = addr.charAt(0);
+		
+		if (ad=='서' || ad=='인') 
+			logisId = 1002;
+		else if (ad=='충' || ad=='세' || ad=='강')
+			logisId = 1003;
+		else if (ad=='부' || ad=='울')
+			logisId = 1004;
+		else if (ad=='광' || ad=='전' || ad=='제')
+			logisId = 1005;
+		else if (ad=='경') {
+			if (addr.charAt(1) == '기')
+				logisId = 1002;
+			else
+				logisId = 1004;
+		} else if (ad=='대') {
+			if (addr.charAt(1) == '전')
+				logisId = 1003;
+			else
+				logisId = 1004;
+		}
+		return logisId;
 	}
 }

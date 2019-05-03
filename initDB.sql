@@ -32,6 +32,8 @@ create table invoices (
   vcomId int unsigned not null,
   vdate datetime default current_timestamp,
   vtotal int unsigned default 0,
+  vstatus int default 0,
+  vlogisId int unsigned default 0,
   foreign key(vcomId) references companies(cid)
 ) auto_increment=10001 default charset=utf8;
 
@@ -44,6 +46,16 @@ create table soldProducts (
   foreign key(sprodId) references products(pid)
 );
 
+create table deliveries (
+  did int unsigned auto_increment primary key,
+  dcomId int unsigned not null,
+  dinvId int unsigned not null,
+  ddate datetime default current_timestamp,
+  dstatus int default 0,
+  foreign key(dcomId) references companies(cid),
+  foreign key(dinvId) references invoices(vid)
+) auto_increment=101 default charset=utf8;
+
 insert into companies values
 (1001, '이젠풀필먼트', 1, '042-345-6780', '042-345-6790', 'efs@ezen.com'),
 (1002, '경기물류', 2, '031-234-5670', '031-234-5680', 'logis1@klc.com'),
@@ -52,9 +64,9 @@ insert into companies values
 (1005, '서부물류', 2, '062-667-2340', '062-667-2350', 'logis4@westlogis.com'),
 (1006, '삼송전자', 3, '031-667-2340', '031-667-2350', 'sales@samsong.com'),
 (1007, 'LS전자', 3, '02-3667-2340', '02-3667-2350', 'sales@lselec.com'),
-(1008, '현대전기', 3, '053-867-2340', '053-867-2350', 'sales@hyundae.com'),
-(1009, '경기종합상사', 3, '031-334-5670', '031-334-5680', 'sales@kyongki.com'),
+(1008, '트윈스스포츠', 3, '053-867-2340', '053-867-2350', 'sales@twins.com'),
+(1009, '신선식품', 3, '031-334-5670', '031-334-5680', 'sales@freshfood.com'),
 (1010, '중부식품', 3, '042-467-2340', '042-467-2350', 'food@chungbu.com'),
 (1011, '헤이마트몰', 4, '02-8765-1230', '02-8765-1240', 'op@heymart.com'),
-(1012, '트윈스스포츠', 4, '02-3412-2580', '02-3412-2590', 'op@twinssports.com'),
-(1013, '신선식품몰', 4, '042-365-3650', '042-365-3660', 'op@freshfood.com');
+(1012, '이젠쇼핑몰', 4, '02-3412-2580', '02-3412-2590', 'op@ezen.com'),
+(1013, '한밭쇼핑몰', 4, '042-365-3650', '042-365-3660', 'op@hanbat.com');

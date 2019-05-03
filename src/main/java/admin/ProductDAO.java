@@ -49,4 +49,53 @@ public class ProductDAO {
 		}
 		return pList;
 	}
+	
+	public ProductDTO getProductById(int productId) {
+		conn = DBManager.getConnection();
+		String query = "select * from products where pid=?;";
+		ProductDTO pDto = new ProductDTO();
+    	try {
+			pStmt = conn.prepareStatement(query);
+			pStmt.setInt(1, productId);
+			rs = pStmt.executeQuery();
+			
+			while (rs.next()) {
+				pDto.setPid(rs.getInt(1));
+				pDto.setPname(rs.getString(2));
+				pDto.setPprice(rs.getInt(3));
+				pDto.setPstock(rs.getInt(4));
+				pDto.setPimage(rs.getString(5));
+				pDto.setPcategory(rs.getString(6));
+				LOG.trace(pDto.toString());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return pDto;
+	}
+	
+	public void updateStock(ProductDTO pDto) {
+		conn = DBManager.getConnection();
+		String query = "update products set pstock=? where pid=?;";
+		try {
+			pStmt = conn.prepareStatement(query);
+			pStmt.setInt(1, pDto.getPstock());
+			pStmt.setInt(2, pDto.getPid());
+			pStmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

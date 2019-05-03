@@ -23,11 +23,13 @@ public class InvoiceDAO {
 		int offset = 0;
 		String query = null;
 		if (page == 0) {	// page가 0이면 모든 데이터를 보냄
-			query = "select v.vid, v.vname, v.vtel, v.vaddr, v.vcomId, c.cname, v.vdate, v.vtotal " +
-					"from invoices as v inner join companies as c on v.vcomId=c.cid order by v.vid desc;";
+			query = "select v.vid, v.vname, v.vtel, v.vaddr, v.vcomId, c.cname, v.vdate, v.vtotal, v.vstatus, v.vlogisId, l.cname " +
+					"from invoices as v inner join companies as c on v.vcomId=c.cid " + 
+					"inner join companies as l on v.vlogisId=l.cid order by v.vid desc;";
 		} else {			// page가 0이 아니면 해당 페이지 데이터만 보냄
-			query = "select v.vid, v.vname, v.vtel, v.vaddr, v.vcomId, c.cname, v.vdate, v.vtotal " +
-					"from invoices as v inner join companies as c on v.vcomId=c.cid order by v.vid desc limit ?, 10;";
+			query = "select v.vid, v.vname, v.vtel, v.vaddr, v.vcomId, c.cname, v.vdate, v.vtotal, v.vstatus, v.vlogisId, l.cname " +
+					"from invoices as v inner join companies as c on v.vcomId=c.cid " + 
+					"inner join companies as l on v.vlogisId=l.cid order by v.vid desc limit ?, 10;";
 			offset = (page - 1) * 10;
 		}
 		List<InvoiceDTO> vList = new ArrayList<InvoiceDTO>();
@@ -46,8 +48,11 @@ public class InvoiceDAO {
 				vDto.setVcomName(rs.getString(6));
 				vDto.setVdate(rs.getString(7).substring(0, 16));
 				vDto.setVtotal(rs.getInt(8));
+				vDto.setVstatus(rs.getInt(9));
+				vDto.setVlogisId(rs.getInt(10));
+				vDto.setVlogisName(rs.getString(11));
 				vList.add(vDto);
-				LOG.debug(vDto.toString());
+				LOG.trace(vDto.toString());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -63,12 +68,13 @@ public class InvoiceDAO {
 	
 	public void updateInvoice(InvoiceDTO vDto) {
 		conn = DBManager.getConnection();
-		String query = "update invoices set vtotal=? where vid=?;";
+		String query = "update invoices set vtotal=?, vstatus=? where vid=?;";
+		LOG.trace("{}, {}, {}", vDto.getVtotal(), vDto.getVstatus(), vDto.getVid());
 		try {
 			pStmt = conn.prepareStatement(query);
 			pStmt.setInt(1, vDto.getVtotal());
-			pStmt.setInt(2, vDto.getVid());
-			
+			pStmt.setInt(2, vDto.getVstatus());
+			pStmt.setInt(3, vDto.getVid());
 			pStmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -104,6 +110,43 @@ public class InvoiceDAO {
 		return result;
 	}
 	
+	public InvoiceDTO getInvoiceById(int vid) {
+		conn = DBManager.getConnection();
+		String query = "select v.vid, v.vname, v.vtel, v.vaddr, v.vcomId, c.cname, v.vdate, v.vtotal, v.vstatus, v.vlogisId, l.cname " +
+				"from invoices as v inner join companies as c on v.vcomId=c.cid " + 
+				"inner join companies as l on v.vlogisId=l.cid where vid=?;";
+		InvoiceDTO vDto = new InvoiceDTO();
+		try {
+			pStmt = conn.prepareStatement(query);
+			pStmt.setInt(1, vid);
+			rs = pStmt.executeQuery();
+			
+			while (rs.next()) {
+				vDto.setVid(rs.getInt(1));
+				vDto.setVname(rs.getString(2));
+				vDto.setVtel(rs.getString(3));
+				vDto.setVaddr(rs.getString(4));
+				vDto.setVcomId(rs.getInt(5));
+				vDto.setVcomName(rs.getString(6));
+				vDto.setVdate(rs.getString(7).substring(0, 16));
+				vDto.setVtotal(rs.getInt(8));
+				vDto.setVstatus(rs.getInt(9));
+				vDto.setVlogisId(rs.getInt(10));
+				vDto.setVlogisName(rs.getString(11));
+				LOG.debug(vDto.toString());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return vDto;
+	}
+	
 	public InvoiceDTO getLastInvoice() {
 		conn = DBManager.getConnection();
 		String query = "select * from invoices order by vid desc limit 1;";
@@ -135,7 +178,7 @@ public class InvoiceDAO {
 	
 	public void insertInvoice(InvoiceDTO vDto) {
 		conn = DBManager.getConnection();
-    	String query = "insert into invoices(vname, vtel, vaddr, vcomId, vdate) values (?, ?, ?, ?, ?);";
+    	String query = "insert into invoices(vname, vtel, vaddr, vcomId, vdate, vlogisId) values (?, ?, ?, ?, ?, ?);";
     	try {
 			pStmt = conn.prepareStatement(query);
 			pStmt.setString(1, vDto.getVname());
@@ -143,7 +186,7 @@ public class InvoiceDAO {
 			pStmt.setString(3, vDto.getVaddr());
 			pStmt.setInt(4, vDto.getVcomId());
 			pStmt.setString(5, vDto.getVdate());
-			
+			pStmt.setInt(6, vDto.getVlogisId());
 			pStmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();

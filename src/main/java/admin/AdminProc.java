@@ -41,30 +41,36 @@ public class AdminProc extends HttpServlet {
 		String action = request.getParameter("action");
 		int curInvoicePage = 1;
 		List<String> pageList = new ArrayList<String>();
+		UserDAO uDao = new UserDAO();
+		ProductDAO pDao = new ProductDAO();
+		InvoiceDAO vDao = new InvoiceDAO();
+		SoldProductDAO sDao = new SoldProductDAO();
+		List<UserDTO> uList = null;
+		List<CompanyDTO> cList = null;
+		List<ProductDTO> pList = null;
+		List<InvoiceDTO> vList = null;
+		List<SoldProductDTO> sList = null;
 		
-		if (action.equals("userList")) {
-			UserDAO uDao = new UserDAO();
-			List<UserDTO> uList = uDao.getAllUsers();
-			List<CompanyDTO> cList = uDao.getAllCompanies();
+		if (action.equals("userList")) {	// 내비게이션 메뉴에서 사용자 조회를 클릭했을 때
+			uList = uDao.getAllUsers();
+			cList = uDao.getAllCompanies();
 			request.setAttribute("userList", uList);
 			request.setAttribute("companyList", cList);
 			rd = request.getRequestDispatcher("../admin/userList.jsp");
 	        rd.forward(request, response);
 		}
-		else if (action.equals("productList")) {
+		else if (action.equals("productList")) {	// 내비게이션 메뉴에서 제품 조회를 클릭했을 때
 			String category = request.getParameter("category");
 			LOG.trace(category);
-			ProductDAO pDao = new ProductDAO();
-			List<ProductDTO> pList = pDao.getProductsByCategory(category);
+			pList = pDao.getProductsByCategory(category);
 			request.setAttribute("productList", pList);
 			rd = request.getRequestDispatcher("../admin/productList.jsp");
 	        rd.forward(request, response);
 		}
-		else if (action.equals("invoice")) {
+		else if (action.equals("invoice")) {	// 내비게이션 메뉴에서 주문을 클릭했을 때
 			if (!request.getParameter("page").equals("")) {
 				curInvoicePage = Integer.parseInt(request.getParameter("page"));
 			}
-			InvoiceDAO vDao = new InvoiceDAO();
 			int count = vDao.getCount();
 			if (count == 0)			// 데이터가 없을 때 대비
 				count = 1;
@@ -75,22 +81,29 @@ public class AdminProc extends HttpServlet {
 			// 리스트 페이지의 하단 페이지 데이터 만들어 주기
 			for (int i=1; i<=pageNo; i++) 
 				pageList.add(Integer.toString(i));
-/*	int totalPage = aDao.getTotalPage();
-	String pageArray[] = new String[totalPage];
-	for (int i=0; i<totalPage; i++)
-		pageArray[i] = Integer.toString(i+1);
-	currentPage = Integer.parseInt(request.getParameter("page"));
-	request.setAttribute("currentPage", Integer.toString(currentPage));	*/	
-			List<InvoiceDTO> vList = vDao.getAllInvoices(curInvoicePage);
+			vList = vDao.getAllInvoices(curInvoicePage);
+			
 			request.setAttribute("invoiceList", vList);
 			request.setAttribute("pageList", pageList);
 			rd = request.getRequestDispatcher("../admin/invoice.jsp");
 	        rd.forward(request, response);
 		}
-		else if (action.equals("procInvoice")) {
+		else if (action.equals("procInvoice")) {	// 주문처리 버튼을 클릭했을 때
 			HandleInvoice hi = new HandleInvoice();
 			hi.handleFile();
 			rd = request.getRequestDispatcher("adminServlet?action=invoice&page=1");
+	        rd.forward(request, response);
+		}
+		else if (action.equals("invoiceDetail")) {	// invoice 리스트에서 id를 클릭했을 때
+			int invId = 0;
+			if (!request.getParameter("vid").equals("")) {
+				invId = Integer.parseInt(request.getParameter("vid"));
+			}
+			InvoiceDTO vDto = vDao.getInvoiceById(invId);
+			sList = sDao.getSoldProducts(invId);
+			request.setAttribute("invoiceDTO", vDto);
+			request.setAttribute("soldProductList", sList);
+			rd = request.getRequestDispatcher("invoiceDetail.jsp");
 	        rd.forward(request, response);
 		}
 	}

@@ -82,7 +82,8 @@ public class UserProc extends HttpServlet {
 				case UserDAO.ROLE_COMPANY:
 					url = "../admin/index.jsp"; break;
 				case UserDAO.ROLE_LOGISTICS:
-					url = "../logistics/index.jsp"; break;
+					url = "../deliver/deliverServlet?action=list&company=" + uDto.getUcomId();
+					break;
 				case UserDAO.ROLE_SUPPLIER:
 					url = "../supplier/index.jsp"; break;
 				}

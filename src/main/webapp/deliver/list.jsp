@@ -17,47 +17,45 @@
 		<div class="row" style="margin-top: 100px">
 			<div class="col-md-2">
 				<div class="list-group">
-					<a href="adminServlet?action=userList" class="list-group-item">사용자 조회</a>
-					<a href="adminServlet?action=productList&category=가전" class="list-group-item">제품 조회</a>
-					<a href="#" class="list-group-item active">주문</a>
-					<a href="#" class="list-group-item">출고</a>
-					<a href="#" class="list-group-item">입고</a>
-					<a href="#" class="list-group-item">재고</a>
+					<a href="#" class="list-group-item active">목록</a>
+					<a href="#" class="list-group-item">일별</a>
+					<a href="#" class="list-group-item">월별</a>
 					<a href="#" class="list-group-item">정산</a>
 				</div>
 			</div>
 			<div class="col-md-10">
 				<div class="row" style="margin-left: 30px">
-					<div class="col-md-8"><h3>주문 조회</h3></div>
-					<div class="col-md-4"><br>
-						<a class="btn btn-primary" href="adminServlet?action=procInvoice" role="button">주문 처리</a>
+					<div class="col-md-7"><h3>출고대기목록 조회</h3></div>
+					<div class="col-md-5"><br>
+						<a class="btn btn-primary" href="deliverServlet?action=release&time=am" role="button">오전 출고처리</a>&nbsp;&nbsp;&nbsp;
+						<a class="btn btn-primary" href="deliverServlet?action=release&time=pm" role="button">오후 출고처리</a>
 					</div>
 					<div class="col-md-12"><hr></div>
-					<div class="col-md-10">
+					<div class="col-md-11">
 						<div class="panel panel-primary">
 							<table class="table table-striped table-condensed">
 								<tr class="active">
 									<th class="col-md-1">ID</th>
 									<th class="col-md-1">주문자명</th>
-									<th class="col-md-2">주문처</th>
+									<th class="col-md-2">연락처</th>
+									<th class="col-md-3">주소</th>
 									<th class="col-md-2">주문일시</th>
 									<th class="col-md-1">금액</th>
-									<th class="col-md-2">운송사</th>
 									<th class="col-md-1">상태</th>
 								</tr>
-								<c:set var="vList" value="${requestScope.invoiceList}"/>
+								<c:set var="vList" value="${requestScope.deliveryWaitList}"/>
 								<c:forEach var="invoice" items="${vList}">
 								<tr>
-									<td><a href="adminServlet?action=invoiceDetail&vid=${invoice.vid}">${invoice.vid}</a></td>
+									<td><a href=#>${invoice.vid}</a></td>
 									<td>${invoice.vname}</td>
-									<td>${invoice.vcomName}</td>
+									<td>${invoice.vtel}</td>
+									<td>${invoice.vaddr}</td>
 									<td>${invoice.vdate}</td>
 									<td>${invoice.vtotal}</td>
-									<td>${invoice.vlogisName}</td>
 									<td>${invoice.vstatus}</td>
 								</tr>
 								</c:forEach>
-								<tr align="center"><td colspan="7">
+<%-- 								<tr align="center"><td colspan="7">
 									<c:set var="pList" value="${requestScope.pageList}"/>
 									<nav>
 									  <ul class="pagination">
@@ -75,11 +73,11 @@
 									    <li class="disabled"><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
 									  </ul>
 									</nav>
-								</td></tr>
+								</td></tr> --%>
 							</table>
 						</div>
 					</div>
-					<div class="col-md-2">
+					<div class="col-md-1">
 				</div>
 			</div>
 		</div>
