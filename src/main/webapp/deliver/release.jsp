@@ -9,6 +9,7 @@
 	<!-- ==================================================================== -->
 	<title>Ezen Fulfillment System</title>
 	<link href="../css/bootstrap.min.css" rel="stylesheet">
+	<link href="../css/jquery-ui.min.css" rel="stylesheet">
 </head>
 <body>
 	<%@ include file="../common/_top.jspf" %>
@@ -17,7 +18,7 @@
 		<div class="row" style="margin-top: 100px">
 			<div class="col-md-2">
 				<div class="list-group">
-					<a href="#" class="list-group-item active">출고대기 목록</a>
+					<a href="deliverServlet?action=list" class="list-group-item">출고대기 목록</a>
 					<a href="deliverServlet?action=releaseList" class="list-group-item">일별 출고내역</a>
 					<a href="#" class="list-group-item">월별 출고내역</a>
 					<a href="#" class="list-group-item">정산</a>
@@ -25,34 +26,37 @@
 			</div>
 			<div class="col-md-10">
 				<div class="row" style="margin-left: 30px">
-					<div class="col-md-7"><h3>출고대기목록 조회</h3></div>
+					<div class="col-md-7"><h3>출고처리 실행 조회</h3></div>
 					<div class="col-md-5"><br>
-						<a class="btn btn-primary" href="deliverServlet?action=release&time=am" role="button">오전 출고처리</a>&nbsp;&nbsp;&nbsp;
-						<a class="btn btn-primary" href="deliverServlet?action=release&time=pm" role="button">오후 출고처리</a>
+						<form action="deliverServlet?action=releaseList" class="form-horizontal" method="post">
+							<div class="form-group">
+								<label class="control-label">날짜:&nbsp;&nbsp;</label>
+								<input type="text" name="dateRelease" id="datepicker1">&nbsp;&nbsp;
+								<input class="btn btn-primary btn-sm" type="submit" value="검색">
+							</div>
+						</form>
 					</div>
 					<div class="col-md-12"><hr></div>
-					<div class="col-md-11">
+					<div class="col-md-9">
 						<div class="panel panel-primary">
 							<table class="table table-striped table-condensed">
 								<tr class="active">
 									<th class="col-md-1">ID</th>
-									<th class="col-md-1">주문자명</th>
-									<th class="col-md-2">연락처</th>
-									<th class="col-md-3">주소</th>
-									<th class="col-md-2">주문일시</th>
-									<th class="col-md-1">금액</th>
+									<th class="col-md-1">송장ID</th>
+									<th class="col-md-1">배달처명</th>
+									<th class="col-md-3">배달처</th>
+									<th class="col-md-2">실행일시</th>
 									<th class="col-md-1">상태</th>
 								</tr>
-								<c:set var="vList" value="${requestScope.deliveryWaitList}"/>
-								<c:forEach var="invoice" items="${vList}">
+								<c:set var="dList" value="${requestScope.deliveryReleasedList}"/>
+								<c:forEach var="delivery" items="${dList}">
 								<tr>
-									<td><a href=#>${invoice.vid}</a></td>
-									<td>${invoice.vname}</td>
-									<td>${invoice.vtel}</td>
-									<td>${invoice.vaddr}</td>
-									<td>${invoice.vdate}</td>
-									<td>${invoice.vtotal}</td>
-									<td>${invoice.vstatus}</td>
+									<td><a href=#>${delivery.did}</a></td>
+									<td>${delivery.dinvId}</td>
+									<td>${delivery.dname}</td>
+									<td>${delivery.daddr}</td>
+									<td>${delivery.ddate}</td>
+									<td>${delivery.dstatus}</td>
 								</tr>
 								</c:forEach>
 <%-- 								<tr align="center"><td colspan="7">
@@ -77,7 +81,7 @@
 							</table>
 						</div>
 					</div>
-					<div class="col-md-1">
+					<div class="col-md-7">
 				</div>
 			</div>
 		</div>
@@ -87,5 +91,23 @@
 	<!-- ==================================================================== -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	<script src="../js/bootstrap.min.js"></script>
+	<script src="../js/jquery-ui.min.js"></script>
+	<script>
+	    $.datepicker.setDefaults({
+	        dateFormat: 'yy-mm-dd',
+	        prevText: '이전 달',
+	        nextText: '다음 달',
+	        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+	        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+	        dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+	        dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+	        dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+	        showMonthAfterYear: true,
+	        yearSuffix: '년'
+	    });
+	    $(function() {
+	        $("#datepicker1").datepicker();
+	    });
+	</script>
 </body>
 </html>

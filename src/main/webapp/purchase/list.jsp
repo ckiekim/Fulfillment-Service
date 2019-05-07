@@ -17,42 +17,43 @@
 		<div class="row" style="margin-top: 100px">
 			<div class="col-md-2">
 				<div class="list-group">
-					<a href="#" class="list-group-item active">출고대기 목록</a>
-					<a href="deliverServlet?action=releaseList" class="list-group-item">일별 출고내역</a>
-					<a href="#" class="list-group-item">월별 출고내역</a>
+					<a href="#" class="list-group-item active">구매요청 목록</a>
+					<a href="purchaseServlet?action=purchaseList" class="list-group-item">일별 구매내역</a>
+					<a href="#" class="list-group-item">월별 구매내역</a>
 					<a href="#" class="list-group-item">정산</a>
 				</div>
 			</div>
 			<div class="col-md-10">
 				<div class="row" style="margin-left: 30px">
-					<div class="col-md-7"><h3>출고대기목록 조회</h3></div>
+					<div class="col-md-7"><h3>구매요청목록 조회</h3></div>
 					<div class="col-md-5"><br>
-						<a class="btn btn-primary" href="deliverServlet?action=release&time=am" role="button">오전 출고처리</a>&nbsp;&nbsp;&nbsp;
-						<a class="btn btn-primary" href="deliverServlet?action=release&time=pm" role="button">오후 출고처리</a>
+						<a class="btn btn-primary" href="purchaseServlet?action=supply" role="button">입고처리</a>
 					</div>
 					<div class="col-md-12"><hr></div>
-					<div class="col-md-11">
+					<div class="col-md-10">
 						<div class="panel panel-primary">
 							<table class="table table-striped table-condensed">
 								<tr class="active">
 									<th class="col-md-1">ID</th>
-									<th class="col-md-1">주문자명</th>
-									<th class="col-md-2">연락처</th>
-									<th class="col-md-3">주소</th>
-									<th class="col-md-2">주문일시</th>
-									<th class="col-md-1">금액</th>
+									<th class="col-md-1">주문ID</th>
+									<th class="col-md-1">상품ID</th>
+									<th class="col-md-2">상품명</th>
+									<th class="col-md-1">발주수량</th>
+									<th class="col-md-2">발주일시</th>
 									<th class="col-md-1">상태</th>
+									<th class="col-md-1">재고수량</th>
 								</tr>
-								<c:set var="vList" value="${requestScope.deliveryWaitList}"/>
-								<c:forEach var="invoice" items="${vList}">
+								<c:set var="rList" value="${requestScope.purchaseWaitList}"/>
+								<c:forEach var="purchase" items="${rList}">
 								<tr>
-									<td><a href=#>${invoice.vid}</a></td>
-									<td>${invoice.vname}</td>
-									<td>${invoice.vtel}</td>
-									<td>${invoice.vaddr}</td>
-									<td>${invoice.vdate}</td>
-									<td>${invoice.vtotal}</td>
-									<td>${invoice.vstatus}</td>
+									<td><a href=#>${purchase.rid}</a></td>
+									<td>${purchase.rinvId}</td>
+									<td>${purchase.rprodId}</td>
+									<td>${purchase.rprodName}</td>
+									<td>${purchase.rquantity}</td>
+									<td>${purchase.rdate}</td>
+									<td>${purchase.rstatus}</td>
+									<td>${purchase.rpstock}</td>
 								</tr>
 								</c:forEach>
 <%-- 								<tr align="center"><td colspan="7">
@@ -77,7 +78,7 @@
 							</table>
 						</div>
 					</div>
-					<div class="col-md-1">
+					<div class="col-md-2">
 				</div>
 			</div>
 		</div>

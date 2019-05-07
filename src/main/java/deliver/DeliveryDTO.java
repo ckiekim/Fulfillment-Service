@@ -5,6 +5,9 @@ public class DeliveryDTO {
 	private int dcomId;
 	private int dinvId;
 	private String ddate;
+	private int dstatus;
+	private String dname;
+	private String daddr;
 	
 	public DeliveryDTO() {
 	}
@@ -38,8 +41,27 @@ public class DeliveryDTO {
 	public void setDdate(String ddate) {
 		this.ddate = ddate;
 	}
+	public int getDstatus() {
+		return dstatus;
+	}
+	public void setDstatus(int dstatus) {
+		this.dstatus = dstatus;
+	}
+	public String getDname() {
+		return dname;
+	}
+	public void setDname(String dname) {
+		this.dname = dname;
+	}
+	public String getDaddr() {
+		return daddr;
+	}
+	public void setDaddr(String daddr) {
+		this.daddr = daddr;
+	}
 	@Override
 	public String toString() {
-		return "DeliveryDTO [did=" + did + ", dcomId=" + dcomId + ", dinvId=" + dinvId + ", ddate=" + ddate + "]";
+		return "DeliveryDTO [did=" + did + ", dcomId=" + dcomId + ", dinvId=" + dinvId + ", ddate=" + ddate
+				+ ", dstatus=" + dstatus + ", dname=" + dname + ", daddr=" + daddr + "]";
 	}
 }

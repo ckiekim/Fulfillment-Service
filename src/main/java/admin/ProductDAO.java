@@ -88,6 +88,7 @@ public class ProductDAO {
 			pStmt.setInt(1, pDto.getPstock());
 			pStmt.setInt(2, pDto.getPid());
 			pStmt.executeUpdate();
+			LOG.debug(pDto.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

@@ -12,7 +12,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import purchase.PurchaseDAO;
+import purchase.PurchaseDTO;
 import user.UserDAO;
+import util.HandleDate;
 
 public class HandleInvoice {
 	private static final Logger LOG = LoggerFactory.getLogger(HandleInvoice.class);
@@ -79,20 +82,52 @@ public class HandleInvoice {
 		InvoiceDAO vDao = new InvoiceDAO();
 		SoldProductDAO sDao = new SoldProductDAO();
 		ProductDAO pDao = new ProductDAO();
+		PurchaseDAO rDao = new PurchaseDAO();
+		ProductDTO pDto = null;
+		int criteria = 0;
 		
 		vDao.insertInvoice(vDto);
 		vDto = vDao.getLastInvoice();
 		LOG.trace(vDto.toString());
+		for (SoldProductDTO sDto: sList) {	// 재고 부족이 있는지 먼저 확인
+			pDto = pDao.getProductById(sDto.getSprodId());
+			criteria = pDto.getPstock() - sDto.getSquantity();
+			LOG.trace("{}, {}, {}", criteria, pDto.getPstock(), sDto.getSquantity());
+			if (criteria < 0) {		// 재고 부족한 상품이 있으면 products 테이블에서 pstock을 감소시키지 않음
+				break;
+			}
+		}
 		for (SoldProductDTO sDto: sList) {
+			pDto = pDao.getProductById(sDto.getSprodId());
 			sDto.setSinvId(vDto.getVid());
 			sDao.insertSoldProduct(sDto);
-			ProductDTO pDto = pDao.getProductById(sDto.getSprodId());
-			int criteria = pDto.getPstock() - sDto.getSquantity();
-			LOG.trace("{}, {}, {}", criteria, pDto.getPstock(), sDto.getSquantity());
 			if (criteria < 0) {
-				vDto.setVstatus(1);		// 0-출고대기, 1-출고지연(재고부족), 2-출고실행, 3-출고완료
-			} else if (criteria < 10) {
-				// 발주 요청 목록에 등록
+				vDto.setVstatus(InvoiceDAO.INVOICE_DELAYED);	// 0-출고대기, 1-출고지연(재고부족), 2-출고실행, 3-출고완료
+			} 
+			if (pDto.getPstock() - sDto.getSquantity() < 10) {
+				// 발주 요청 목록에 없으면 발주 요청 목록에 등록
+				if (rDao.isPurchasing(sDto.getSprodId()) == 0) {
+					String category = pDto.getPcategory();
+					int purchaseQuantity = 0;
+					int suppId = 0;
+					if (category.equals("가전")) {
+						purchaseQuantity = 30;
+						suppId = 1006 + (int)(Math.random() * 2);
+					} else if (category.equals("스포츠")) {
+						purchaseQuantity = 50;
+						suppId = 1008;
+					} else if (category.equals("식품")) {
+						purchaseQuantity = 20;
+						suppId = 1009 + (int)(Math.random() * 2);
+					}
+					// 발주 요청 목록에 등록
+					PurchaseDTO rDto = new PurchaseDTO(suppId, vDto.getVid(), sDto.getSprodId(), purchaseQuantity);
+					rDao.insertPurchases(rDto);
+				}
+			}
+			if (criteria >= 0) {
+				pDto.setPstock(pDto.getPstock() - sDto.getSquantity());
+				pDao.updateStock(pDto);
 			}
 		}
 		int total = 0;

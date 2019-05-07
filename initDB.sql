@@ -56,6 +56,19 @@ create table deliveries (
   foreign key(dinvId) references invoices(vid)
 ) auto_increment=101 default charset=utf8;
 
+create table purchases (
+  rid int unsigned auto_increment primary key,
+  rcomId int unsigned not null,
+  rinvId int unsigned not null,
+  rprodId int unsigned not null,
+  rquantity int default 0,
+  rdate datetime,
+  rstatus int default 0,
+  foreign key(rcomId) references companies(cid),
+  foreign key(rinvId) references invoices(vid),
+  foreign key(rproId) references products(pid)
+) auto_increment=101 default charset=utf8;
+
 insert into companies values
 (1001, '이젠풀필먼트', 1, '042-345-6780', '042-345-6790', 'efs@ezen.com'),
 (1002, '경기물류', 2, '031-234-5670', '031-234-5680', 'logis1@klc.com'),

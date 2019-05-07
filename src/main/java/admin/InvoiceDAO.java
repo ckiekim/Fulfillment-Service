@@ -14,6 +14,10 @@ import util.DBManager;
 
 public class InvoiceDAO {
 	private static final Logger LOG = LoggerFactory.getLogger(InvoiceDAO.class);
+	public static final int INVOICE_READY = 0;
+	public static final int INVOICE_DELAYED = 1;
+	public static final int INVOICE_RELEASED = 2;
+	public static final int INVOICE_CONFIRMED = 3;
 	Connection conn;
 	PreparedStatement pStmt;
 	ResultSet rs;
@@ -91,7 +95,6 @@ public class InvoiceDAO {
 		conn = DBManager.getConnection();
 		String query = "select count(*) from invoices;";
 		int result = 0;
-		InvoiceDTO vDto = new InvoiceDTO();
 		try {
 			pStmt = conn.prepareStatement(query);
 			rs = pStmt.executeQuery();

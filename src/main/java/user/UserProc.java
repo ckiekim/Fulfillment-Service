@@ -77,15 +77,15 @@ public class UserProc extends HttpServlet {
 				uDto = uDao.getUserInfo(uid);
 				session.setAttribute("userId", uid);
 				session.setAttribute("userName", uDto.getUname());
+				session.setAttribute("companyId", uDto.getUcomId());
 				session.setAttribute("companyName", uDto.getUcomName());
 				switch(uDto.getUcomRole()) {
 				case UserDAO.ROLE_COMPANY:
 					url = "../admin/index.jsp"; break;
 				case UserDAO.ROLE_LOGISTICS:
-					url = "../deliver/deliverServlet?action=list&company=" + uDto.getUcomId();
-					break;
+					url = "../deliver/index.jsp"; break;
 				case UserDAO.ROLE_SUPPLIER:
-					url = "../supplier/index.jsp"; break;
+					url = "../purchase/index.jsp"; break;
 				}
 				response.sendRedirect(url);
 			} else {
@@ -98,6 +98,7 @@ public class UserProc extends HttpServlet {
 		else if (action.equals("logout")) {
 			session.removeAttribute("userId");
 			session.removeAttribute("userName");
+			session.removeAttribute("companyId");
 			session.removeAttribute("companyName");
 			response.sendRedirect("../user/login.jsp");
 		} 
