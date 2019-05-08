@@ -18,11 +18,47 @@ public class InvoiceDAO {
 	public static final int INVOICE_DELAYED = 1;
 	public static final int INVOICE_RELEASED = 2;
 	public static final int INVOICE_CONFIRMED = 3;
+	public static final int INVOICE_DELAY_READY = 4;
 	Connection conn;
 	PreparedStatement pStmt;
 	ResultSet rs;
 	
-	public List<InvoiceDTO> getAllInvoices(int page) {
+	public List<InvoiceDTO> getInvoicesByStatus(int status) {
+		conn = DBManager.getConnection();
+		String query = "select * from invoices where vstatus=?;";
+		List<InvoiceDTO> vList = new ArrayList<InvoiceDTO>();
+		try {
+			pStmt = conn.prepareStatement(query);
+			pStmt.setInt(1, status);
+			rs = pStmt.executeQuery();
+			
+			while (rs.next()) {
+				InvoiceDTO vDto = new InvoiceDTO();
+				vDto.setVid(rs.getInt(1));
+				vDto.setVname(rs.getString(2));
+				vDto.setVtel(rs.getString(3));
+				vDto.setVaddr(rs.getString(4));
+				vDto.setVcomId(rs.getInt(5));
+				vDto.setVdate(rs.getString(6).substring(0, 16));
+				vDto.setVtotal(rs.getInt(7));
+				vDto.setVstatus(rs.getInt(8));
+				vDto.setVlogisId(rs.getInt(9));
+				vList.add(vDto);
+				LOG.trace(vDto.toString());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return vList;
+	}
+	
+	public List<InvoiceDTO> getInvoicesByPage(int page) {
 		conn = DBManager.getConnection();
 		int offset = 0;
 		String query = null;
@@ -39,7 +75,8 @@ public class InvoiceDAO {
 		List<InvoiceDTO> vList = new ArrayList<InvoiceDTO>();
     	try {
 			pStmt = conn.prepareStatement(query);
-			pStmt.setInt(1, offset);
+			if (page > 0)
+				pStmt.setInt(1, offset);
 			rs = pStmt.executeQuery();
 			
 			while (rs.next()) {

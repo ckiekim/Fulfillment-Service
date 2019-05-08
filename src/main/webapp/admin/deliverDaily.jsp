@@ -9,6 +9,7 @@
 	<!-- ==================================================================== -->
 	<title>Ezen Fulfillment System</title>
 	<link href="../css/bootstrap.min.css" rel="stylesheet">
+	<link href="../css/jquery-ui.min.css" rel="stylesheet">
 </head>
 <body>
 	<%@ include file="../common/_top.jspf" %>
@@ -19,8 +20,8 @@
 				<div class="list-group">
 					<a href="adminServlet?action=userList" class="list-group-item">사용자 조회</a>
 					<a href="adminServlet?action=productList&category=가전" class="list-group-item">제품 조회</a>
-					<a href="#" class="list-group-item active">주문</a>
-					<a href="adminServlet?action=deliver" class="list-group-item">출고</a>
+					<a href="adminServlet?action=invoice&page=1" class="list-group-item">주문</a>
+					<a href="#" class="list-group-item active">출고</a>
 					<a href="adminServlet?action=purchase" class="list-group-item">입고</a>
 					<a href="#" class="list-group-item">재고</a>
 					<a href="#" class="list-group-item">정산</a>
@@ -28,9 +29,15 @@
 			</div>
 			<div class="col-md-10">
 				<div class="row" style="margin-left: 30px">
-					<div class="col-md-8"><h3>주문 조회</h3></div>
-					<div class="col-md-4"><br>
-						<a class="btn btn-primary" href="adminServlet?action=procInvoice" role="button">주문 처리</a>
+					<div class="col-md-7"><h3>일별 출고실적 조회</h3></div>
+					<div class="col-md-5"><br>
+						<form action="adminServlet?action=deliverDaily" class="form-horizontal" method="post">
+							<div class="form-group">
+								<label class="control-label">날짜:&nbsp;&nbsp;</label>
+								<input type="text" name="dateRelease" id="datepicker1">&nbsp;&nbsp;
+								<input class="btn btn-primary btn-sm" type="submit" value="검색">
+							</div>
+						</form>
 					</div>
 					<div class="col-md-12"><hr></div>
 					<div class="col-md-10">
@@ -39,25 +46,23 @@
 								<tr class="active">
 									<th class="col-md-1">ID</th>
 									<th class="col-md-1">주문자명</th>
-									<th class="col-md-2">주문처</th>
-									<th class="col-md-2">주문일시</th>
-									<th class="col-md-1">금액</th>
-									<th class="col-md-2">운송사</th>
+									<th class="col-md-3">주소</th>
+									<th class="col-md-2">출고일시</th>
+									<th class="col-md-2">운송회사</th>
 									<th class="col-md-1">상태</th>
 								</tr>
-								<c:set var="vList" value="${requestScope.invoiceList}"/>
-								<c:forEach var="invoice" items="${vList}">
+								<c:set var="dList" value="${requestScope.deliverList}"/>
+								<c:forEach var="dDto" items="${dList}">
 								<tr>
-									<td><a href="adminServlet?action=invoiceDetail&vid=${invoice.vid}">${invoice.vid}</a></td>
-									<td>${invoice.vname}</td>
-									<td>${invoice.vcomName}</td>
-									<td>${invoice.vdate}</td>
-									<td>${invoice.vtotal}</td>
-									<td>${invoice.vlogisName}</td>
-									<td>${invoice.vstatus}</td>
+									<td><a href=#>${dDto.did}</a></td>
+									<td>${dDto.dname}</td>
+									<td>${dDto.daddr}</td>
+									<td>${dDto.ddate}</td>
+									<td>${dDto.dcomName}</td>
+									<td>${dDto.dstatus}</td>
 								</tr>
 								</c:forEach>
-								<tr align="center"><td colspan="7">
+<%-- 								<tr align="center"><td colspan="7">
 									<c:set var="pList" value="${requestScope.pageList}"/>
 									<nav>
 									  <ul class="pagination">
@@ -75,7 +80,7 @@
 									    <li class="disabled"><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
 									  </ul>
 									</nav>
-								</td></tr>
+								</td></tr> --%>
 							</table>
 						</div>
 					</div>
@@ -89,5 +94,23 @@
 	<!-- ==================================================================== -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	<script src="../js/bootstrap.min.js"></script>
+	<script src="../js/jquery-ui.min.js"></script>
+	<script>
+	    $.datepicker.setDefaults({
+	        dateFormat: 'yy-mm-dd',
+	        prevText: '이전 달',
+	        nextText: '다음 달',
+	        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+	        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+	        dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+	        dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+	        dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+	        showMonthAfterYear: true,
+	        yearSuffix: '년'
+	    });
+	    $(function() {
+	        $("#datepicker1").datepicker();
+	    });
+	</script>
 </body>
 </html>

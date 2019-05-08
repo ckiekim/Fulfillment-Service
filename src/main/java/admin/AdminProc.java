@@ -15,7 +15,10 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import deliver.*;
+import purchase.*;
 import user.*;
+import util.HandleDate;
 
 @WebServlet("/admin/adminServlet")
 public class AdminProc extends HttpServlet {
@@ -45,11 +48,17 @@ public class AdminProc extends HttpServlet {
 		ProductDAO pDao = new ProductDAO();
 		InvoiceDAO vDao = new InvoiceDAO();
 		SoldProductDAO sDao = new SoldProductDAO();
+		DeliveryDAO dDao = new DeliveryDAO();
+		PurchaseDAO rDao = new PurchaseDAO();
 		List<UserDTO> uList = null;
 		List<CompanyDTO> cList = null;
 		List<ProductDTO> pList = null;
 		List<InvoiceDTO> vList = null;
 		List<SoldProductDTO> sList = null;
+		List<DeliveryDTO> dList = null;
+		List<PurchaseDTO> rList = null;
+		String date = null;
+		HandleDate hDate = null;
 		
 		if (action.equals("userList")) {	// 내비게이션 메뉴에서 사용자 조회를 클릭했을 때
 			uList = uDao.getAllUsers();
@@ -81,7 +90,7 @@ public class AdminProc extends HttpServlet {
 			// 리스트 페이지의 하단 페이지 데이터 만들어 주기
 			for (int i=1; i<=pageNo; i++) 
 				pageList.add(Integer.toString(i));
-			vList = vDao.getAllInvoices(curInvoicePage);
+			vList = vDao.getInvoicesByPage(curInvoicePage);
 			
 			request.setAttribute("invoiceList", vList);
 			request.setAttribute("pageList", pageList);
@@ -91,8 +100,7 @@ public class AdminProc extends HttpServlet {
 		else if (action.equals("procInvoice")) {	// 주문처리 버튼을 클릭했을 때
 			HandleInvoice hi = new HandleInvoice();
 			hi.handleFile();
-			rd = request.getRequestDispatcher("adminServlet?action=invoice&page=1");
-	        rd.forward(request, response);
+			response.sendRedirect("adminServlet?action=invoice&page=1");
 		}
 		else if (action.equals("invoiceDetail")) {	// invoice 리스트에서 id를 클릭했을 때
 			int invId = 0;
@@ -104,6 +112,59 @@ public class AdminProc extends HttpServlet {
 			request.setAttribute("invoiceDTO", vDto);
 			request.setAttribute("soldProductList", sList);
 			rd = request.getRequestDispatcher("invoiceDetail.jsp");
+	        rd.forward(request, response);
+		}
+		else if (action.equals("deliver")) {	// 내비게이션 메뉴에서 출고를 클릭했을 때
+			dList = dDao.getDeliveryListByStatus(DeliveryDAO.DELIVERY_EXECUTED);
+			request.setAttribute("deliverList", dList);
+			rd = request.getRequestDispatcher("deliverList.jsp");
+	        rd.forward(request, response);
+		}
+		else if (action.equals("deliverConfirm")) {	// 출고 확정 버튼을 클릭했을 때
+			dList = dDao.getDeliveryListByStatus(DeliveryDAO.DELIVERY_EXECUTED);
+			for (DeliveryDTO dDto: dList) {
+				dDto.setDstatus(DeliveryDAO.DELIVERY_CONFIRMED);
+				dDao.updateDeliveryStatus(dDto);
+			}
+			response.sendRedirect("adminServlet?action=deliverDaily");
+		}
+		else if (action.equals("deliverDaily")) {	// 일별 출고 메뉴를 클릭했을 때
+			date = request.getParameter("dateRelease");
+			if (date == null) {
+				hDate = new HandleDate();
+				date = hDate.getToday();
+			}
+			date += "%";
+			LOG.trace(date);
+			dList = dDao.getDeliveryListByDate(date);
+			request.setAttribute("deliverList", dList);
+			rd = request.getRequestDispatcher("deliverDaily.jsp");
+	        rd.forward(request, response);
+		}
+		else if (action.equals("purchase")) {	// 내비게이션 메뉴에서 입고를 클릭했을 때
+			rList = rDao.getPurchaseListByStatus(PurchaseDAO.PURCHASE_SUPPLIED);
+			request.setAttribute("purchaseList", rList);
+			rd = request.getRequestDispatcher("purchaseList.jsp");
+	        rd.forward(request, response);
+		}
+		else if (action.equals("purchaseConfirm")) {	// 입고 확정 버튼을 클릭했을 때
+			rList = rDao.getPurchaseListByStatus(PurchaseDAO.PURCHASE_SUPPLIED);
+			for (PurchaseDTO rDto: rList) {
+				rDto.setRstatus(PurchaseDAO.PURCHASE_CONFIRMED);
+				rDao.updatePurchaseStatus(rDto);
+			}
+			response.sendRedirect("adminServlet?action=purchaseDaily");
+		}
+		else if (action.equals("purchaseDaily")) {	// 일별 입고 메뉴를 클릭했을 때
+			date = request.getParameter("dateSupply");
+			if (date == null) {
+				hDate = new HandleDate();
+				date = hDate.getToday();
+			}
+			date += "%";
+			rList = rDao.getSuppliedListByDate(date);
+			request.setAttribute("purchaseList", rList);
+			rd = request.getRequestDispatcher("purchaseDaily.jsp");
 	        rd.forward(request, response);
 		}
 	}

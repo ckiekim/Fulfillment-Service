@@ -19,7 +19,7 @@ public class HandleDelivery {
 		DeliveryDAO dDao = new DeliveryDAO();
 		List<InvoiceDTO> vList = dDao.getInvoicesByLogis(logisId);
 		for (InvoiceDTO vDto: vList) {
-			if (vDto.getVstatus() == InvoiceDAO.INVOICE_DELAYED)
+			if (vDto.getVstatus() == InvoiceDAO.INVOICE_DELAYED || vDto.getVstatus() == InvoiceDAO.INVOICE_DELAY_READY)
 				continue;
 			// 주문 시각이 출고처리 시각보다 같거나 늦으면 처리하지 않음
 			if (vDto.getVdate().compareTo(date) >= 0) {
@@ -30,7 +30,7 @@ public class HandleDelivery {
 			vDto.setVstatus(InvoiceDAO.INVOICE_RELEASED);
 			dDao.updateInvoiceStatus(vDto);
 			// deliveries table에 등록
-			DeliveryDTO dDto = new DeliveryDTO(logisId, vDto.getVid(), date);
+			DeliveryDTO dDto = new DeliveryDTO(logisId, vDto.getVid(), date, DeliveryDAO.DELIVERY_EXECUTED);
 			dDao.insertDelivery(dDto);
 			LOG.trace(dDto.toString());
 		}

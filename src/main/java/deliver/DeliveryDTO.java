@@ -8,14 +8,16 @@ public class DeliveryDTO {
 	private int dstatus;
 	private String dname;
 	private String daddr;
+	private String dcomName;
 	
 	public DeliveryDTO() {
 	}
-	public DeliveryDTO(int dcomId, int dinvId, String ddate) {
+	public DeliveryDTO(int dcomId, int dinvId, String ddate, int dstatus) {
 		super();
 		this.dcomId = dcomId;
 		this.dinvId = dinvId;
 		this.ddate = ddate;
+		this.dstatus = dstatus;
 	}
 	public int getDid() {
 		return did;
@@ -59,9 +61,15 @@ public class DeliveryDTO {
 	public void setDaddr(String daddr) {
 		this.daddr = daddr;
 	}
+	public String getDcomName() {
+		return dcomName;
+	}
+	public void setDcomName(String dcomName) {
+		this.dcomName = dcomName;
+	}
 	@Override
 	public String toString() {
 		return "DeliveryDTO [did=" + did + ", dcomId=" + dcomId + ", dinvId=" + dinvId + ", ddate=" + ddate
-				+ ", dstatus=" + dstatus + ", dname=" + dname + ", daddr=" + daddr + "]";
+				+ ", dstatus=" + dstatus + ", dname=" + dname + ", daddr=" + daddr + ", dcomName=" + dcomName + "]";
 	}
 }

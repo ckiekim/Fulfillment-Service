@@ -75,8 +75,9 @@ public class DeliveryProc extends HttpServlet {
 			date = request.getParameter("dateRelease");
 			if (date == null) {
 				hDate = new HandleDate();
-				date = hDate.getToday() + "%";
+				date = hDate.getToday();
 			}
+			date += "%";
 			List<DeliveryDTO> dList = dDao.getDeliveryReleasedList(logisId, date);
 			request.setAttribute("deliveryReleasedList", dList);
 			rd = request.getRequestDispatcher("release.jsp");

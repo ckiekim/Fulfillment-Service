@@ -86,6 +86,7 @@ public class HandleInvoice {
 		ProductDTO pDto = null;
 		int criteria = 0;
 		
+		processDelayReadyInvoice();		// 재고 부족이 해소된 주문부터 우선 처리
 		vDao.insertInvoice(vDto);
 		vDto = vDao.getLastInvoice();
 		LOG.trace(vDto.toString());
@@ -101,30 +102,10 @@ public class HandleInvoice {
 			pDto = pDao.getProductById(sDto.getSprodId());
 			sDto.setSinvId(vDto.getVid());
 			sDao.insertSoldProduct(sDto);
-			if (criteria < 0) {
-				vDto.setVstatus(InvoiceDAO.INVOICE_DELAYED);	// 0-출고대기, 1-출고지연(재고부족), 2-출고실행, 3-출고완료
-			} 
-			if (pDto.getPstock() - sDto.getSquantity() < 10) {
-				// 발주 요청 목록에 없으면 발주 요청 목록에 등록
-				if (rDao.isPurchasing(sDto.getSprodId()) == 0) {
-					String category = pDto.getPcategory();
-					int purchaseQuantity = 0;
-					int suppId = 0;
-					if (category.equals("가전")) {
-						purchaseQuantity = 30;
-						suppId = 1006 + (int)(Math.random() * 2);
-					} else if (category.equals("스포츠")) {
-						purchaseQuantity = 50;
-						suppId = 1008;
-					} else if (category.equals("식품")) {
-						purchaseQuantity = 20;
-						suppId = 1009 + (int)(Math.random() * 2);
-					}
-					// 발주 요청 목록에 등록
-					PurchaseDTO rDto = new PurchaseDTO(suppId, vDto.getVid(), sDto.getSprodId(), purchaseQuantity);
-					rDao.insertPurchases(rDto);
-				}
-			}
+			if (criteria < 0) 
+				vDto.setVstatus(InvoiceDAO.INVOICE_DELAYED);
+			if (pDto.getPstock() - sDto.getSquantity() < 10) 
+				issuePurchaseOrder(vDto.getVid(), pDto, criteria);
 			if (criteria >= 0) {
 				pDto.setPstock(pDto.getPstock() - sDto.getSquantity());
 				pDao.updateStock(pDto);
@@ -139,6 +120,69 @@ public class HandleInvoice {
 		vDto.setVtotal(total);
 		LOG.trace(vDto.toString());
 		vDao.updateInvoice(vDto);
+	}
+	
+	// 재고 부족이 해소된 주문을 처리하는 메쏘드
+	void processDelayReadyInvoice() {
+		InvoiceDAO vDao = new InvoiceDAO();
+		SoldProductDAO sDao = new SoldProductDAO();
+		ProductDAO pDao = new ProductDAO();
+		PurchaseDAO rDao = new PurchaseDAO();
+		ProductDTO pDto = null;
+		int criteria = 0;
+		
+		List<InvoiceDTO> vList = vDao.getInvoicesByStatus(InvoiceDAO.INVOICE_DELAY_READY);
+		for (InvoiceDTO vDto: vList) {
+			LOG.debug(vDto.toString());
+			List<SoldProductDTO> sList = sDao.getSoldProducts(vDto.getVid());
+			for (SoldProductDTO sDto: sList) {	// 재고 부족이 있는지 먼저 확인
+				pDto = pDao.getProductById(sDto.getSprodId());
+				criteria = pDto.getPstock() - sDto.getSquantity();
+				LOG.debug("{}, {}, {}", criteria, pDto.getPstock(), sDto.getSquantity());
+				if (criteria < 0) {		// 재고 부족한 상품이 있으면 products 테이블에서 pstock을 감소시키지 않음
+					issuePurchaseOrder(vDto.getVid(), pDto, criteria);
+					break;
+				}
+			}
+			if (criteria < 0) {
+				vDto.setVstatus(InvoiceDAO.INVOICE_DELAYED);
+				vDao.updateInvoice(vDto);
+				continue;
+			}
+			for (SoldProductDTO sDto: sList) {
+				pDto = pDao.getProductById(sDto.getSprodId());
+				if (pDto.getPstock() - sDto.getSquantity() < 10) 
+					issuePurchaseOrder(vDto.getVid(), pDto, criteria);
+				pDto.setPstock(pDto.getPstock() - sDto.getSquantity());
+				pDao.updateStock(pDto);
+			}
+			vDto.setVstatus(InvoiceDAO.INVOICE_READY);
+			vDao.updateInvoice(vDto);
+		}
+	}
+	
+	// 발주 요청처리 메쏘드
+	void issuePurchaseOrder(int invoiceId, ProductDTO pDto, int criteria) {
+		PurchaseDAO rDao = new PurchaseDAO();
+		// 재고가 음수가 발생하거나 발주 요청 목록에 없으면 발주 요청 목록에 등록
+		if (criteria < 0 || rDao.isPurchasing(pDto.getPid()) == 0) {	
+			String category = pDto.getPcategory();
+			int purchaseQuantity = 0;
+			int suppId = 0;
+			if (category.equals("가전")) {
+				purchaseQuantity = 30;
+				suppId = 1006 + (int)(Math.random() * 2);
+			} else if (category.equals("스포츠")) {
+				purchaseQuantity = 50;
+				suppId = 1008;
+			} else if (category.equals("식품")) {
+				purchaseQuantity = 20;
+				suppId = 1009 + (int)(Math.random() * 2);
+			}
+			// 발주 요청 목록에 등록
+			PurchaseDTO rDto = new PurchaseDTO(suppId, invoiceId, pDto.getPid(), purchaseQuantity);
+			rDao.insertPurchases(rDto);
+		}
 	}
 	
 	int selectLogis(String addr) {

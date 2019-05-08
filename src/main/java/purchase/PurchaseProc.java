@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import admin.ProductDAO;
+import util.HandleDate;
 
 @WebServlet("/purchase/purchaseServlet")
 public class PurchaseProc extends HttpServlet {
@@ -38,6 +39,7 @@ public class PurchaseProc extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		ProductDAO pDao = new ProductDAO();
 		PurchaseDAO rDao = new PurchaseDAO();  
+		List<PurchaseDTO> rList = null;
 		
 		HttpSession session = request.getSession();
 		String action = request.getParameter("action");
@@ -54,16 +56,27 @@ public class PurchaseProc extends HttpServlet {
 		}
 		
 		if (action.equals("list")) {	// 공급업체 담당자가 로그인하였을 때
-			List<PurchaseDTO> rList = rDao.getPurchaseListBySupplier(suppId);
+			rList = rDao.getPurchaseListBySupplier(suppId);
 			request.setAttribute("purchaseWaitList", rList);
 			rd = request.getRequestDispatcher("list.jsp");
 	        rd.forward(request, response);
 		}
 		else if (action.equals("supply")) {		// 입고처리 버튼을 클릭했을 때
-			
+			HandlePurchase hp = new HandlePurchase();
+			hp.processPurchase(suppId);
+			response.sendRedirect("purchaseServlet?action=purchaseList");
 		}
 		else if (action.equals("purchaseList")) {	// 일별 구매목록 메뉴를 클릭했을 때
-			
+			String date = request.getParameter("datePurchase");
+			if (date == null) {
+				HandleDate hDate = new HandleDate();
+				date = hDate.getToday();
+			}
+			date += "%";
+			rList = rDao.getSuppliedListBySupplierAndDate(suppId, date);
+			request.setAttribute("purchaseSuppliedList", rList);
+			rd = request.getRequestDispatcher("purchased.jsp");
+	        rd.forward(request, response);
 		}
 	}
 }

@@ -81,7 +81,7 @@
 							</table>
 						</div>
 					</div>
-					<div class="col-md-7">
+					<div class="col-md-3">
 				</div>
 			</div>
 		</div>

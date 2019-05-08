@@ -23,6 +23,124 @@ public class PurchaseDAO {
 	PreparedStatement pStmt;
 	ResultSet rs;
 	
+	public List<PurchaseDTO> getSuppliedListByDate(String date) {
+		conn = DBManager.getConnection();
+		String query = "select r.rid, r.rinvId, r.rprodId, p.pname, r.rquantity, r.rdate, r.rstatus, p.pstock, c.cname " +
+						"from purchases as r inner join products as p on r.rprodId=p.pid " +
+						"inner join companies as c on r.rcomId=c.cid " +
+						"where r.rstatus=? and r.rdate like ? order by r.rcomId, r.rid;";
+		List<PurchaseDTO> rList = new ArrayList<PurchaseDTO>();
+		try {
+			pStmt = conn.prepareStatement(query);
+			pStmt.setInt(1, PURCHASE_CONFIRMED);
+			pStmt.setString(2, date);
+			rs = pStmt.executeQuery();
+			
+			while (rs.next()) {
+				PurchaseDTO rDto = new PurchaseDTO();
+				rDto.setRid(rs.getInt(1));
+				rDto.setRinvId(rs.getInt(2));
+				rDto.setRprodId(rs.getInt(3));
+				rDto.setRprodName(rs.getString(4));
+				rDto.setRquantity(rs.getInt(5));
+				if (rs.getString(6) != null)
+					rDto.setRdate(rs.getString(6).substring(0, 16));
+				rDto.setRstatus(rs.getInt(7));
+				rDto.setRpstock(rs.getInt(8));
+				rDto.setRcomName(rs.getString(9));
+				rList.add(rDto);
+				LOG.trace(rDto.toString());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return rList;
+	}
+	
+	public List<PurchaseDTO> getPurchaseListByStatus(int status) {
+		conn = DBManager.getConnection();
+		String query = "select r.rid, r.rinvId, r.rprodId, p.pname, r.rquantity, r.rdate, r.rstatus, p.pstock, c.cname " +
+						"from purchases as r inner join products as p on r.rprodId=p.pid " +
+						"inner join companies as c on r.rcomId=c.cid " +
+						"where r.rstatus=? order by r.rcomId, r.rid;";
+		List<PurchaseDTO> rList = new ArrayList<PurchaseDTO>();
+		try {
+			pStmt = conn.prepareStatement(query);
+			pStmt.setInt(1, status);
+			rs = pStmt.executeQuery();
+			
+			while (rs.next()) {
+				PurchaseDTO rDto = new PurchaseDTO();
+				rDto.setRid(rs.getInt(1));
+				rDto.setRinvId(rs.getInt(2));
+				rDto.setRprodId(rs.getInt(3));
+				rDto.setRprodName(rs.getString(4));
+				rDto.setRquantity(rs.getInt(5));
+				if (rs.getString(6) != null)
+					rDto.setRdate(rs.getString(6).substring(0, 16));
+				rDto.setRstatus(rs.getInt(7));
+				rDto.setRpstock(rs.getInt(8));
+				rDto.setRcomName(rs.getString(9));
+				rList.add(rDto);
+				LOG.trace(rDto.toString());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return rList;
+	}
+	
+	public List<PurchaseDTO> getSuppliedListBySupplierAndDate(int supplierId, String date) {
+		conn = DBManager.getConnection();
+		String query = "select r.rid, r.rinvId, r.rprodId, p.pname, r.rquantity, r.rdate, r.rstatus, p.pstock " +
+						"from purchases as r inner join products as p on r.rprodId=p.pid " +
+						"where r.rcomId=? and r.rstatus!=? and r.rdate like ?;";
+		List<PurchaseDTO> rList = new ArrayList<PurchaseDTO>();
+		try {
+			pStmt = conn.prepareStatement(query);
+			pStmt.setInt(1, supplierId);
+			pStmt.setInt(2, PURCHASE_READY); 
+			pStmt.setString(3, date);
+			rs = pStmt.executeQuery();
+			
+			while (rs.next()) {
+				PurchaseDTO rDto = new PurchaseDTO();
+				rDto.setRid(rs.getInt(1));
+				rDto.setRinvId(rs.getInt(2));
+				rDto.setRprodId(rs.getInt(3));
+				rDto.setRprodName(rs.getString(4));
+				rDto.setRquantity(rs.getInt(5));
+				if (rs.getString(6) != null)
+					rDto.setRdate(rs.getString(6).substring(0, 16));
+				rDto.setRstatus(rs.getInt(7));
+				rDto.setRpstock(rs.getInt(8));
+				rList.add(rDto);
+				LOG.debug(rDto.toString());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return rList;
+	}
+	
 	public List<PurchaseDTO> getPurchaseListBySupplier(int supplierId) {
 		conn = DBManager.getConnection();
 		String query = "select r.rid, r.rinvId, r.rprodId, p.pname, r.rquantity, r.rdate, r.rstatus, p.pstock " +

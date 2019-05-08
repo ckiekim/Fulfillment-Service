@@ -10,33 +10,27 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import admin.InvoiceDAO;
-import admin.InvoiceDTO;
-import admin.ProductDTO;
+import admin.*;
 import util.DBManager;
 
 public class DeliveryDAO {
 	private static final Logger LOG = LoggerFactory.getLogger(DeliveryDAO.class);
+	public static final int DELIVERY_READY = 0;
+	public static final int DELIVERY_EXECUTED = 1;
+	public static final int DELIVERY_CONFIRMED = 2;
 	Connection conn;
 	PreparedStatement pStmt;
 	ResultSet rs;
 
-	List<DeliveryDTO> getDeliveryWaitList(int companyId) {
-		conn = DBManager.getConnection();
-		String query = "select * from deliveries where dcomId=?;";
-		List<DeliveryDTO> dList = new ArrayList<DeliveryDTO>();
-		
-		return dList;
-	}
-	
 	public void insertDelivery(DeliveryDTO dDto) {
 		conn = DBManager.getConnection();
-    	String query = "insert into deliveries(dcomId, dinvId, ddate) values (?, ?, ?);";
+    	String query = "insert into deliveries(dcomId, dinvId, ddate, dstatus) values (?, ?, ?, ?);";
     	try {
 			pStmt = conn.prepareStatement(query);
 			pStmt.setInt(1, dDto.getDcomId());
 			pStmt.setInt(2, dDto.getDinvId());
 			pStmt.setString(3, dDto.getDdate());
+			pStmt.setInt(4, dDto.getDstatus());
 			pStmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -67,6 +61,100 @@ public class DeliveryDAO {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void updateDeliveryStatus(DeliveryDTO dDto) {
+		conn = DBManager.getConnection();
+		String query = "update deliveries set dstatus=? where did=?;";
+		try {
+			pStmt = conn.prepareStatement(query);
+			pStmt.setInt(1, dDto.getDstatus());
+			pStmt.setInt(2, dDto.getDid());
+			pStmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public List<DeliveryDTO> getDeliveryListByDate(String date) {
+		conn = DBManager.getConnection();
+		String query = "select d.did, d.dcomId, d.dinvId, d.ddate, d.dstatus, v.vname, v.vaddr, c.cname " + 
+				"from deliveries as d inner join invoices as v on d.dinvId=v.vid " + 
+				"inner join companies as c on d.dcomId=c.cid " + 
+				"where d.dstatus=? and d.ddate like ? order by d.dcomId, d.ddate, d.did;";
+		List<DeliveryDTO> dList = new ArrayList<DeliveryDTO>();
+		try {
+			pStmt = conn.prepareStatement(query);
+			pStmt.setInt(1, DELIVERY_CONFIRMED);
+			pStmt.setString(2, date);
+			rs = pStmt.executeQuery();
+			
+			while (rs.next()) {
+				DeliveryDTO dDto = new DeliveryDTO();
+				dDto.setDid(rs.getInt(1));
+				dDto.setDcomId(rs.getInt(2));
+				dDto.setDinvId(rs.getInt(3));
+				dDto.setDdate(rs.getString(4).substring(0, 16));
+				dDto.setDstatus(rs.getInt(5));
+				dDto.setDname(rs.getString(6));
+				dDto.setDaddr(rs.getString(7));
+				dDto.setDcomName(rs.getString(8));
+				dList.add(dDto);
+				LOG.trace(dDto.toString());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return dList;
+	}
+	
+	public List<DeliveryDTO> getDeliveryListByStatus(int status) {
+		conn = DBManager.getConnection();
+		String query = "select d.did, d.dcomId, d.dinvId, d.ddate, d.dstatus, v.vname, v.vaddr, c.cname " + 
+				"from deliveries as d inner join invoices as v on d.dinvId=v.vid " + 
+				"inner join companies as c on d.dcomId=c.cid " + 
+				"where d.dstatus=? order by d.did desc;";
+		List<DeliveryDTO> dList = new ArrayList<DeliveryDTO>();
+		try {
+			pStmt = conn.prepareStatement(query);
+			pStmt.setInt(1, status);
+			rs = pStmt.executeQuery();
+			
+			while (rs.next()) {
+				DeliveryDTO dDto = new DeliveryDTO();
+				dDto.setDid(rs.getInt(1));
+				dDto.setDcomId(rs.getInt(2));
+				dDto.setDinvId(rs.getInt(3));
+				dDto.setDdate(rs.getString(4).substring(0, 16));
+				dDto.setDstatus(rs.getInt(5));
+				dDto.setDname(rs.getString(6));
+				dDto.setDaddr(rs.getString(7));
+				dDto.setDcomName(rs.getString(8));
+				dList.add(dDto);
+				LOG.trace(dDto.toString());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return dList;
 	}
 	
 	public List<DeliveryDTO> getDeliveryReleasedList(int dcomId, String date) {
@@ -105,14 +193,16 @@ public class DeliveryDAO {
 		return dList;
 	}
 	
-	List<InvoiceDTO> getInvoicesByLogis(int logisId) {
+	public List<InvoiceDTO> getInvoicesByLogis(int logisId) {
 		conn = DBManager.getConnection();
-		String query = "select * from invoices where vlogisId=? and vstatus<?;";
+		String query = "select * from invoices where vlogisId=? and (vstatus=? or vstatus=? or vstatus=?);";
 		List<InvoiceDTO> vList = new ArrayList<InvoiceDTO>();
 		try {
 			pStmt = conn.prepareStatement(query);
 			pStmt.setInt(1, logisId);
-			pStmt.setInt(2, InvoiceDAO.INVOICE_RELEASED);	// 0-Ready 와 1-Delayed 상태만 선택
+			pStmt.setInt(2, InvoiceDAO.INVOICE_READY);
+			pStmt.setInt(3, InvoiceDAO.INVOICE_DELAYED);
+			pStmt.setInt(4, InvoiceDAO.INVOICE_DELAY_READY);
 			rs = pStmt.executeQuery();
 			
 			while (rs.next()) {
