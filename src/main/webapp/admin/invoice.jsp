@@ -46,15 +46,15 @@
 									<th class="col-md-1">상태</th>
 								</tr>
 								<c:set var="vList" value="${requestScope.invoiceList}"/>
-								<c:forEach var="invoice" items="${vList}">
+								<c:forEach var="vDto" items="${vList}">
 								<tr>
-									<td><a href="adminServlet?action=invoiceDetail&vid=${invoice.vid}">${invoice.vid}</a></td>
-									<td>${invoice.vname}</td>
-									<td>${invoice.vcomName}</td>
-									<td>${invoice.vdate}</td>
-									<td>${invoice.vtotal}</td>
-									<td>${invoice.vlogisName}</td>
-									<td>${invoice.vstatusName}</td>
+									<td><a href="adminServlet?action=invoiceDetail&vid=${vDto.vid}">${vDto.vid}</a></td>
+									<td>${vDto.vname}</td>
+									<td>${vDto.vcomName}</td>
+									<td>${vDto.vdate}</td>
+									<td>${vDto.vtotal}</td>
+									<td>${vDto.vlogisName}</td>
+									<td>${vDto.vstatusName}</td>
 								</tr>
 								</c:forEach>
 								<tr align="center"><td colspan="7">

@@ -9,6 +9,7 @@
 	<!-- ==================================================================== -->
 	<title>Ezen Fulfillment System</title>
 	<link href="../css/bootstrap.min.css" rel="stylesheet">
+	<link href="../css/bootstrap.vertical-tabs.min.css" rel="stylesheet">
 </head>
 <body>
 	<%@ include file="../common/_top.jspf" %>
@@ -16,15 +17,24 @@
 	<div class="container-fluid">
 		<div class="row" style="margin-top: 100px">
 			<div class="col-md-2">
-				<div class="list-group">
-					<a href="#" class="list-group-item active">사용자 조회</a>
-					<a href="adminServlet?action=productList&category=가전" class="list-group-item">상품 조회</a>
-					<a href="adminServlet?action=invoice&page=1" class="list-group-item">주문</a>
-					<a href="adminServlet?action=deliver" class="list-group-item">출고</a>
-					<a href="adminServlet?action=purchase" class="list-group-item">입고</a>
-					<a href="adminServlet?action=inventory&page=1" class="list-group-item">재고</a>
-					<a href="#" class="list-group-item">정산</a>
-				</div>
+				<!-- Nav tabs -->
+				<ul class="nav nav-tabs tabs-left">
+					<li class="active"><a href="#" data-toggle="tab">사용자 조회</a></li>
+					<li><a href="adminServlet?action=productList&category=가전">상품 조회</a></li>
+					<li><a href="adminServlet?action=invoice&page=1">주문</a></li>
+					<li><a href="adminServlet?action=deliver">출고</a></li>
+					<li><a href="adminServlet?action=purchase">입고</a></li>
+					<li><a href="adminServlet?action=inventory&page=1">재고</a></li>
+					<li><a href="#" data-toggle="tab">정산</a></li>
+<li class="dropdown">
+	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">출고 <span class="caret"></span></a>
+	<ul class="dropdown-menu" role="menu">
+		<li><a href="#">출고 확정 대기</a></li>
+		<li><a href="#">일별 출고 목록</a></li>
+		<li><a href="#">월별 출고 목록</a></li>
+	</ul>
+</li>
+				</ul>
 			</div>
 			<div class="col-md-10">
 				<div class="row" style="margin-left: 30px">
@@ -40,13 +50,13 @@
 									<th class="col-md-2">역할</th>
 								</tr>
 								<c:set var="uList" value="${requestScope.userList}"/>
-								<c:forEach var="user" items="${uList}">
+								<c:forEach var="uDto" items="${uList}">
 								<tr>
-									<td>${user.uid}</td>
-									<td>${user.uname}</td>
-									<td><a data-target="#modal${user.ucomId}" data-toggle="modal">
-											${user.ucomName}</a></td>
-									<td>${user.ucomRole}</td>
+									<td>${uDto.uid}</td>
+									<td>${uDto.uname}</td>
+									<td><a data-target="#modal${uDto.ucomId}" data-toggle="modal">
+											${uDto.ucomName}</a></td>
+									<td>${uDto.ucomRole}</td>
 								</tr>
 								</c:forEach>
 							</table>

@@ -41,14 +41,14 @@
 									<th class="col-md-2">카테고리</th>
 								</tr>
 								<c:set var="pList" value="${requestScope.productList}"/>
-								<c:forEach var="product" items="${pList}">
+								<c:forEach var="pDto" items="${pList}">
 								<tr>
-									<td>${product.pid}</td>
-									<td><a data-target="#modal${product.pid}" data-toggle="modal">
-											${product.pname}</a></td>
-									<td>${product.pprice}</td>
-									<td>${product.pstock}</td>
-									<td>${product.pcategory}</td>
+									<td>${pDto.pid}</td>
+									<td><a data-target="#modal${pDto.pid}" data-toggle="modal">
+											${pDto.pname}</a></td>
+									<td>${pDto.pprice}</td>
+									<td>${pDto.pstock}</td>
+									<td>${pDto.pcategory}</td>
 								</tr>
 								</c:forEach>
 								<tr align="center"><td colspan="5"><br>
@@ -77,21 +77,21 @@
 	<%@ include file="../common/_bottom.jspf" %>
 	
 	<div class="row">
-	<c:forEach var="product" items="${pList}">
-		<div class="modal" id="modal${product.pid}" tabindex="-1">
+	<c:forEach var="pDto" items="${pList}">
+		<div class="modal" id="modal${pDto.pid}" tabindex="-1">
 			<div class="modal-dialog modal-md">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title">${product.pname}</h4>
+						<h4 class="modal-title">${pDto.pname}</h4>
 					</div>
 					<div class="modal-body" style="text-align:center;">
 						<table class="table table-default">
 							<tr class="info"><td>항목</td><td>내용</td></tr>
-							<tr><td>아이디</td><td>${product.pid}</td></tr>
-							<tr><td>가격</td><td>${product.pprice}</td></tr>
+							<tr><td>아이디</td><td>${pDto.pid}</td></tr>
+							<tr><td>가격</td><td>${pDto.pprice}</td></tr>
 							<tr><td>사진</td><td width="300" height="300">
-								<img src="../img/${product.pimage}"></td></tr>
+								<img src="../img/${pDto.pimage}"></td></tr>
 						</table>
 					</div>
 				</div>

@@ -65,9 +65,9 @@ public class AdminProc extends HttpServlet {
 		HandleDate hDate = null;
 		// 세션이 만료되었으면 다시 로그인하게 만들어 줌
 		if (session.getAttribute("companyName") == null) {
+			LOG.debug("Session timed-out!!!");
 			rd = request.getRequestDispatcher("../user/login.jsp");
 	        rd.forward(request, response);
-	        LOG.debug("Session timed-out!!!");
 		}
 		
 		if (action.equals("userList")) {	// 내비게이션 메뉴에서 사용자 조회를 클릭했을 때

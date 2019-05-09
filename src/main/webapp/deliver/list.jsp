@@ -19,7 +19,7 @@
 				<div class="list-group">
 					<a href="#" class="list-group-item active">출고대기 목록</a>
 					<a href="deliverServlet?action=releaseList" class="list-group-item">일별 출고내역</a>
-					<a href="#" class="list-group-item">월별 출고내역</a>
+					<a href="deliverServlet?action=releaseMonthly&page=1" class="list-group-item">월별 출고내역</a>
 					<a href="#" class="list-group-item">정산</a>
 				</div>
 			</div>
@@ -44,15 +44,15 @@
 									<th class="col-md-1">상태</th>
 								</tr>
 								<c:set var="vList" value="${requestScope.deliveryWaitList}"/>
-								<c:forEach var="invoice" items="${vList}">
+								<c:forEach var="vDto" items="${vList}">
 								<tr>
-									<td><a href=#>${invoice.vid}</a></td>
-									<td>${invoice.vname}</td>
-									<td>${invoice.vtel}</td>
-									<td>${invoice.vaddr}</td>
-									<td>${invoice.vdate}</td>
-									<td>${invoice.vtotal}</td>
-									<td>${invoice.vstatusName}</td>
+									<td><a href=#>${vDto.vid}</a></td>
+									<td>${vDto.vname}</td>
+									<td>${vDto.vtel}</td>
+									<td>${vDto.vaddr}</td>
+									<td>${vDto.vdate}</td>
+									<td>${vDto.vtotal}</td>
+									<td>${vDto.vstatusName}</td>
 								</tr>
 								</c:forEach>
 <%-- 								<tr align="center"><td colspan="7">

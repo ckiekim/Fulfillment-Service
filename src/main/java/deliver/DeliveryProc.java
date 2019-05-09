@@ -1,6 +1,7 @@
 package deliver;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -40,10 +41,14 @@ public class DeliveryProc extends HttpServlet {
 		HttpSession session = request.getSession();
 		String action = request.getParameter("action");
 		DeliveryDAO dDao = new DeliveryDAO();
+		List<DeliveryDTO> dList = null;
 		HandleDate hDate = null;
 		String date = null;
-		int logisId = 0;
+		int curDeliveryPage = 0;
+		List<String> pageList = new ArrayList<String>();
+		
 		// 세션이 만료되었으면 다시 로그인하게 만들어 줌
+		int logisId = 0;
 		try {
 			logisId = (Integer)session.getAttribute("companyId");
 		} catch (NullPointerException e) {
@@ -66,7 +71,7 @@ public class DeliveryProc extends HttpServlet {
 			hd.processDelivery(time, logisId);
 			hDate = new HandleDate();
 			date = hDate.getToday() + hDate.getNumericTime(time);
-			List<DeliveryDTO> dList = dDao.getDeliveryReleasedList(logisId, date);
+			dList = dDao.getDeliveryReleasedList(logisId, date);
 			request.setAttribute("deliveryReleasedList", dList);
 			rd = request.getRequestDispatcher("release.jsp");
 	        rd.forward(request, response);
@@ -78,9 +83,35 @@ public class DeliveryProc extends HttpServlet {
 				date = hDate.getToday();
 			}
 			date += "%";
-			List<DeliveryDTO> dList = dDao.getDeliveryReleasedList(logisId, date);
+			dList = dDao.getDeliveryReleasedList(logisId, date);
 			request.setAttribute("deliveryReleasedList", dList);
 			rd = request.getRequestDispatcher("release.jsp");
+	        rd.forward(request, response);
+		}
+		else if (action.equals("releaseMonthly")) {	// 월별 출고목록 메뉴를 클릭하였을 때
+			if (!request.getParameter("page").equals("")) {
+				curDeliveryPage = Integer.parseInt(request.getParameter("page"));
+			}
+			String month = request.getParameter("monthRelease");
+			if (month == null) {
+				hDate = new HandleDate();
+				month = hDate.getToday().substring(0, 7);
+			}
+			int count = dDao.getCountMonthly(logisId, month+"-01");
+			if (count == 0)			// 데이터가 없을 때 대비
+				count = 1;
+			int pageNo = (int)Math.ceil(count/10.0);
+			if (curDeliveryPage > pageNo)	// 경계선에 걸렸을 때 대비
+				curDeliveryPage--;
+			session.setAttribute("currentDeliveryPage", curDeliveryPage);
+			for (int i=1; i<=pageNo; i++) 
+				pageList.add(Integer.toString(i));
+			
+			dList = dDao.getDeliveryListByMonth(logisId, month+"-01", curDeliveryPage);
+			request.setAttribute("deliveryReleasedList", dList);
+			request.setAttribute("pageList", pageList);
+			request.setAttribute("Month", month);
+			rd = request.getRequestDispatcher("releaseMonthly.jsp");
 	        rd.forward(request, response);
 		}
 	}

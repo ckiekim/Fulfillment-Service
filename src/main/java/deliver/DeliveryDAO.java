@@ -82,6 +82,100 @@ public class DeliveryDAO {
 		}
 	}
 	
+	public int getCountMonthly(int dcomId, String date) {
+		conn = DBManager.getConnection();
+		String query = null;
+		if (dcomId == 0)	// 모든 레코드 선택, 관리자 모드
+			query = "select count(*) from deliveries where ddate between " +
+					"date(?) and last_day(?)";
+		else
+			query = "select count(*) from deliveries where ddate between " +
+					"date(?) and last_day(?) and dcomId=?";
+		int result = 0;
+		try {
+			pStmt = conn.prepareStatement(query);
+			pStmt.setString(1, date);
+			pStmt.setString(2, date);
+			if (dcomId > 0)
+				pStmt.setInt(3, dcomId);
+			rs = pStmt.executeQuery();
+			while (rs.next()) {
+				result = rs.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
+	public List<DeliveryDTO> getDeliveryListByMonth(int dcomId, String date, int page) {
+		conn = DBManager.getConnection();
+		String query = null;
+		if (dcomId == 0)	// 모든 레코드 선택, 관리자 모드
+			query = "select d.did, d.dcomId, d.dinvId, d.ddate, d.dstatus, v.vname, v.vaddr, c.cname " + 
+					"from deliveries as d inner join invoices as v on d.dinvId=v.vid " + 
+					"inner join companies as c on d.dcomId=c.cid where d.dstatus=? and " + 
+					"d.ddate between date(?) and last_day(?) order by d.dcomId, d.ddate, d.did limit ?, 10;";
+		else
+			query = "select d.did, d.dcomId, d.dinvId, d.ddate, d.dstatus, v.vname, v.vaddr, c.cname " + 
+					"from deliveries as d inner join invoices as v on d.dinvId=v.vid " + 
+					"inner join companies as c on d.dcomId=c.cid where d.dstatus=? and " + 
+					"d.ddate between date(?) and last_day(?) and d.dcomId=? order by d.ddate, d.did limit ?, 10;";
+		int offset = (page - 1) * 10;
+		List<DeliveryDTO> dList = new ArrayList<DeliveryDTO>();
+		try {
+			pStmt = conn.prepareStatement(query);
+			pStmt.setInt(1, DELIVERY_CONFIRMED);
+			pStmt.setString(2, date);
+			pStmt.setString(3, date);
+			if (dcomId == 0) {
+				pStmt.setInt(4, offset);
+			} else {
+				pStmt.setInt(4, dcomId);
+				pStmt.setInt(5, offset);
+			}
+			rs = pStmt.executeQuery();
+			
+			while (rs.next()) {
+				DeliveryDTO dDto = new DeliveryDTO();
+				dDto.setDid(rs.getInt(1));
+				dDto.setDcomId(rs.getInt(2));
+				dDto.setDinvId(rs.getInt(3));
+				dDto.setDdate(rs.getString(4).substring(0, 16));
+				dDto.setDstatus(rs.getInt(5));
+				dDto.setDname(rs.getString(6));
+				dDto.setDaddr(rs.getString(7));
+				dDto.setDcomName(rs.getString(8));
+				switch(rs.getInt(5)) {
+					case DELIVERY_READY:
+						dDto.setDstatusName("대기"); break;
+					case DELIVERY_EXECUTED:
+						dDto.setDstatusName("실행"); break;
+					case DELIVERY_CONFIRMED:
+						dDto.setDstatusName("확정"); break;
+					default:
+				}
+				dList.add(dDto);
+				LOG.trace(dDto.toString());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return dList;
+	}
+	
 	public List<DeliveryDTO> getDeliveryListByDate(String date) {
 		conn = DBManager.getConnection();
 		String query = "select d.did, d.dcomId, d.dinvId, d.ddate, d.dstatus, v.vname, v.vaddr, c.cname " + 
