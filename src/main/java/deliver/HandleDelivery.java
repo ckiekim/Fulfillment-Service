@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import admin.*;
+import inventory.*;
 import util.*;
 
 public class HandleDelivery {
@@ -33,6 +34,25 @@ public class HandleDelivery {
 			DeliveryDTO dDto = new DeliveryDTO(logisId, vDto.getVid(), date, DeliveryDAO.DELIVERY_EXECUTED);
 			dDao.insertDelivery(dDto);
 			LOG.trace(dDto.toString());
+		}
+	}
+	
+	// 확정을 클릭하면 상태를 DELIVERY_CONFIRMED로 바꾸고 재고 수량을 변경시킴
+	public void confirmDelivery(List<DeliveryDTO> dList) {
+		DeliveryDAO dDao = new DeliveryDAO();
+		SoldProductDAO sDao = new SoldProductDAO();
+		InventoryDAO iDao = new InventoryDAO();
+		
+		for (DeliveryDTO dDto: dList) {
+			dDto.setDstatus(DeliveryDAO.DELIVERY_CONFIRMED);
+			dDao.updateDeliveryStatus(dDto);
+			List<SoldProductDTO> sList = sDao.getSoldProducts(dDto.getDinvId());
+			for (SoldProductDTO sDto: sList) {
+				InventoryDTO iDto = iDao.getInventoryByProduct(sDto.getSprodId());
+				iDto.setIoutward(iDto.getIoutward() + sDto.getSquantity());
+				iDto.setIcurrent(iDto.getIcurrent() - sDto.getSquantity());
+				iDao.updateInventory(iDto);
+			}
 		}
 	}
 }

@@ -11,6 +11,7 @@ public class PurchaseDTO {
 	private String rprodName;
 	private int rpstock;
 	private String rcomName;
+	private String rstatusName;
 	
 	public PurchaseDTO() {
 	}
@@ -87,10 +88,16 @@ public class PurchaseDTO {
 	public void setRcomName(String rcomName) {
 		this.rcomName = rcomName;
 	}
+	public String getRstatusName() {
+		return rstatusName;
+	}
+	public void setRstatusName(String rstatusName) {
+		this.rstatusName = rstatusName;
+	}
 	@Override
 	public String toString() {
 		return "PurchaseDTO [rid=" + rid + ", rcomId=" + rcomId + ", rinvId=" + rinvId + ", rprodId=" + rprodId
 				+ ", rquantity=" + rquantity + ", rdate=" + rdate + ", rstatus=" + rstatus + ", rprodName=" + rprodName
-				+ ", rpstock=" + rpstock + ", rcomName=" + rcomName + "]";
+				+ ", rpstock=" + rpstock + ", rcomName=" + rcomName + ", rstatusName=" + rstatusName + "]";
 	}
 }

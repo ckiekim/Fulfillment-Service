@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import admin.*;
+import inventory.*;
 import util.HandleDate;
 
 public class HandlePurchase {
@@ -50,6 +51,20 @@ public class HandlePurchase {
 				vDto.setVstatus(InvoiceDAO.INVOICE_DELAY_READY);
 				vDao.updateInvoice(vDto);
 			}
+		}
+	}
+	
+	// 확정을 클릭하면 상태를 PURCHASE_CONFIRMED로 바꾸고 재고 수량을 변경시킴
+	public void confirmPurchase(List<PurchaseDTO> rList) {
+		PurchaseDAO rDao = new PurchaseDAO();
+		InventoryDAO iDao = new InventoryDAO();
+		for (PurchaseDTO rDto: rList) {
+			rDto.setRstatus(PurchaseDAO.PURCHASE_CONFIRMED);
+			rDao.updatePurchaseStatus(rDto);
+			InventoryDTO iDto = iDao.getInventoryByProduct(rDto.getRprodId());
+			iDto.setIinward(iDto.getIinward() + rDto.getRquantity());
+			iDto.setIcurrent(iDto.getIcurrent() + rDto.getRquantity());
+			iDao.updateInventory(iDto);
 		}
 	}
 }

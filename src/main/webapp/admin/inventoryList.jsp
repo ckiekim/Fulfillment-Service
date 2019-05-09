@@ -18,72 +18,79 @@
 		<div class="row" style="margin-top: 100px">
 			<div class="col-md-2">
 				<div class="list-group">
-					<a href="purchaseServlet?action=list" class="list-group-item">구매요청 목록</a>
-					<a href="#" class="list-group-item active">일별 구매내역</a>
-					<a href="#" class="list-group-item">월별 구매내역</a>
+					<a href="adminServlet?action=userList" class="list-group-item">사용자 조회</a>
+					<a href="adminServlet?action=productList&category=가전" class="list-group-item">상품 조회</a>
+					<a href="adminServlet?action=invoice&page=1" class="list-group-item">주문</a>
+					<a href="adminServlet?action=deliver" class="list-group-item">출고</a>
+					<a href="adminServlet?action=purchase" class="list-group-item">입고</a>
+					<a href="#" class="list-group-item active">재고</a>
 					<a href="#" class="list-group-item">정산</a>
 				</div>
 			</div>
 			<div class="col-md-10">
 				<div class="row" style="margin-left: 30px">
-					<div class="col-md-7"><h3>일별 구매내역 조회</h3></div>
+					<div class="col-md-7"><h3>재고 조회</h3></div>
 					<div class="col-md-5"><br>
-						<form action="purchaseServlet?action=purchaseList" class="form-horizontal" method="post">
+						<form action="adminServlet?action=inventoryMonth" class="form-horizontal" method="post">
 							<div class="form-group">
-								<label class="control-label">날짜:&nbsp;&nbsp;</label>
-								<input type="text" name="datePurchase" id="datepicker1">&nbsp;&nbsp;
+								<label class="control-label">년월:&nbsp;&nbsp;</label>
+								<input type="text" name="month" id="monthpicker">&nbsp;&nbsp;
 								<input class="btn btn-primary btn-sm" type="submit" value="검색">
 							</div>
 						</form>
 					</div>
 					<div class="col-md-12"><hr></div>
-					<div class="col-md-9">
+					<div class="col-md-10">
 						<div class="panel panel-primary">
 							<table class="table table-striped table-condensed">
 								<tr class="active">
 									<th class="col-md-1">ID</th>
 									<th class="col-md-1">상품ID</th>
 									<th class="col-md-2">상품명</th>
-									<th class="col-md-1">발주수량</th>
-									<th class="col-md-2">입고일시</th>
-									<th class="col-md-1">상태</th>
-									<th class="col-md-1">재고수량</th>
+									<th class="col-md-1" style="text-align:center;">가격</th>
+									<th class="col-md-1"></th>
+									<th class="col-md-1">기초</th>
+									<th class="col-md-1">입고</th>
+									<th class="col-md-1">출고</th>
+									<th class="col-md-1">현재</th>
 								</tr>
-								<c:set var="rList" value="${requestScope.purchaseSuppliedList}"/>
-								<c:forEach var="purchase" items="${rList}">
+								<c:set var="iList" value="${requestScope.inventoryList}"/>
+								<c:forEach var="iDto" items="${iList}">
 								<tr>
-									<td><a href=#>${purchase.rid}</a></td>
-									<td>${purchase.rprodId}</td>
-									<td>${purchase.rprodName}</td>
-									<td>${purchase.rquantity}</td>
-									<td>${purchase.rdate}</td>
-									<td>${purchase.rstatusName}</td>
-									<td>${purchase.rpstock}</td>
+									<td>${iDto.iid}</td>
+									<td>${iDto.iprodId}</td>
+									<td>${iDto.iprodName}</td>
+									<td style="text-align:right;">${iDto.iprodPrice}</td>
+									<td></td>
+									<td>${iDto.ibase}</td>
+									<td>${iDto.iinward}</td>
+									<td>${iDto.ioutward}</td>
+									<td>${iDto.icurrent}</td>
 								</tr>
 								</c:forEach>
-<%-- 								<tr align="center"><td colspan="7">
+								<tr align="center"><td colspan="9">
 									<c:set var="pList" value="${requestScope.pageList}"/>
 									<nav>
 									  <ul class="pagination">
 									    <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
 											<c:forEach var="page" items="${pList}">
 												<c:choose>
-													<c:when test="${currentInvoicePage == page}">
+													<c:when test="${currentInventoryPage == page}">
 														<li class="active"><a href="#">${page}<span class="sr-only">(current)</span></a></li>
 													</c:when>
 													<c:otherwise>
-														<li><a href="adminServlet?action=invoice&page=${page}">${page}</a></li>
+														<li><a href="adminServlet?action=inventory&page=${page}">${page}</a></li>
 													</c:otherwise>
 												</c:choose>
 											</c:forEach>
 									    <li class="disabled"><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
 									  </ul>
 									</nav>
-								</td></tr> --%>
+								</td></tr>
 							</table>
 						</div>
 					</div>
-					<div class="col-md-3">
+					<div class="col-md-2">
 				</div>
 			</div>
 		</div>
@@ -94,22 +101,23 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	<script src="../js/bootstrap.min.js"></script>
 	<script src="../js/jquery-ui.min.js"></script>
+	<script src="../js/jquery.mtz.monthpicker.js"></script>
 	<script>
-	    $.datepicker.setDefaults({
-	        dateFormat: 'yy-mm-dd',
-	        prevText: '이전 달',
-	        nextText: '다음 달',
-	        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-	        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-	        dayNames: ['일', '월', '화', '수', '목', '금', '토'],
-	        dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
-	        dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
-	        showMonthAfterYear: true,
-	        yearSuffix: '년'
-	    });
-	    $(function() {
-	        $("#datepicker1").datepicker();
-	    });
+	    /* MonthPicker 옵션 */
+	    var currentYear = (new Date()).getFullYear();
+	    var startYear = currentYear-5;
+	    var options = {
+	            startYear: startYear,
+	            finalYear: currentYear,
+	            pattern: 'yyyy-mm',
+	            monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월']
+	    };
+		/* MonthPicker Set */
+		$('#monthpicker').monthpicker(options);
+		/* 버튼 클릭시 MonthPicker Show */
+		$('#btn_monthpicker').bind('click', function () {
+			$('#monthpicker').monthpicker('show');
+		});
 	</script>
 </body>
 </html>

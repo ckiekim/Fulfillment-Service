@@ -19,11 +19,11 @@
 			<div class="col-md-2">
 				<div class="list-group">
 					<a href="adminServlet?action=userList" class="list-group-item">사용자 조회</a>
-					<a href="adminServlet?action=productList&category=가전" class="list-group-item">제품 조회</a>
+					<a href="adminServlet?action=productList&category=가전" class="list-group-item">상품 조회</a>
 					<a href="adminServlet?action=invoice&page=1" class="list-group-item">주문</a>
 					<a href="adminServlet?action=deliver" class="list-group-item">출고</a>
 					<a href="#" class="list-group-item active">입고</a>
-					<a href="#" class="list-group-item">재고</a>
+					<a href="adminServlet?action=inventory&page=1" class="list-group-item">재고</a>
 					<a href="#" class="list-group-item">정산</a>
 				</div>
 			</div>
@@ -61,7 +61,7 @@
 									<td>${rDto.rquantity}</td>
 									<td>${rDto.rcomName}</td>
 									<td>${rDto.rdate}</td>
-									<td>${rDto.rstatus}</td>
+									<td>${rDto.rstatusName}</td>
 								</tr>
 								</c:forEach>
 <%-- 								<tr align="center"><td colspan="7">

@@ -12,6 +12,7 @@ public class InvoiceDTO {
 	private int vlogisId;
 	private String vcomName;
 	private String vlogisName;
+	private String vstatusName;
 	
 	public InvoiceDTO() {
 	}
@@ -89,10 +90,16 @@ public class InvoiceDTO {
 	public void setVlogisName(String vlogisName) {
 		this.vlogisName = vlogisName;
 	}
+	public String getVstatusName() {
+		return vstatusName;
+	}
+	public void setVstatusName(String vstatusName) {
+		this.vstatusName = vstatusName;
+	}
 	@Override
 	public String toString() {
 		return "InvoiceDTO [vid=" + vid + ", vname=" + vname + ", vtel=" + vtel + ", vaddr=" + vaddr + ", vcomId="
 				+ vcomId + ", vdate=" + vdate + ", vtotal=" + vtotal + ", vstatus=" + vstatus + ", vlogisId=" + vlogisId
-				+ ", vcomName=" + vcomName + ", vlogisName=" + vlogisName + "]";
+				+ ", vcomName=" + vcomName + ", vlogisName=" + vlogisName + ", vstatusName=" + vstatusName + "]";
 	}
 }

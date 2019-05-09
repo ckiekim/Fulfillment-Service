@@ -43,6 +43,19 @@ public class InvoiceDAO {
 				vDto.setVtotal(rs.getInt(7));
 				vDto.setVstatus(rs.getInt(8));
 				vDto.setVlogisId(rs.getInt(9));
+				switch(rs.getInt(8)) {
+					case INVOICE_READY:
+						vDto.setVstatusName("대기"); break;
+					case INVOICE_DELAYED:
+						vDto.setVstatusName("지연"); break;
+					case INVOICE_RELEASED:
+						vDto.setVstatusName("실행"); break;
+					case INVOICE_CONFIRMED:
+						vDto.setVstatusName("확정"); break;
+					case INVOICE_DELAY_READY:
+						vDto.setVstatusName("우선대기"); break;
+					default:
+				}
 				vList.add(vDto);
 				LOG.trace(vDto.toString());
 			}
@@ -92,6 +105,19 @@ public class InvoiceDAO {
 				vDto.setVstatus(rs.getInt(9));
 				vDto.setVlogisId(rs.getInt(10));
 				vDto.setVlogisName(rs.getString(11));
+				switch(rs.getInt(9)) {
+					case INVOICE_READY:
+						vDto.setVstatusName("대기"); break;
+					case INVOICE_DELAYED:
+						vDto.setVstatusName("지연"); break;
+					case INVOICE_RELEASED:
+						vDto.setVstatusName("실행"); break;
+					case INVOICE_CONFIRMED:
+						vDto.setVstatusName("확정"); break;
+					case INVOICE_DELAY_READY:
+						vDto.setVstatusName("우선대기"); break;
+					default:
+				}
 				vList.add(vDto);
 				LOG.trace(vDto.toString());
 			}
@@ -173,6 +199,19 @@ public class InvoiceDAO {
 				vDto.setVstatus(rs.getInt(9));
 				vDto.setVlogisId(rs.getInt(10));
 				vDto.setVlogisName(rs.getString(11));
+				switch(rs.getInt(9)) {
+					case INVOICE_READY:
+						vDto.setVstatusName("대기"); break;
+					case INVOICE_DELAYED:
+						vDto.setVstatusName("지연"); break;
+					case INVOICE_RELEASED:
+						vDto.setVstatusName("실행"); break;
+					case INVOICE_CONFIRMED:
+						vDto.setVstatusName("확정"); break;
+					case INVOICE_DELAY_READY:
+						vDto.setVstatusName("우선대기"); break;
+					default:
+				}
 				LOG.debug(vDto.toString());
 			}
 		} catch (Exception e) {

@@ -9,6 +9,7 @@ public class DeliveryDTO {
 	private String dname;
 	private String daddr;
 	private String dcomName;
+	private String dstatusName;
 	
 	public DeliveryDTO() {
 	}
@@ -67,9 +68,16 @@ public class DeliveryDTO {
 	public void setDcomName(String dcomName) {
 		this.dcomName = dcomName;
 	}
+	public String getDstatusName() {
+		return dstatusName;
+	}
+	public void setDstatusName(String dstatusName) {
+		this.dstatusName = dstatusName;
+	}
 	@Override
 	public String toString() {
 		return "DeliveryDTO [did=" + did + ", dcomId=" + dcomId + ", dinvId=" + dinvId + ", ddate=" + ddate
-				+ ", dstatus=" + dstatus + ", dname=" + dname + ", daddr=" + daddr + ", dcomName=" + dcomName + "]";
+				+ ", dstatus=" + dstatus + ", dname=" + dname + ", daddr=" + daddr + ", dcomName=" + dcomName
+				+ ", dstatusName=" + dstatusName + "]";
 	}
 }

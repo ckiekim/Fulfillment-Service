@@ -159,7 +159,7 @@ public class UserDAO {
 				se.printStackTrace();
 			}
 		}
-		LOG.debug(uDto.toString());
+		LOG.trace(uDto.toString());
 		return uDto;
 	}
 	

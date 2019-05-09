@@ -52,7 +52,7 @@
 									<td>${purchase.rprodName}</td>
 									<td>${purchase.rquantity}</td>
 									<td>${purchase.rdate}</td>
-									<td>${purchase.rstatus}</td>
+									<td>${purchase.rstatusName}</td>
 									<td>${purchase.rpstock}</td>
 								</tr>
 								</c:forEach>

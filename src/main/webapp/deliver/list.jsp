@@ -52,7 +52,7 @@
 									<td>${invoice.vaddr}</td>
 									<td>${invoice.vdate}</td>
 									<td>${invoice.vtotal}</td>
-									<td>${invoice.vstatus}</td>
+									<td>${invoice.vstatusName}</td>
 								</tr>
 								</c:forEach>
 <%-- 								<tr align="center"><td colspan="7">

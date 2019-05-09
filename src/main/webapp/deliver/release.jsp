@@ -56,7 +56,7 @@
 									<td>${delivery.dname}</td>
 									<td>${delivery.daddr}</td>
 									<td>${delivery.ddate}</td>
-									<td>${delivery.dstatus}</td>
+									<td>${delivery.dstatusName}</td>
 								</tr>
 								</c:forEach>
 <%-- 								<tr align="center"><td colspan="7">

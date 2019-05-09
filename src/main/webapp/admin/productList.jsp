@@ -18,21 +18,21 @@
 			<div class="col-md-2">
 				<div class="list-group">
 					<a href="adminServlet?action=userList" class="list-group-item">사용자 조회</a>
-					<a href="#" class="list-group-item active">제품 조회</a>
+					<a href="#" class="list-group-item active">상품 조회</a>
 					<a href="adminServlet?action=invoice&page=1" class="list-group-item">주문</a>
-					<a href="#" class="list-group-item">출고</a>
-					<a href="#" class="list-group-item">입고</a>
-					<a href="#" class="list-group-item">재고</a>
+					<a href="adminServlet?action=deliver" class="list-group-item">출고</a>
+					<a href="adminServlet?action=purchase" class="list-group-item">입고</a>
+					<a href="adminServlet?action=inventory&page=1" class="list-group-item">재고</a>
 					<a href="#" class="list-group-item">정산</a>
 				</div>
 			</div>
 			<div class="col-md-10">
 				<div class="row" style="margin-left: 30px">
-					<div class="col-md-12"><h3>제품 조회</h3></div>
+					<div class="col-md-12"><h3>상품 조회</h3></div>
 					<div class="col-md-12"><hr></div>
 					<div class="col-md-10">
 						<div class="panel panel-primary">
-							<table class="table table-striped">
+							<table class="table table-striped table-condensed">
 								<tr class="active">
 									<th class="col-md-2">품목코드</th>
 									<th class="col-md-3">제품명</th>
@@ -51,7 +51,7 @@
 									<td>${product.pcategory}</td>
 								</tr>
 								</c:forEach>
-								<tr align="center"><td colspan="5">
+								<tr align="center"><td colspan="5"><br>
 									<div class="btn-group">
 										<button type="button" class="btn btn-primary">카테고리</button>
 										<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -63,7 +63,7 @@
 										    <li><a href="adminServlet?action=productList&category=스포츠">스포츠</a></li>
 										    <li><a href="adminServlet?action=productList&category=식품">식품</a></li>
 										</ul>
-									</div>
+									</div><br><br>
 								</td></tr>
 							</table>
 						</div>

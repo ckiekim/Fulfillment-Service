@@ -69,6 +69,16 @@ create table purchases (
   foreign key(rproId) references products(pid)
 ) auto_increment=101 default charset=utf8;
 
+create table inventories (
+  iid int unsigned not null auto_increment primary key,
+  iprodId int unsigned not null,
+  ibase int default 0,
+  iinward int default 0,
+  ioutward int default 0,
+  icurrent int default 0,
+  foreign key(iproId) references products(pid)
+) auto_increment=1001;
+
 insert into companies values
 (1001, '이젠풀필먼트', 1, '042-345-6780', '042-345-6790', 'efs@ezen.com'),
 (1002, '경기물류', 2, '031-234-5670', '031-234-5680', 'logis1@klc.com'),
@@ -83,3 +93,13 @@ insert into companies values
 (1011, '헤이마트몰', 4, '02-8765-1230', '02-8765-1240', 'op@heymart.com'),
 (1012, '이젠쇼핑몰', 4, '02-3412-2580', '02-3412-2590', 'op@ezen.com'),
 (1013, '한밭쇼핑몰', 4, '042-365-3650', '042-365-3660', 'op@hanbat.com');
+
+// products.csv 파일 처리
+
+insert into inventories(iprodId, ibase, icurrent) values
+(3001, 30, 30),(3002, 30, 30),(3003, 30, 30),(3004, 30, 30),(3005, 30, 30),
+(3006, 30, 30),(3007, 30, 30),(3008, 30, 30),(3009, 30, 30),(3010, 30, 30),
+(4001, 50, 50),(4002, 50, 50),(4003, 50, 50),(4004, 50, 50),(4005, 50, 50),
+(4006, 50, 50),(4007, 50, 50),(4008, 50, 50),(4009, 50, 50),(4010, 50, 50),
+(5001, 20, 20),(5002, 20, 20),(5003, 20, 20),(5004, 20, 20),(5005, 20, 20),
+(5006, 20, 20),(5007, 20, 20),(5008, 20, 20),(5009, 20, 20),(5010, 20, 20);

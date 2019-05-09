@@ -18,7 +18,7 @@
 			<div class="col-md-2">
 				<div class="list-group">
 					<a href="adminServlet?action=userList" class="list-group-item">사용자 조회</a>
-					<a href="adminServlet?action=productList&category=가전" class="list-group-item">제품 조회</a>
+					<a href="adminServlet?action=productList&category=가전" class="list-group-item">상품 조회</a>
 					<a href="adminServlet?action=invoice&page=${currentInvoicePage}" class="list-group-item">주문</a>
 					<a href="#" class="list-group-item">출고</a>
 					<a href="#" class="list-group-item">입고</a>
@@ -35,7 +35,7 @@
 						<div class="panel panel-primary">
 							<c:set var="vDto" value="${requestScope.invoiceDTO}"/>
 							<div class="panel-heading">
-								<div class="panel-title">주문번호: ${vDto.vid},&nbsp;&nbsp;처리상태: ${vDto.vstatus}</div>
+								<div class="panel-title">주문번호: ${vDto.vid},&nbsp;&nbsp;처리상태: ${vDto.vstatusName}</div>
 							</div>
 							<div class="panel-body">
 								주문일자:&nbsp;&nbsp;${vDto.vdate}<br>

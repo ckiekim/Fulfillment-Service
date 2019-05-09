@@ -10,8 +10,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import admin.InvoiceDAO;
-import admin.InvoiceDTO;
+import admin.*;
 import util.DBManager;
 
 public class PurchaseDAO {
@@ -48,6 +47,15 @@ public class PurchaseDAO {
 				rDto.setRstatus(rs.getInt(7));
 				rDto.setRpstock(rs.getInt(8));
 				rDto.setRcomName(rs.getString(9));
+				switch(rs.getInt(7)) {
+					case PURCHASE_READY:
+						rDto.setRstatusName("대기"); break;
+					case PURCHASE_SUPPLIED:
+						rDto.setRstatusName("실행"); break;
+					case PURCHASE_CONFIRMED:
+						rDto.setRstatusName("확정"); break;
+					default:
+				}
 				rList.add(rDto);
 				LOG.trace(rDto.toString());
 			}
@@ -87,6 +95,15 @@ public class PurchaseDAO {
 				rDto.setRstatus(rs.getInt(7));
 				rDto.setRpstock(rs.getInt(8));
 				rDto.setRcomName(rs.getString(9));
+				switch(rs.getInt(7)) {
+					case PURCHASE_READY:
+						rDto.setRstatusName("대기"); break;
+					case PURCHASE_SUPPLIED:
+						rDto.setRstatusName("실행"); break;
+					case PURCHASE_CONFIRMED:
+						rDto.setRstatusName("확정"); break;
+					default:
+				}
 				rList.add(rDto);
 				LOG.trace(rDto.toString());
 			}
@@ -126,6 +143,15 @@ public class PurchaseDAO {
 					rDto.setRdate(rs.getString(6).substring(0, 16));
 				rDto.setRstatus(rs.getInt(7));
 				rDto.setRpstock(rs.getInt(8));
+				switch(rs.getInt(7)) {
+					case PURCHASE_READY:
+						rDto.setRstatusName("대기"); break;
+					case PURCHASE_SUPPLIED:
+						rDto.setRstatusName("실행"); break;
+					case PURCHASE_CONFIRMED:
+						rDto.setRstatusName("확정"); break;
+					default:
+				}
 				rList.add(rDto);
 				LOG.debug(rDto.toString());
 			}
@@ -164,6 +190,15 @@ public class PurchaseDAO {
 					rDto.setRdate(rs.getString(6).substring(0, 16));
 				rDto.setRstatus(rs.getInt(7));
 				rDto.setRpstock(rs.getInt(8));
+				switch(rs.getInt(7)) {
+					case PURCHASE_READY:
+						rDto.setRstatusName("대기"); break;
+					case PURCHASE_SUPPLIED:
+						rDto.setRstatusName("실행"); break;
+					case PURCHASE_CONFIRMED:
+						rDto.setRstatusName("확정"); break;
+					default:
+				}
 				rList.add(rDto);
 				LOG.debug(rDto.toString());
 			}

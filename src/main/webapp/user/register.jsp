@@ -18,6 +18,7 @@
 			<div class="col-md-1"></div>
 			<div class="col-md-10">
 				<div class="jumbotron">
+					<img src="../img/EzenLogo.png"><br><br><br>
 					<p><h2>사용자 등록</h2></p>
 					<p><h5>Ezen Fulfillment System을 이용하려면 사용자 등록을 해주세요.</h5></p>
 				</div><br><br>

@@ -15,6 +15,7 @@
 			<div class="col-md-1"></div>
 			<div class="col-md-10">
 				<div class="jumbotron">
+					<img src="../img/EzenLogo.png"><br><br><br>
 					<p><h2>로그인</h2></p>
 					<p><h5>Ezen Fulfillment System을 이용하려면 로그인을 해주세요.</h5></p>
 				</div><br><br>
@@ -39,7 +40,7 @@
 					</div>
 				</form>
 				<div class="col-md-offset-4 col-md-6">
-					<button class="btn btn-primary" type="button" onclick="location.href='userServlet?action=prepareForm'">회원 가입</button>
+					<button class="btn btn-primary" type="button" onclick="location.href='userServlet?action=prepareForm'">사용자 등록</button>
 				</div>
 			</div>
 			<div class="col-md-1"></div>

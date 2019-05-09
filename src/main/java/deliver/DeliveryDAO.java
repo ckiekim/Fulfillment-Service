@@ -105,6 +105,15 @@ public class DeliveryDAO {
 				dDto.setDname(rs.getString(6));
 				dDto.setDaddr(rs.getString(7));
 				dDto.setDcomName(rs.getString(8));
+				switch(rs.getInt(5)) {
+					case DELIVERY_READY:
+						dDto.setDstatusName("대기"); break;
+					case DELIVERY_EXECUTED:
+						dDto.setDstatusName("실행"); break;
+					case DELIVERY_CONFIRMED:
+						dDto.setDstatusName("확정"); break;
+					default:
+				}
 				dList.add(dDto);
 				LOG.trace(dDto.toString());
 			}
@@ -142,6 +151,15 @@ public class DeliveryDAO {
 				dDto.setDname(rs.getString(6));
 				dDto.setDaddr(rs.getString(7));
 				dDto.setDcomName(rs.getString(8));
+				switch(rs.getInt(5)) {
+					case DELIVERY_READY:
+						dDto.setDstatusName("대기"); break;
+					case DELIVERY_EXECUTED:
+						dDto.setDstatusName("실행"); break;
+					case DELIVERY_CONFIRMED:
+						dDto.setDstatusName("확정"); break;
+					default:
+				}
 				dList.add(dDto);
 				LOG.trace(dDto.toString());
 			}
@@ -178,6 +196,15 @@ public class DeliveryDAO {
 				dDto.setDstatus(rs.getInt(5));
 				dDto.setDname(rs.getString(6));
 				dDto.setDaddr(rs.getString(7));
+				switch(rs.getInt(5)) {
+					case DELIVERY_READY:
+						dDto.setDstatusName("대기"); break;
+					case DELIVERY_EXECUTED:
+						dDto.setDstatusName("실행"); break;
+					case DELIVERY_CONFIRMED:
+						dDto.setDstatusName("확정"); break;
+					default:
+				}
 				dList.add(dDto);
 				LOG.trace(dDto.toString());
 			}
@@ -216,6 +243,19 @@ public class DeliveryDAO {
 				vDto.setVtotal(rs.getInt(7));
 				vDto.setVstatus(rs.getInt(8));
 				vDto.setVlogisId(rs.getInt(9));
+				switch(rs.getInt(8)) {
+					case InvoiceDAO.INVOICE_READY:
+						vDto.setVstatusName("대기"); break;
+					case InvoiceDAO.INVOICE_DELAYED:
+						vDto.setVstatusName("지연"); break;
+					case InvoiceDAO.INVOICE_RELEASED:
+						vDto.setVstatusName("실행"); break;
+					case InvoiceDAO.INVOICE_CONFIRMED:
+						vDto.setVstatusName("확정"); break;
+					case InvoiceDAO.INVOICE_DELAY_READY:
+						vDto.setVstatusName("우선대기"); break;
+					default:
+				}
 				vList.add(vDto);
 				LOG.trace(vDto.toString());
 			}
