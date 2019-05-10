@@ -66,7 +66,7 @@
 									    <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
 											<c:forEach var="page" items="${pList}">
 												<c:choose>
-													<c:when test="${currentDeliveryPage == page}">
+													<c:when test="${requestScope.currentPage == page}">
 														<li class="active"><a href="#">${page}<span class="sr-only">(current)</span></a></li>
 													</c:when>
 													<c:otherwise>

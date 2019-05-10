@@ -22,9 +22,9 @@
 			</div>
 			<div class="col-md-10">
 				<div class="row" style="margin-left: 30px">
-					<div class="col-md-7"><h3>재고 조회 : ${requestScope.Month}</h3></div>
+					<div class="col-md-7"><h3>월별 구매내역 : ${requestScope.Month}</h3></div>
 					<div class="col-md-5"><br>
-						<form action="adminServlet?action=inventoryMonth" class="form-horizontal" method="post">
+						<form action="adminServlet?action=purchaseMonthly&page=1" class="form-horizontal" method="post">
 							<div class="form-group">
 								<label class="control-label">년월:&nbsp;&nbsp;</label>
 								<input type="text" name="month" id="monthpicker">&nbsp;&nbsp;
@@ -40,29 +40,44 @@
 									<th class="col-md-1">ID</th>
 									<th class="col-md-1">상품ID</th>
 									<th class="col-md-2">상품명</th>
-									<th class="col-md-1" style="text-align:center;">가격</th>
-									<th class="col-md-1"></th>
-									<th class="col-md-1">기초</th>
-									<th class="col-md-1">입고</th>
-									<th class="col-md-1">출고</th>
-									<th class="col-md-1">기말</th>
+									<th class="col-md-1">발주수량</th>
+									<th class="col-md-2">공급사</th>
+									<th class="col-md-2">입고일시</th>
+									<th class="col-md-1">상태</th>
 								</tr>
-								<c:set var="iList" value="${requestScope.inventoryList}"/>
-								<c:forEach var="iDto" items="${iList}">
+								<c:set var="rList" value="${requestScope.purchaseList}"/>
+								<c:forEach var="rDto" items="${rList}">
 								<tr>
-									<td>${iDto.iid}</td>
-									<td>${iDto.iprodId}</td>
-									<td>${iDto.iprodName}</td>
-									<td style="text-align:right;">${iDto.iprodPrice}</td>
-									<td></td>
-									<td>${iDto.ibase}</td>
-									<td>${iDto.iinward}</td>
-									<td>${iDto.ioutward}</td>
-									<td>${iDto.icurrent}</td>
+									<td><a href=#>${rDto.rid}</a></td>
+									<td>${rDto.rprodId}</td>
+									<td>${rDto.rprodName}</td>
+									<td>${rDto.rquantity}</td>
+									<td>${rDto.rcomName}</td>
+									<td>${rDto.rdate}</td>
+									<td>${rDto.rstatusName}</td>
 								</tr>
 								</c:forEach>
+	 								<tr align="center"><td colspan="7">
+									<c:set var="pList" value="${requestScope.pageList}"/>
+									<nav>
+									  <ul class="pagination">
+									    <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+											<c:forEach var="page" items="${pList}">
+												<c:choose>
+													<c:when test="${requestScope.currentPage == page}">
+														<li class="active"><a href="#">${page}<span class="sr-only">(current)</span></a></li>
+													</c:when>
+													<c:otherwise>
+														<li><a href="adminServlet?action=purchaseMonthly&page=${page}">${page}</a></li>
+													</c:otherwise>
+												</c:choose>
+											</c:forEach>
+									    <li class="disabled"><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+									  </ul>
+									</nav>
+								</td></tr>
 							</table>
-						</div><br><br><br><p> </p>
+						</div>
 					</div>
 					<div class="col-md-2">
 				</div>

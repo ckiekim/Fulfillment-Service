@@ -1,6 +1,7 @@
 package purchase;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -40,6 +41,10 @@ public class PurchaseProc extends HttpServlet {
 		ProductDAO pDao = new ProductDAO();
 		PurchaseDAO rDao = new PurchaseDAO();  
 		List<PurchaseDTO> rList = null;
+		HandleDate hDate = null;
+		String date = null;
+		int curSupplyPage = 1;
+		List<String> pageList = new ArrayList<String>();
 		
 		HttpSession session = request.getSession();
 		String action = request.getParameter("action");
@@ -66,17 +71,43 @@ public class PurchaseProc extends HttpServlet {
 			hp.processPurchase(suppId);
 			response.sendRedirect("purchaseServlet?action=purchaseList");
 		}
-		else if (action.equals("purchaseList")) {	// 일별 구매목록 메뉴를 클릭했을 때
-			String date = request.getParameter("datePurchase");
+		else if (action.equals("purchaseList")) {	// 일별 공급내역 메뉴를 클릭했을 때
+			date = request.getParameter("datePurchase");
 			if (date == null) {
-				HandleDate hDate = new HandleDate();
+				hDate = new HandleDate();
 				date = hDate.getToday();
 			}
-			date += "%";
-			rList = rDao.getSuppliedListBySupplierAndDate(suppId, date);
+			LOG.trace(date);
+			rList = rDao.getSuppliedListBySupplierAndDate(suppId, date+"%");
 			request.setAttribute("purchaseSuppliedList", rList);
-			rd = request.getRequestDispatcher("purchased.jsp");
+			request.setAttribute("purchaseDate", date);
+			rd = request.getRequestDispatcher("supply.jsp");
 	        rd.forward(request, response);
+		}
+		else if (action.equals("purchaseMonthly")) {	// 월별 공급내역 메뉴를 클릭했을 때
+			if (!request.getParameter("page").equals("")) {
+				curSupplyPage = Integer.parseInt(request.getParameter("page"));
+			}
+			String month = request.getParameter("month");
+			if (month == null) {
+				hDate = new HandleDate();
+				month = hDate.getToday().substring(0, 7);
+			}
+			LOG.trace(month);
+			int count = rDao.getCountMonthly(suppId, month+"-01");
+			if (count == 0)			// 데이터가 없을 때 대비
+				count = 1;
+			int pageNo = (int)Math.ceil(count/10.0);
+			request.setAttribute("currentPage", curSupplyPage);
+			for (int i=1; i<=pageNo; i++) 
+				pageList.add(Integer.toString(i));
+			
+			rList = rDao.getSuppliedListByMonth(suppId, month+"-01", curSupplyPage);
+			request.setAttribute("purchaseSuppliedList", rList);
+			request.setAttribute("pageList", pageList);
+			request.setAttribute("purchaseMonth", month);
+			rd = request.getRequestDispatcher("supplyMonthly.jsp");
+			rd.forward(request, response);
 		}
 	}
 }

@@ -44,7 +44,7 @@ public class DeliveryProc extends HttpServlet {
 		List<DeliveryDTO> dList = null;
 		HandleDate hDate = null;
 		String date = null;
-		int curDeliveryPage = 0;
+		int curDeliveryPage = 1;
 		List<String> pageList = new ArrayList<String>();
 		
 		// 세션이 만료되었으면 다시 로그인하게 만들어 줌
@@ -82,9 +82,9 @@ public class DeliveryProc extends HttpServlet {
 				hDate = new HandleDate();
 				date = hDate.getToday();
 			}
-			date += "%";
-			dList = dDao.getDeliveryReleasedList(logisId, date);
+			dList = dDao.getDeliveryReleasedList(logisId, date+"%");
 			request.setAttribute("deliveryReleasedList", dList);
+			request.setAttribute("deliveryDate", date);
 			rd = request.getRequestDispatcher("release.jsp");
 	        rd.forward(request, response);
 		}
@@ -101,9 +101,7 @@ public class DeliveryProc extends HttpServlet {
 			if (count == 0)			// 데이터가 없을 때 대비
 				count = 1;
 			int pageNo = (int)Math.ceil(count/10.0);
-			if (curDeliveryPage > pageNo)	// 경계선에 걸렸을 때 대비
-				curDeliveryPage--;
-			session.setAttribute("currentDeliveryPage", curDeliveryPage);
+			request.setAttribute("currentPage", curDeliveryPage);
 			for (int i=1; i<=pageNo; i++) 
 				pageList.add(Integer.toString(i));
 			

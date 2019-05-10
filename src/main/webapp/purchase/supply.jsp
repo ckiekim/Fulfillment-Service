@@ -9,7 +9,7 @@
 	<!-- ==================================================================== -->
 	<title>Ezen Fulfillment System</title>
 	<link href="../css/bootstrap.min.css" rel="stylesheet">
-	<link href="../css/bootstrap.vertical-tabs.min.css" rel="stylesheet">
+	<link href="../css/jquery-ui.min.css" rel="stylesheet">
 </head>
 <body>
 	<%@ include file="../common/_top.jspf" %>
@@ -17,13 +17,24 @@
 	<div class="container-fluid">
 		<div class="row" style="margin-top: 100px">
 			<div class="col-md-2">
-				<%@ include file="../common/_admin_left.jspf" %>
+				<div class="list-group">
+					<a href="purchaseServlet?action=list" class="list-group-item">공급요청 목록</a>
+					<a href="#" class="list-group-item active">일별 공급내역</a>
+					<a href="purchaseServlet?action=purchaseMonthly&page=1" class="list-group-item">월별 공급내역</a>
+					<a href="#" class="list-group-item">정산</a>
+				</div>
 			</div>
 			<div class="col-md-10">
 				<div class="row" style="margin-left: 30px">
-					<div class="col-md-8"><h3>출고확정 대기목록</h3></div>
-					<div class="col-md-4"><br>
-						<a class="btn btn-primary" href="adminServlet?action=deliverConfirm" role="button">출고 확정</a>
+					<div class="col-md-7"><h3>일별 공급내역 : ${requestScope.purchaseDate}</h3></div>
+					<div class="col-md-5"><br>
+						<form action="purchaseServlet?action=purchaseList" class="form-horizontal" method="post">
+							<div class="form-group">
+								<label class="control-label">날짜:&nbsp;&nbsp;</label>
+								<input type="text" name="datePurchase" id="datepicker1">&nbsp;&nbsp;
+								<input class="btn btn-primary btn-sm" type="submit" value="검색">
+							</div>
+						</form>
 					</div>
 					<div class="col-md-12"><hr></div>
 					<div class="col-md-10">
@@ -31,21 +42,25 @@
 							<table class="table table-striped table-condensed">
 								<tr class="active">
 									<th class="col-md-1">ID</th>
-									<th class="col-md-1">주문자명</th>
-									<th class="col-md-3">주소</th>
-									<th class="col-md-2">출고일시</th>
-									<th class="col-md-2">운송회사</th>
+									<th class="col-md-1">상품ID</th>
+									<th class="col-md-2">상품명</th>
+									<th class="col-md-1">단가</th>
+									<th class="col-md-1">발주수량</th>
+									<th class="col-md-2">입고일시</th>
 									<th class="col-md-1">상태</th>
+									<th class="col-md-1">재고수량</th>
 								</tr>
-								<c:set var="dList" value="${requestScope.deliverList}"/>
-								<c:forEach var="dDto" items="${dList}">
+								<c:set var="rList" value="${requestScope.purchaseSuppliedList}"/>
+								<c:forEach var="purchase" items="${rList}">
 								<tr>
-									<td><a href=#>${dDto.did}</a></td>
-									<td>${dDto.dname}</td>
-									<td>${dDto.daddr}</td>
-									<td>${dDto.ddate}</td>
-									<td>${dDto.dcomName}</td>
-									<td>${dDto.dstatusName}</td>
+									<td><a href=#>${purchase.rid}</a></td>
+									<td>${purchase.rprodId}</td>
+									<td>${purchase.rprodName}</td>
+									<td>${purchase.rprice}</td>
+									<td>${purchase.rquantity}</td>
+									<td>${purchase.rdate}</td>
+									<td>${purchase.rstatusName}</td>
+									<td>${purchase.rpstock}</td>
 								</tr>
 								</c:forEach>
 <%-- 								<tr align="center"><td colspan="7">
@@ -80,5 +95,23 @@
 	<!-- ==================================================================== -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	<script src="../js/bootstrap.min.js"></script>
+	<script src="../js/jquery-ui.min.js"></script>
+	<script>
+	    $.datepicker.setDefaults({
+	        dateFormat: 'yy-mm-dd',
+	        prevText: '이전 달',
+	        nextText: '다음 달',
+	        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+	        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+	        dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+	        dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+	        dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+	        showMonthAfterYear: true,
+	        yearSuffix: '년'
+	    });
+	    $(function() {
+	        $("#datepicker1").datepicker();
+	    });
+	</script>
 </body>
 </html>

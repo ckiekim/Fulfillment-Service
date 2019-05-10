@@ -26,7 +26,7 @@
 			</div>
 			<div class="col-md-10">
 				<div class="row" style="margin-left: 30px">
-					<div class="col-md-7"><h3>출고처리 실행 조회</h3></div>
+					<div class="col-md-7"><h3>일별 출고내역</h3></div>
 					<div class="col-md-5"><br>
 						<form action="deliverServlet?action=releaseList" class="form-horizontal" method="post">
 							<div class="form-group">

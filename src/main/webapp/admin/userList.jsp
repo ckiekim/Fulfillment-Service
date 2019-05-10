@@ -17,24 +17,7 @@
 	<div class="container-fluid">
 		<div class="row" style="margin-top: 100px">
 			<div class="col-md-2">
-				<!-- Nav tabs -->
-				<ul class="nav nav-tabs tabs-left">
-					<li class="active"><a href="#" data-toggle="tab">사용자 조회</a></li>
-					<li><a href="adminServlet?action=productList&category=가전">상품 조회</a></li>
-					<li><a href="adminServlet?action=invoice&page=1">주문</a></li>
-					<li><a href="adminServlet?action=deliver">출고</a></li>
-					<li><a href="adminServlet?action=purchase">입고</a></li>
-					<li><a href="adminServlet?action=inventory&page=1">재고</a></li>
-					<li><a href="#" data-toggle="tab">정산</a></li>
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">출고 <span class="caret"></span></a>
-	<ul class="dropdown-menu" role="menu">
-		<li><a href="#">출고 확정 대기</a></li>
-		<li><a href="#">일별 출고 목록</a></li>
-		<li><a href="#">월별 출고 목록</a></li>
-	</ul>
-</li>
-				</ul>
+				<%@ include file="../common/_admin_left.jspf" %>
 			</div>
 			<div class="col-md-10">
 				<div class="row" style="margin-left: 30px">

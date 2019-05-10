@@ -9,7 +9,6 @@
 	<!-- ==================================================================== -->
 	<title>Ezen Fulfillment System</title>
 	<link href="../css/bootstrap.min.css" rel="stylesheet">
-	<link href="../css/bootstrap.vertical-tabs.min.css" rel="stylesheet">
 	<link href="../css/jquery-ui.min.css" rel="stylesheet">
 </head>
 <body>
@@ -18,18 +17,24 @@
 	<div class="container-fluid">
 		<div class="row" style="margin-top: 100px">
 			<div class="col-md-2">
-				<%@ include file="../common/_admin_left.jspf" %>
+				<div class="list-group">
+					<a href="purchaseServlet?action=list" class="list-group-item">공급요청 목록</a>
+					<a href="purchaseServlet?action=purchaseList" class="list-group-item">일별 공급내역</a>
+					<a href="#" class="list-group-item active">월별 공급내역</a>
+					<a href="#" class="list-group-item">정산</a>
+				</div>
 			</div>
 			<div class="col-md-10">
 				<div class="row" style="margin-left: 30px">
-					<div class="col-md-7"><h3>재고 조회 : ${requestScope.Month}</h3></div>
+					<div class="col-md-7"><h3>월별 공급내역 : ${requestScope.purchaseMonth}</h3></div>
 					<div class="col-md-5"><br>
-						<form action="adminServlet?action=inventoryMonth" class="form-horizontal" method="post">
+						<form action="purchaseServlet?action=purchaseMonthly&page=1" class="form-horizontal" method="post">
 							<div class="form-group">
 								<label class="control-label">년월:&nbsp;&nbsp;</label>
 								<input type="text" name="month" id="monthpicker">&nbsp;&nbsp;
 								<input class="btn btn-primary btn-sm" type="submit" value="검색">
 							</div>
+						</form>
 						</form>
 					</div>
 					<div class="col-md-12"><hr></div>
@@ -40,29 +45,46 @@
 									<th class="col-md-1">ID</th>
 									<th class="col-md-1">상품ID</th>
 									<th class="col-md-2">상품명</th>
-									<th class="col-md-1" style="text-align:center;">가격</th>
-									<th class="col-md-1"></th>
-									<th class="col-md-1">기초</th>
-									<th class="col-md-1">입고</th>
-									<th class="col-md-1">출고</th>
-									<th class="col-md-1">기말</th>
+									<th class="col-md-1">단가</th>
+									<th class="col-md-1">발주수량</th>
+									<th class="col-md-2">입고일시</th>
+									<th class="col-md-1">상태</th>
+									<th class="col-md-1">재고수량</th>
 								</tr>
-								<c:set var="iList" value="${requestScope.inventoryList}"/>
-								<c:forEach var="iDto" items="${iList}">
+								<c:set var="rList" value="${requestScope.purchaseSuppliedList}"/>
+								<c:forEach var="purchase" items="${rList}">
 								<tr>
-									<td>${iDto.iid}</td>
-									<td>${iDto.iprodId}</td>
-									<td>${iDto.iprodName}</td>
-									<td style="text-align:right;">${iDto.iprodPrice}</td>
-									<td></td>
-									<td>${iDto.ibase}</td>
-									<td>${iDto.iinward}</td>
-									<td>${iDto.ioutward}</td>
-									<td>${iDto.icurrent}</td>
+									<td><a href=#>${purchase.rid}</a></td>
+									<td>${purchase.rprodId}</td>
+									<td>${purchase.rprodName}</td>
+									<td>${purchase.rprice}</td>
+									<td>${purchase.rquantity}</td>
+									<td>${purchase.rdate}</td>
+									<td>${purchase.rstatusName}</td>
+									<td>${purchase.rpstock}</td>
 								</tr>
 								</c:forEach>
+	 								<tr align="center"><td colspan="8">
+									<c:set var="pList" value="${requestScope.pageList}"/>
+									<nav>
+									  <ul class="pagination">
+									    <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+											<c:forEach var="page" items="${pList}">
+												<c:choose>
+													<c:when test="${requestScope.currentPage == page}">
+														<li class="active"><a href="#">${page}<span class="sr-only">(current)</span></a></li>
+													</c:when>
+													<c:otherwise>
+														<li><a href="adminServlet?action=purchaseMonthly&page=${page}">${page}</a></li>
+													</c:otherwise>
+												</c:choose>
+											</c:forEach>
+									    <li class="disabled"><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+									  </ul>
+									</nav>
+								</td></tr>
 							</table>
-						</div><br><br><br><p> </p>
+						</div>
 					</div>
 					<div class="col-md-2">
 				</div>

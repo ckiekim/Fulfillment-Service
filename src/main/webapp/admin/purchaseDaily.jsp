@@ -9,6 +9,7 @@
 	<!-- ==================================================================== -->
 	<title>Ezen Fulfillment System</title>
 	<link href="../css/bootstrap.min.css" rel="stylesheet">
+	<link href="../css/bootstrap.vertical-tabs.min.css" rel="stylesheet">
 	<link href="../css/jquery-ui.min.css" rel="stylesheet">
 </head>
 <body>
@@ -17,19 +18,11 @@
 	<div class="container-fluid">
 		<div class="row" style="margin-top: 100px">
 			<div class="col-md-2">
-				<div class="list-group">
-					<a href="adminServlet?action=userList" class="list-group-item">사용자 조회</a>
-					<a href="adminServlet?action=productList&category=가전" class="list-group-item">상품 조회</a>
-					<a href="adminServlet?action=invoice&page=1" class="list-group-item">주문</a>
-					<a href="adminServlet?action=deliver" class="list-group-item">출고</a>
-					<a href="#" class="list-group-item active">입고</a>
-					<a href="adminServlet?action=inventory&page=1" class="list-group-item">재고</a>
-					<a href="#" class="list-group-item">정산</a>
-				</div>
+				<%@ include file="../common/_admin_left.jspf" %>
 			</div>
 			<div class="col-md-10">
 				<div class="row" style="margin-left: 30px">
-					<div class="col-md-7"><h3>일별 입고실적 조회</h3></div>
+					<div class="col-md-7"><h3>일별 구매내역 : ${requestScope.purchaseDate}</h3></div>
 					<div class="col-md-5"><br>
 						<form action="adminServlet?action=purchaseDaily" class="form-horizontal" method="post">
 							<div class="form-group">

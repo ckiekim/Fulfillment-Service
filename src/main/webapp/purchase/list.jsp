@@ -17,16 +17,16 @@
 		<div class="row" style="margin-top: 100px">
 			<div class="col-md-2">
 				<div class="list-group">
-					<a href="#" class="list-group-item active">구매요청 목록</a>
-					<a href="purchaseServlet?action=purchaseList" class="list-group-item">일별 구매내역</a>
-					<a href="#" class="list-group-item">월별 구매내역</a>
+					<a href="#" class="list-group-item active">공급요청 목록</a>
+					<a href="purchaseServlet?action=purchaseList" class="list-group-item">일별 공급내역</a>
+					<a href="purchaseServlet?action=purchaseMonthly&page=1" class="list-group-item">월별 공급내역</a>
 					<a href="#" class="list-group-item">정산</a>
 				</div>
 			</div>
 			<div class="col-md-10">
 				<div class="row" style="margin-left: 30px">
-					<div class="col-md-7"><h3>구매요청목록 조회</h3></div>
-					<div class="col-md-5"><br>
+					<div class="col-md-8"><h3>공급요청 목록</h3></div>
+					<div class="col-md-4"><br>
 						<a class="btn btn-primary" href="purchaseServlet?action=supply" role="button">입고처리</a>
 					</div>
 					<div class="col-md-12"><hr></div>
@@ -35,9 +35,9 @@
 							<table class="table table-striped table-condensed">
 								<tr class="active">
 									<th class="col-md-1">ID</th>
-									<th class="col-md-1">주문ID</th>
 									<th class="col-md-1">상품ID</th>
 									<th class="col-md-2">상품명</th>
+									<th class="col-md-1">단가</th>
 									<th class="col-md-1">발주수량</th>
 									<th class="col-md-2">발주일시</th>
 									<th class="col-md-1">상태</th>
@@ -47,9 +47,9 @@
 								<c:forEach var="purchase" items="${rList}">
 								<tr>
 									<td><a href=#>${purchase.rid}</a></td>
-									<td>${purchase.rinvId}</td>
 									<td>${purchase.rprodId}</td>
 									<td>${purchase.rprodName}</td>
+									<td>${purchase.rprice}</td>
 									<td>${purchase.rquantity}</td>
 									<td>${purchase.rdate}</td>
 									<td>${purchase.rstatusName}</td>

@@ -9,6 +9,7 @@
 	<!-- ==================================================================== -->
 	<title>Ezen Fulfillment System</title>
 	<link href="../css/bootstrap.min.css" rel="stylesheet">
+	<link href="../css/bootstrap.vertical-tabs.min.css" rel="stylesheet">
 </head>
 <body>
 	<%@ include file="../common/_top.jspf" %>
@@ -16,22 +17,13 @@
 	<div class="container-fluid">
 		<div class="row" style="margin-top: 100px">
 			<div class="col-md-2">
-				<div class="list-group">
-					<a href="adminServlet?action=userList" class="list-group-item">사용자 조회</a>
-					<a href="adminServlet?action=productList&category=가전" class="list-group-item">상품 조회</a>
-					<a href="adminServlet?action=invoice&page=1" class="list-group-item">주문</a>
-					<a href="adminServlet?action=deliver" class="list-group-item">출고</a>
-					<a href="#" class="list-group-item active">입고</a>
-					<a href="adminServlet?action=inventory&page=1" class="list-group-item">재고</a>
-					<a href="#" class="list-group-item">정산</a>
-				</div>
+				<%@ include file="../common/_admin_left.jspf" %>
 			</div>
 			<div class="col-md-10">
 				<div class="row" style="margin-left: 30px">
-					<div class="col-md-7"><h3>입고실행목록 조회</h3></div>
-					<div class="col-md-5"><br>
-						<a class="btn btn-primary" href="adminServlet?action=purchaseConfirm" role="button">입고 확정</a>&nbsp;&nbsp;
-						<a class="btn btn-primary" href="adminServlet?action=purchaseDaily" role="button">일별 입고</a>
+					<div class="col-md-8"><h3>입고확정 대기목록</h3></div>
+					<div class="col-md-4"><br>
+						<a class="btn btn-primary" href="adminServlet?action=purchaseConfirm" role="button">입고 확정</a>
 					</div>
 					<div class="col-md-12"><hr></div>
 					<div class="col-md-10">

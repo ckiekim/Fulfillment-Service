@@ -9,6 +9,7 @@ public class PurchaseDTO {
 	private String rdate;
 	private int rstatus;
 	private String rprodName;
+	private int rprice;
 	private int rpstock;
 	private String rcomName;
 	private String rstatusName;
@@ -76,6 +77,12 @@ public class PurchaseDTO {
 	public void setRprodName(String rprodName) {
 		this.rprodName = rprodName;
 	}
+	public int getRprice() {
+		return rprice;
+	}
+	public void setRprice(int rprice) {
+		this.rprice = rprice;
+	}
 	public int getRpstock() {
 		return rpstock;
 	}
@@ -98,6 +105,7 @@ public class PurchaseDTO {
 	public String toString() {
 		return "PurchaseDTO [rid=" + rid + ", rcomId=" + rcomId + ", rinvId=" + rinvId + ", rprodId=" + rprodId
 				+ ", rquantity=" + rquantity + ", rdate=" + rdate + ", rstatus=" + rstatus + ", rprodName=" + rprodName
-				+ ", rpstock=" + rpstock + ", rcomName=" + rcomName + ", rstatusName=" + rstatusName + "]";
+				+ ", rprice=" + rprice + ", rpstock=" + rpstock + ", rcomName=" + rcomName + ", rstatusName="
+				+ rstatusName + "]";
 	}
 }
