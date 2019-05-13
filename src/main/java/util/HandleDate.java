@@ -1,6 +1,7 @@
 package util;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -14,6 +15,13 @@ public class HandleDate {
 		SimpleDateFormat formatter = new SimpleDateFormat ("yyyy-MM-dd", Locale.KOREA);
 		String date = formatter.format(new Date());
 		return date;
+	}
+	
+	public String getLastMonth() {
+		Calendar cal = Calendar.getInstance( );
+		cal.add(cal.MONTH, -1);
+		String month = cal.get(cal.YEAR) + "-" + String.format("%02d", cal.get(cal.MONTH) + 1);
+		return month;
 	}
 	
 	public String getNumericTime(String amPm) {

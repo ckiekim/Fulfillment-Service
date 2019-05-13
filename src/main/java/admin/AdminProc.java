@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import closing.*;
 import deliver.*;
 import purchase.*;
 import user.*;
@@ -52,6 +53,7 @@ public class AdminProc extends HttpServlet {
 		DeliveryDAO dDao = new DeliveryDAO();
 		PurchaseDAO rDao = new PurchaseDAO();
 		InventoryDAO iDao = new InventoryDAO();
+		ClosingDAO cDao = new ClosingDAO();
 		List<UserDTO> uList = null;
 		List<CompanyDTO> cList = null;
 		List<ProductDTO> pList = null;
@@ -60,13 +62,22 @@ public class AdminProc extends HttpServlet {
 		List<DeliveryDTO> dList = null;
 		List<PurchaseDTO> rList = null;
 		List<InventoryDTO> iList = null;
+		List<RecordDTO> recList = null;
+		ClosingDTO cDto = null;
+		int sellers[] = {1011, 1012, 1013};
+		int logistics[] = {1002, 1003, 1004, 1005};
+		int suppliers[] = {1006, 1007, 1008, 1009, 1010};
+		HandleClosing hClosing = null;
 		String date = null;
 		HandleDate hDate = null;
 		// 세션이 만료되었으면 다시 로그인하게 만들어 줌
-		if (session.getAttribute("companyName") == null) {
-			LOG.debug("Session timed-out!!!");
-			rd = request.getRequestDispatcher("../user/userServlet?action=logout");
-	        rd.forward(request, response);
+		try {
+			if (session.getAttribute("companyName") == null) {
+				LOG.debug("Session timed-out!!!");
+				action = "timeout";
+			}
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
 		}
 		
 		if (action.equals("userList")) {	// 내비게이션 메뉴에서 사용자 조회를 클릭했을 때
@@ -239,6 +250,70 @@ public class AdminProc extends HttpServlet {
 			request.setAttribute("Month", month);
 			rd = request.getRequestDispatcher("inventoryMonthly.jsp");
 	        rd.forward(request, response);
+		} 
+		else if (action.equals("doClosing")) {	// 내비게이션 메뉴에서 정산 실행을 클릭했을 때
+			String month = null;
+			hDate = new HandleDate();
+			date = hDate.getToday().substring(8);
+			if (Integer.parseInt(date) > 10)
+				month = hDate.getToday().substring(0, 7);
+			else 
+				month = hDate.getLastMonth();
+			
+			hClosing = new HandleClosing();
+			cDto = hClosing.processClosing(sellers, logistics, suppliers, month, HandleClosing.READY);
+			request.setAttribute("ClosingDto", cDto);
+			recList = cDao.getRecordsByCompany(ClosingDAO.ROLE_SELLER, month);
+			request.setAttribute("SellerList", recList);
+			recList = cDao.getRecordsByCompany(ClosingDAO.ROLE_LOGISTICS, month);
+			request.setAttribute("LogisticsList", recList);
+			recList = cDao.getRecordsByCompany(ClosingDAO.ROLE_SUPPLIER, month);
+			request.setAttribute("SupplierList", recList);
+			request.setAttribute("Month", month);
+			rd = request.getRequestDispatcher("closing.jsp");
+	        rd.forward(request, response);
+		} 
+		else if (action.equals("closingConfirm")) {	// 정산 확정 버튼을 클릭했을 때
+			String month = null;
+			hDate = new HandleDate();
+			date = hDate.getToday().substring(8);
+			if (Integer.parseInt(date) > 10)
+				month = hDate.getToday().substring(0, 7);
+			else 
+				month = hDate.getLastMonth();
+			hClosing = new HandleClosing();
+			cDto = hClosing.processClosing(sellers, logistics, suppliers, month, HandleClosing.EXECUTE);
+			response.sendRedirect("adminServlet?action=showClosingMonthly");
+		}
+		else if (action.equals("showClosingMonthly")) {	// 내비게이션 메뉴에서 월별 정산내역을 클릭했을 때
+			String month = request.getParameter("month");
+			if (month == null) {
+				hDate = new HandleDate();
+				date = hDate.getToday().substring(8);
+				if (Integer.parseInt(date) > 10)
+					month = hDate.getToday().substring(0, 7);
+				else 
+					month = hDate.getLastMonth();
+			}
+			hClosing = new HandleClosing();
+			cDto = hClosing.showClosing(month);
+			request.setAttribute("ClosingDto", cDto);
+			recList = cDao.getRecordsByCompany(ClosingDAO.ROLE_SELLER, month);
+			request.setAttribute("SellerList", recList);
+			recList = cDao.getRecordsByCompany(ClosingDAO.ROLE_LOGISTICS, month);
+			request.setAttribute("LogisticsList", recList);
+			recList = cDao.getRecordsByCompany(ClosingDAO.ROLE_SUPPLIER, month);
+			request.setAttribute("SupplierList", recList);
+			request.setAttribute("Month", month);
+			rd = request.getRequestDispatcher("closingMonthly.jsp");
+	        rd.forward(request, response);
+		}
+		else if (action.equals("timeout")) {
+			String message = "30분 동안 액션이 없어서 로그아웃 되었습니다.";
+			request.setAttribute("message", message);
+			request.setAttribute("url", "../user/login.jsp");
+			rd = request.getRequestDispatcher("../common/alertMsg.jsp");
+			rd.forward(request, response);
 		}
 	}
 }

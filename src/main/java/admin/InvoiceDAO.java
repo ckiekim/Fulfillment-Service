@@ -19,9 +19,55 @@ public class InvoiceDAO {
 	public static final int INVOICE_RELEASED = 2;
 	public static final int INVOICE_CONFIRMED = 3;
 	public static final int INVOICE_DELAY_READY = 4;
+	public static final int INVOICE_CLOSED = 5;
 	Connection conn;
 	PreparedStatement pStmt;
 	ResultSet rs;
+
+	public List<InvoiceDTO> getInvoicesByMonth(int comId, String date) {
+		conn = DBManager.getConnection();
+		String query = null;
+		if (comId == 0)
+			query = "select * from invoices where vstatus=? and " +
+					"vdate between date(?) and last_day(?);";
+		else	
+			query = "select * from invoices where vstatus=? and " +
+					"vdate between date(?) and last_day(?) and vcomId=?;";
+		List<InvoiceDTO> vList = new ArrayList<InvoiceDTO>();
+		try {
+			pStmt = conn.prepareStatement(query);
+			pStmt.setInt(1, INVOICE_CONFIRMED);
+			pStmt.setString(2, date);
+			pStmt.setString(3, date);
+			if (comId > 0)
+				pStmt.setInt(4, comId);
+			rs = pStmt.executeQuery();
+			
+			while (rs.next()) {
+				InvoiceDTO vDto = new InvoiceDTO();
+				vDto.setVid(rs.getInt(1));
+				vDto.setVname(rs.getString(2));
+				vDto.setVtel(rs.getString(3));
+				vDto.setVaddr(rs.getString(4));
+				vDto.setVcomId(rs.getInt(5));
+				vDto.setVdate(rs.getString(6).substring(0, 16));
+				vDto.setVtotal(rs.getInt(7));
+				vDto.setVstatus(rs.getInt(8));
+				vDto.setVlogisId(rs.getInt(9));
+				vList.add(vDto);
+				LOG.trace(vDto.toString());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return vList;
+	}
 	
 	public List<InvoiceDTO> getInvoicesByStatus(int status) {
 		conn = DBManager.getConnection();

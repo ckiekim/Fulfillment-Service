@@ -52,11 +52,11 @@ public class DeliveryProc extends HttpServlet {
 		try {
 			logisId = (Integer)session.getAttribute("companyId");
 		} catch (NullPointerException e) {
-			System.out.println("세션이 만료되었습니다.");
+			e.printStackTrace();
 		}
 		if (logisId == 0) {
-			rd = request.getRequestDispatcher("../user/login.jsp");
-	        rd.forward(request, response);
+			LOG.debug("Session timed-out!!!");
+			action = "timeout";
 		}
 		
 		if (action.equals("list")) {	// 운송업체 담당자가 로그인하였을 때
@@ -111,6 +111,13 @@ public class DeliveryProc extends HttpServlet {
 			request.setAttribute("Month", month);
 			rd = request.getRequestDispatcher("releaseMonthly.jsp");
 	        rd.forward(request, response);
+		} 
+		else if (action.equals("timeout")) {
+			String message = "30분 동안 액션이 없어서 로그아웃 되었습니다.";
+			request.setAttribute("message", message);
+			request.setAttribute("url", "../user/login.jsp");
+			rd = request.getRequestDispatcher("../common/alertMsg.jsp");
+			rd.forward(request, response);
 		}
 	}
 }

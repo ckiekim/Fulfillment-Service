@@ -53,7 +53,7 @@ public class UserProc extends HttpServlet {
 			upass = request.getParameter("upass");
 			String uname = request.getParameter("uname");
 			int ucomId = Integer.parseInt(request.getParameter("ucomId"));
-			LOG.debug("register: {}, {}, {}, {}", uid, upass, uname, ucomId);
+			LOG.trace("register: {}, {}, {}, {}", uid, upass, uname, ucomId);
 			uDto = new UserDTO(uid, upass, uname, ucomId);
 			uDao.registerUser(uDto);
 			response.sendRedirect("../user/login.jsp");

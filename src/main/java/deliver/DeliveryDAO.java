@@ -18,6 +18,7 @@ public class DeliveryDAO {
 	public static final int DELIVERY_READY = 0;
 	public static final int DELIVERY_EXECUTED = 1;
 	public static final int DELIVERY_CONFIRMED = 2;
+	public static final int DELIVERY_CLOSED = 3;
 	Connection conn;
 	PreparedStatement pStmt;
 	ResultSet rs;
@@ -82,6 +83,29 @@ public class DeliveryDAO {
 		}
 	}
 	
+	public int getDeliveryIdByInvoice(int invoiceId) {
+		conn = DBManager.getConnection();
+		String query = "select did from deliveries where dinvId=?;";
+		int result = 0;
+		try {
+			pStmt = conn.prepareStatement(query);
+			pStmt.setInt(1, invoiceId);
+			rs = pStmt.executeQuery();
+			while (rs.next()) {
+				result = rs.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
 	public int getCountMonthly(int dcomId, String date) {
 		conn = DBManager.getConnection();
 		String query = null;
@@ -123,10 +147,16 @@ public class DeliveryDAO {
 					"inner join companies as c on d.dcomId=c.cid where d.dstatus=? and " + 
 					"d.ddate between date(?) and last_day(?) order by d.dcomId, d.ddate, d.did limit ?, 10;";
 		else
-			query = "select d.did, d.dcomId, d.dinvId, d.ddate, d.dstatus, v.vname, v.vaddr, c.cname " + 
-					"from deliveries as d inner join invoices as v on d.dinvId=v.vid " + 
-					"inner join companies as c on d.dcomId=c.cid where d.dstatus=? and " + 
-					"d.ddate between date(?) and last_day(?) and d.dcomId=? order by d.ddate, d.did limit ?, 10;";
+			if (page == 0)
+				query = "select d.did, d.dcomId, d.dinvId, d.ddate, d.dstatus, v.vname, v.vaddr, c.cname " + 
+						"from deliveries as d inner join invoices as v on d.dinvId=v.vid " + 
+						"inner join companies as c on d.dcomId=c.cid where d.dstatus=? and " + 
+						"d.ddate between date(?) and last_day(?) and d.dcomId=? order by d.ddate, d.did;";
+			else
+				query = "select d.did, d.dcomId, d.dinvId, d.ddate, d.dstatus, v.vname, v.vaddr, c.cname " + 
+						"from deliveries as d inner join invoices as v on d.dinvId=v.vid " + 
+						"inner join companies as c on d.dcomId=c.cid where d.dstatus=? and " + 
+						"d.ddate between date(?) and last_day(?) and d.dcomId=? order by d.ddate, d.did limit ?, 10;";
 		int offset = (page - 1) * 10;
 		List<DeliveryDTO> dList = new ArrayList<DeliveryDTO>();
 		try {
@@ -138,7 +168,8 @@ public class DeliveryDAO {
 				pStmt.setInt(4, offset);
 			} else {
 				pStmt.setInt(4, dcomId);
-				pStmt.setInt(5, offset);
+				if (page > 0)
+					pStmt.setInt(5, offset);
 			}
 			rs = pStmt.executeQuery();
 			

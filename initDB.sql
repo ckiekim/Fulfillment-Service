@@ -79,6 +79,22 @@ create table inventories (
   foreign key(iproId) references products(pid)
 ) auto_increment=1001;
 
+create table sales (
+  lid int unsigned not null auto_increment primary key,
+  linvId int unsigned not null,
+  ldelId int unsigned not null,
+  lmonth varchar(8) not null,
+  lrevenue int default 0
+) auto_increment=101;
+
+create table records (
+  rid int unsigned not null auto_increment primary key,
+  rcomId int unsigned not null,
+  rrole int unsigned not null,
+  rmonth varchar(8) not null,
+  rdata int default 0
+) auto_increment=101;
+
 insert into companies values
 (1001, '이젠풀필먼트', 1, '042-345-6780', '042-345-6790', 'efs@ezen.com'),
 (1002, '경기물류', 2, '031-234-5670', '031-234-5680', 'logis1@klc.com'),

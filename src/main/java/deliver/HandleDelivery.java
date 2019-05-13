@@ -37,15 +37,21 @@ public class HandleDelivery {
 		}
 	}
 	
-	// 확정을 클릭하면 상태를 DELIVERY_CONFIRMED로 바꾸고 재고 수량을 변경시킴
+	// 확정을 클릭하면 상태를 DELIVERY_CONFIRMED로 바꾸고 재고 수량을 변경함
 	public void confirmDelivery(List<DeliveryDTO> dList) {
 		DeliveryDAO dDao = new DeliveryDAO();
 		SoldProductDAO sDao = new SoldProductDAO();
 		InventoryDAO iDao = new InventoryDAO();
+		InvoiceDAO vDao = new InvoiceDAO();
 		
 		for (DeliveryDTO dDto: dList) {
 			dDto.setDstatus(DeliveryDAO.DELIVERY_CONFIRMED);
 			dDao.updateDeliveryStatus(dDto);
+			// Invoice 상태도 INVOICE_CONFIRMED로 수정
+			InvoiceDTO vDto = vDao.getInvoiceById(dDto.getDinvId());
+			vDto.setVstatus(InvoiceDAO.INVOICE_CONFIRMED);
+			vDao.updateInvoice(vDto);
+			// 재고 수량을 변경함
 			List<SoldProductDTO> sList = sDao.getSoldProducts(dDto.getDinvId());
 			for (SoldProductDTO sDto: sList) {
 				InventoryDTO iDto = iDao.getInventoryByProduct(sDto.getSprodId());

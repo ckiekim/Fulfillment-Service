@@ -36,9 +36,11 @@
 		<li class="dropdown">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">정산 <span class="caret"></span></a>
 			<ul class="dropdown-menu" role="menu">
-				<li><a href="#">정산 확정</a></li>
-				<li><a href="#">월별 정산내역</a></li>
-				<li><a href="#">년간 정산내역</a></li>
+				<li><a href="adminServlet?action=doClosing">정산확정 대기</a></li>
+				<li><a href="adminServlet?action=showClosingMonthly">월별 정산내역</a></li>
+				<li><a href="adminServlet?action=showYearlyClosing">년간 정산내역</a></li>
+				<li class="divider"></li>
+				<li><a href="#">월간 추이</a></li>
 			</ul>
 		</li>
 	</ul>

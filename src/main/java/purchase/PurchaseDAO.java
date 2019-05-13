@@ -18,6 +18,7 @@ public class PurchaseDAO {
 	public static final int PURCHASE_READY = 0;
 	public static final int PURCHASE_SUPPLIED = 1;
 	public static final int PURCHASE_CONFIRMED = 2;
+	public static final int PURCHASE_CLOSED = 3;
 	Connection conn;
 	PreparedStatement pStmt;
 	ResultSet rs;
@@ -63,10 +64,16 @@ public class PurchaseDAO {
 					"inner join companies as c on r.rcomId=c.cid where r.rstatus=? and " +
 					"r.rdate between date(?) and last_day(?) order by r.rcomId, r.rid limit ?, 10;";
 		else
-			query = "select r.rid, r.rinvId, r.rprodId, p.pname, r.rquantity, r.rdate, r.rstatus, p.pstock, c.cname, p.pprice " +
-					"from purchases as r inner join products as p on r.rprodId=p.pid " +
-					"inner join companies as c on r.rcomId=c.cid where r.rstatus=? and " +
-					"r.rdate between date(?) and last_day(?) and r.rcomId=? order by r.rid limit ?, 10;";
+			if (page == 0)
+				query = "select r.rid, r.rinvId, r.rprodId, p.pname, r.rquantity, r.rdate, r.rstatus, p.pstock, c.cname, p.pprice " +
+						"from purchases as r inner join products as p on r.rprodId=p.pid " +
+						"inner join companies as c on r.rcomId=c.cid where r.rstatus=? and " +
+						"r.rdate between date(?) and last_day(?) and r.rcomId=? order by r.rid;";
+			else
+				query = "select r.rid, r.rinvId, r.rprodId, p.pname, r.rquantity, r.rdate, r.rstatus, p.pstock, c.cname, p.pprice " +
+						"from purchases as r inner join products as p on r.rprodId=p.pid " +
+						"inner join companies as c on r.rcomId=c.cid where r.rstatus=? and " +
+						"r.rdate between date(?) and last_day(?) and r.rcomId=? order by r.rid limit ?, 10;";
 		int offset = (page - 1) * 10;
 		List<PurchaseDTO> rList = new ArrayList<PurchaseDTO>();
 		try {
@@ -78,7 +85,8 @@ public class PurchaseDAO {
 				pStmt.setInt(4, offset);
 			} else {
 				pStmt.setInt(4, supplierId);
-				pStmt.setInt(5, offset);
+				if (page > 0)
+					pStmt.setInt(5, offset);
 			}
 			rs = pStmt.executeQuery();
 			
