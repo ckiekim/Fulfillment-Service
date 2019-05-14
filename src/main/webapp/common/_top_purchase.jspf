@@ -14,7 +14,7 @@
 				</div>
 				<div class="col-md-2">
 					<p class="navbar-text navbar-center">
-						<a href="../admin/adminServlet?action=logout">로그아웃</a>
+						<a href="../purchase/purchaseServlet?action=logout">로그아웃</a>
 					</p>
 				</div>
 			</div>

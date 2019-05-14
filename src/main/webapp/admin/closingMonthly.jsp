@@ -24,7 +24,7 @@
 				<div class="row" style="margin-left: 30px">
 					<div class="col-md-7"><h3>월별 정산내역 : ${requestScope.Month}</h3></div>
 					<div class="col-md-5"><br>
-						<form action="adminServlet?action=showClosingMonthly" class="form-horizontal" method="post">
+						<form action="../admin/adminServlet?action=showClosingMonthly" class="form-horizontal" method="post">
 							<div class="form-group">
 								<label class="control-label">년월:&nbsp;&nbsp;</label>
 								<input type="text" name="month" id="monthpicker">&nbsp;&nbsp;
@@ -33,26 +33,22 @@
 						</form>
 					</div>
 					<div class="col-md-12"><hr></div>
-					<div class="col-md-9">
+					<div class="col-md-10">
 						<div class="panel panel-primary">
 							<c:set var="cDto" value="${requestScope.ClosingDto}"/>
 							<table class="table table-striped table-condensed">
 								<tr class="active">
-									<th class="col-md-3" style="text-align: center">항목</th>
-									<th class="col-md-1">ID</th>
+									<th class="col-md-2" style="text-align: center">항목</th>
+									<th class="col-md-1">정산ID</th>
 									<th class="col-md-2">회사명</th>
 									<th class="col-md-1">역할</th>
-									<th class="col-md-2">금액</th>
-								</tr>
-								<tr>
-									<td colspan="1" style="text-align: center">매출 총이익</td>
-									<td colspan="3" style="text-align: center">계</td>
-									<td>${cDto.grossMargin}
+									<th class="col-md-2" style="text-align: right">금액&nbsp;&nbsp;</th>
+									<th class="col-md-2" style="text-align: right">계&nbsp;&nbsp;</th>
 								</tr>
 								<tr>
 									<td colspan="1" style="text-align: center">매출</td>
-									<td colspan="3" style="text-align: center">소계</td>
-									<td>${cDto.income}
+									<td colspan="3" style="text-align: center"> </td>
+									<td colspan="2" style="text-align: right">${cDto.incomeComma}</td>
 								</tr>
 								<c:set var="recList" value="${requestScope.SellerList}"/>
 								<c:forEach var="recDto" items="${recList}">
@@ -60,14 +56,15 @@
 										<td> </td>
 										<td>${recDto.rid}</td>
 										<td>${recDto.rcomName}</td>
-										<td>${recDto.rrole}</td>
-										<td>${recDto.rdata}</td>
+										<td>${recDto.rroleName}</td>
+										<td style="text-align: right">${recDto.rdataComma}</td>
+										<td> </td>
 									</tr>
 								</c:forEach>
 								<tr>
 									<td colspan="1" style="text-align: center">물류비</td>
-									<td colspan="3" style="text-align: center">소계</td>
-									<td>${cDto.logisExpense}
+									<td colspan="3" style="text-align: center"> </td>
+									<td colspan="2" style="text-align: right">${cDto.logisExpenseComma}</td>
 								</tr>
 								<c:set var="recList" value="${requestScope.LogisticsList}"/>
 								<c:forEach var="recDto" items="${recList}">
@@ -75,14 +72,15 @@
 										<td> </td>
 										<td>${recDto.rid}</td>
 										<td>${recDto.rcomName}</td>
-										<td>${recDto.rrole}</td>
-										<td>${recDto.rdata}</td>
+										<td>${recDto.rroleName}</td>
+										<td style="text-align: right">${recDto.rdataComma}</td>
+										<td> </td>
 									</tr>
 								</c:forEach>
 								<tr>
 									<td colspan="1" style="text-align: center">구매비</td>
-									<td colspan="3" style="text-align: center">소계</td>
-									<td>${cDto.purchaseExpense}
+									<td colspan="3" style="text-align: center"> </td>
+									<td colspan="2" style="text-align: right">${cDto.purchaseExpenseComma}</td>
 								</tr>
 								<c:set var="recList" value="${requestScope.SupplierList}"/>
 								<c:forEach var="recDto" items="${recList}">
@@ -90,14 +88,20 @@
 										<td> </td>
 										<td>${recDto.rid}</td>
 										<td>${recDto.rcomName}</td>
-										<td>${recDto.rrole}</td>
-										<td>${recDto.rdata}</td>
+										<td>${recDto.rroleName}</td>
+										<td style="text-align: right">${recDto.rdataComma}</td>
+										<td> </td>
 									</tr>
 								</c:forEach>
+								<tr>
+									<td colspan="1" style="text-align: center">매출 총이익</td>
+									<td colspan="3" style="text-align: center"> </td>
+									<td colspan="2" style="text-align: right">${cDto.grossMarginComma}</td>
+								</tr>
 							</table>
 						</div>
 					</div>
-					<div class="col-md-3">
+					<div class="col-md-2">
 				</div>
 			</div>
 		</div>

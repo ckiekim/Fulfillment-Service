@@ -24,7 +24,7 @@
 				<div class="row" style="margin-left: 30px">
 					<div class="col-md-7"><h3>일별 출고내역 : ${requestScope.deliveryDate}</h3></div>
 					<div class="col-md-5"><br>
-						<form action="adminServlet?action=deliverDaily" class="form-horizontal" method="post">
+						<form action="../admin/adminServlet?action=deliverDaily" class="form-horizontal" method="post">
 							<div class="form-group">
 								<label class="control-label">날짜:&nbsp;&nbsp;</label>
 								<input type="text" name="dateRelease" id="datepicker1">&nbsp;&nbsp;

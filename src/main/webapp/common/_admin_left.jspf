@@ -2,13 +2,13 @@
 
 	<!-- Nav tabs -->
 	<ul class="nav nav-pills nav-tabs tabs-left">
-		<li><a href="adminServlet?action=userList">사용자 조회</a></li>
-		<li><a href="adminServlet?action=productList&category=가전">상품 조회</a></li>
+		<li><a href="../admin/adminServlet?action=userList">사용자 조회</a></li>
+		<li><a href="../admin/adminServlet?action=productList&category=가전">상품 조회</a></li>
 		<li class="dropdown">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">주문 <span class="caret"></span></a>
 			<ul class="dropdown-menu" role="menu">
-				<li><a href="adminServlet?action=invoice&page=1">기존 주문</a></li>
-				<li><a href="adminServlet?action=invoice&page=1">미확정 주문</a></li>
+				<li><a href="../admin/adminServlet?action=invoice&page=1">기존 주문</a></li>
+				<li><a href="../admin/adminServlet?action=invoice&page=1">미확정 주문</a></li>
 				<li class="divider"></li>
 				<li><a href="#">일별 주문내역</a></li>
 				<li><a href="#">월별 주문내역</a></li>
@@ -19,26 +19,26 @@
 		<li class="dropdown">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">출고 <span class="caret"></span></a>
 			<ul class="dropdown-menu" role="menu">
-				<li><a href="adminServlet?action=deliver">출고확정 대기</a></li>
-				<li><a href="adminServlet?action=deliverDaily">일별 출고내역</a></li>
-				<li><a href="adminServlet?action=deliverMonthly&page=1">월별 출고내역</a></li>
+				<li><a href="../admin/adminServlet?action=deliver">출고확정 대기</a></li>
+				<li><a href="../admin/adminServlet?action=deliverDaily">일별 출고내역</a></li>
+				<li><a href="../admin/adminServlet?action=deliverMonthly&page=1">월별 출고내역</a></li>
 			</ul>
 		</li>
 		<li class="dropdown">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">구매 <span class="caret"></span></a>
 			<ul class="dropdown-menu" role="menu">
-				<li><a href="adminServlet?action=purchase">구매확정 대기</a></li>
-				<li><a href="adminServlet?action=purchaseDaily">일별 구매내역</a></li>
-				<li><a href="adminServlet?action=purchaseMonthly&page=1">월별 구매내역</a></li>
+				<li><a href="../admin/adminServlet?action=purchase">구매확정 대기</a></li>
+				<li><a href="../admin/adminServlet?action=purchaseDaily">일별 구매내역</a></li>
+				<li><a href="../admin/adminServlet?action=purchaseMonthly&page=1">월별 구매내역</a></li>
 			</ul>
 		</li>
-		<li><a href="adminServlet?action=inventory&page=1">재고</a></li>
+		<li><a href="../admin/adminServlet?action=inventory&page=1">재고</a></li>
 		<li class="dropdown">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">정산 <span class="caret"></span></a>
 			<ul class="dropdown-menu" role="menu">
-				<li><a href="adminServlet?action=doClosing">정산확정 대기</a></li>
-				<li><a href="adminServlet?action=showClosingMonthly">월별 정산내역</a></li>
-				<li><a href="adminServlet?action=showYearlyClosing">년간 정산내역</a></li>
+				<li><a href="../admin/adminServlet?action=doClosing">정산확정 대기</a></li>
+				<li><a href="../admin/adminServlet?action=showClosingMonthly">월별 정산내역</a></li>
+				<li><a href="../admin/adminServlet?action=showYearlyClosing">년간 정산내역</a></li>
 				<li class="divider"></li>
 				<li><a href="#">월간 추이</a></li>
 			</ul>

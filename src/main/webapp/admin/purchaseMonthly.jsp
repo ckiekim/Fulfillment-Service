@@ -24,7 +24,7 @@
 				<div class="row" style="margin-left: 30px">
 					<div class="col-md-7"><h3>월별 구매내역 : ${requestScope.Month}</h3></div>
 					<div class="col-md-5"><br>
-						<form action="adminServlet?action=purchaseMonthly&page=1" class="form-horizontal" method="post">
+						<form action="../admin/adminServlet?action=purchaseMonthly&page=1" class="form-horizontal" method="post">
 							<div class="form-group">
 								<label class="control-label">년월:&nbsp;&nbsp;</label>
 								<input type="text" name="month" id="monthpicker">&nbsp;&nbsp;
@@ -68,7 +68,7 @@
 														<li class="active"><a href="#">${page}<span class="sr-only">(current)</span></a></li>
 													</c:when>
 													<c:otherwise>
-														<li><a href="adminServlet?action=purchaseMonthly&page=${page}">${page}</a></li>
+														<li><a href="../admin/adminServlet?action=purchaseMonthly&page=${page}">${page}</a></li>
 													</c:otherwise>
 												</c:choose>
 											</c:forEach>

@@ -24,7 +24,7 @@
 				<div class="row" style="margin-left: 30px">
 					<div class="col-md-8"><h3>정산확정 대기 : ${requestScope.Month}</h3></div>
 					<div class="col-md-4"><br>
-						<a class="btn btn-primary" href="adminServlet?action=closingConfirm" role="button">정산 확정</a>
+						<a class="btn btn-primary" href="../admin/adminServlet?action=closingConfirm" role="button">정산 확정</a>
 					</div>
 					<div class="col-md-12"><hr></div>
 					<div class="col-md-9">
@@ -32,21 +32,17 @@
 							<c:set var="cDto" value="${requestScope.ClosingDto}"/>
 							<table class="table table-striped table-condensed">
 								<tr class="active">
-									<th class="col-md-3" style="text-align: center">항목</th>
-									<th class="col-md-1">ID</th>
+									<th class="col-md-2" style="text-align: center">항목</th>
+									<th class="col-md-1">정산ID</th>
 									<th class="col-md-2">회사명</th>
 									<th class="col-md-1">역할</th>
-									<th class="col-md-2">금액</th>
-								</tr>
-								<tr>
-									<td colspan="1" style="text-align: center">매출 총이익</td>
-									<td colspan="3" style="text-align: right">계</td>
-									<td>${cDto.grossMargin}
+									<th class="col-md-2" style="text-align: right">금액&nbsp;&nbsp;</th>
+									<th class="col-md-2" style="text-align: right">계&nbsp;&nbsp;</th>
 								</tr>
 								<tr>
 									<td colspan="1" style="text-align: center">매출</td>
-									<td colspan="3" style="text-align: right">소계</td>
-									<td>${cDto.income}
+									<td colspan="3" style="text-align: center"> </td>
+									<td colspan="2" style="text-align: right">${cDto.incomeComma}</td>
 								</tr>
 								<c:set var="recList" value="${requestScope.SellerList}"/>
 								<c:forEach var="recDto" items="${recList}">
@@ -54,14 +50,15 @@
 										<td> </td>
 										<td>${recDto.rid}</td>
 										<td>${recDto.rcomName}</td>
-										<td>${recDto.rrole}</td>
-										<td>${recDto.rdata}</td>
+										<td>${recDto.rroleName}</td>
+										<td style="text-align: right">${recDto.rdataComma}</td>
+										<td> </td>
 									</tr>
 								</c:forEach>
 								<tr>
 									<td colspan="1" style="text-align: center">물류비</td>
-									<td colspan="3" style="text-align: right">소계</td>
-									<td>${cDto.logisExpense}
+									<td colspan="3" style="text-align: center"> </td>
+									<td colspan="2" style="text-align: right">${cDto.logisExpenseComma}</td>
 								</tr>
 								<c:set var="recList" value="${requestScope.LogisticsList}"/>
 								<c:forEach var="recDto" items="${recList}">
@@ -69,14 +66,15 @@
 										<td> </td>
 										<td>${recDto.rid}</td>
 										<td>${recDto.rcomName}</td>
-										<td>${recDto.rrole}</td>
-										<td>${recDto.rdata}</td>
+										<td>${recDto.rroleName}</td>
+										<td style="text-align: right">${recDto.rdataComma}</td>
+										<td> </td>
 									</tr>
 								</c:forEach>
 								<tr>
 									<td colspan="1" style="text-align: center">구매비</td>
-									<td colspan="3" style="text-align: right">소계</td>
-									<td>${cDto.purchaseExpense}
+									<td colspan="3" style="text-align: center"> </td>
+									<td colspan="2" style="text-align: right">${cDto.purchaseExpenseComma}</td>
 								</tr>
 								<c:set var="recList" value="${requestScope.SupplierList}"/>
 								<c:forEach var="recDto" items="${recList}">
@@ -84,10 +82,16 @@
 										<td> </td>
 										<td>${recDto.rid}</td>
 										<td>${recDto.rcomName}</td>
-										<td>${recDto.rrole}</td>
-										<td>${recDto.rdata}</td>
+										<td>${recDto.rroleName}</td>
+										<td style="text-align: right">${recDto.rdataComma}</td>
+										<td> </td>
 									</tr>
 								</c:forEach>
+								<tr>
+									<td colspan="1" style="text-align: center">매출 총이익</td>
+									<td colspan="3" style="text-align: center"> </td>
+									<td colspan="2" style="text-align: right">${cDto.grossMarginComma}</td>
+								</tr>
 							</table>
 						</div>
 					</div>

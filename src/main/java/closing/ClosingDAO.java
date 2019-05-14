@@ -43,6 +43,16 @@ public class ClosingDAO {
 				rDto.setRmonth(rs.getString(4));
 				rDto.setRdata(rs.getInt(5));
 				rDto.setRcomName(rs.getString(6));
+				switch(rs.getInt(3)) {
+					case ROLE_LOGISTICS:
+						rDto.setRroleName("배송"); break;
+					case ROLE_SUPPLIER:
+						rDto.setRroleName("공급"); break;
+					case ROLE_SELLER:
+						rDto.setRroleName("판매"); break;
+					default:
+				}
+				rDto.setRdataComma(String.format("%,d", rs.getInt(5)));
 				rList.add(rDto);
 				LOG.trace(rDto.toString());
 			}

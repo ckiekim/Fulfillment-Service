@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +16,8 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import admin.ProductDAO;
+import admin.*;
+import user.*;
 import util.HandleDate;
 
 @WebServlet("/purchase/purchaseServlet")
@@ -38,6 +40,8 @@ public class PurchaseProc extends HttpServlet {
 	protected void doAction(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		RequestDispatcher rd = null;
 		request.setCharacterEncoding("UTF-8");
+		HttpSession session = request.getSession();
+		String action = request.getParameter("action");
 		ProductDAO pDao = new ProductDAO();
 		PurchaseDAO rDao = new PurchaseDAO();  
 		List<PurchaseDTO> rList = null;
@@ -46,30 +50,63 @@ public class PurchaseProc extends HttpServlet {
 		int curSupplyPage = 1;
 		List<String> pageList = new ArrayList<String>();
 		
-		HttpSession session = request.getSession();
-		String action = request.getParameter("action");
+		Cookie[] cookies = null; 
+		String cookieId = null;
 		int suppId = 0;
+		
 		// 세션이 만료되었으면 다시 로그인하게 만들어 줌
-		try {
-			suppId = (Integer)session.getAttribute("companyId");
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		}
-		if (suppId == 0) {
-			LOG.debug("Session timed-out!!!");
-			action = "timeout";
+		if (!action.equals("init")) {
+			cookies = request.getCookies();
+			for (Cookie cookie: cookies) {
+				LOG.debug("{}, {}", cookie.getName(), cookie.getValue());
+				if (cookie.getName().equals("EzenFS")) {
+					cookieId = cookie.getValue();
+					break;
+				}
+			}
+			LOG.debug("{}, {}", cookieId, (String)session.getAttribute(cookieId+"companyName"));
+			request.setAttribute("CookieId", cookieId);
+			try {
+				suppId = (Integer)session.getAttribute(cookieId+"companyId");
+			} catch (NullPointerException e) {
+				//e.printStackTrace();
+				LOG.info("NullPointerException occurred!!!");
+			}
+			if (suppId == 0) {
+				LOG.debug("Session timed-out!!!");
+				action = "timeout";
+			}
 		}
 		
-		if (action.equals("list")) {	// 공급업체 담당자가 로그인하였을 때
+		if (action.equals("init")) {
+			InitDTO iDto = (InitDTO)request.getAttribute("InitDTO");
+			HandleDate hd = new HandleDate();
+			cookieId = iDto.getUid() + hd.getDateAndTime();
+			LOG.debug("cookieId = {}", cookieId);
+			Cookie efsCookie = new Cookie("EzenFS", cookieId);
+			efsCookie.setPath("/ezenFS/purchase");
+			response.addCookie(efsCookie);
+			request.setAttribute("CookieId", cookieId);
+			session.setAttribute(cookieId+"userId", iDto.getUid());
+			session.setAttribute(cookieId+"userName", iDto.getUname());
+			session.setAttribute(cookieId+"companyId", iDto.getCid());
+			session.setAttribute(cookieId+"companyName", iDto.getCname());
+			suppId = iDto.getCid();
 			rList = rDao.getPurchaseListBySupplier(suppId);
 			request.setAttribute("purchaseWaitList", rList);
 			rd = request.getRequestDispatcher("list.jsp");
 	        rd.forward(request, response);
 		}
+		else if (action.equals("list")) {	// 공급업체 담당자가 로그인하였을 때
+			rList = rDao.getPurchaseListBySupplier(suppId);
+			request.setAttribute("purchaseWaitList", rList);
+			rd = request.getRequestDispatcher("../purchase/list.jsp");
+	        rd.forward(request, response);
+		}
 		else if (action.equals("supply")) {		// 입고처리 버튼을 클릭했을 때
 			HandlePurchase hp = new HandlePurchase();
 			hp.processPurchase(suppId);
-			response.sendRedirect("purchaseServlet?action=purchaseList");
+			response.sendRedirect("../purchase/purchaseServlet?action=purchaseList");
 		}
 		else if (action.equals("purchaseList")) {	// 일별 공급내역 메뉴를 클릭했을 때
 			date = request.getParameter("datePurchase");
@@ -81,7 +118,7 @@ public class PurchaseProc extends HttpServlet {
 			rList = rDao.getSuppliedListBySupplierAndDate(suppId, date+"%");
 			request.setAttribute("purchaseSuppliedList", rList);
 			request.setAttribute("purchaseDate", date);
-			rd = request.getRequestDispatcher("supply.jsp");
+			rd = request.getRequestDispatcher("../purchase/supply.jsp");
 	        rd.forward(request, response);
 		}
 		else if (action.equals("purchaseMonthly")) {	// 월별 공급내역 메뉴를 클릭했을 때
@@ -106,7 +143,7 @@ public class PurchaseProc extends HttpServlet {
 			request.setAttribute("purchaseSuppliedList", rList);
 			request.setAttribute("pageList", pageList);
 			request.setAttribute("purchaseMonth", month);
-			rd = request.getRequestDispatcher("supplyMonthly.jsp");
+			rd = request.getRequestDispatcher("../purchase/supplyMonthly.jsp");
 			rd.forward(request, response);
 		} 
 		else if (action.equals("timeout")) {
@@ -114,6 +151,16 @@ public class PurchaseProc extends HttpServlet {
 			request.setAttribute("message", message);
 			request.setAttribute("url", "../user/login.jsp");
 			rd = request.getRequestDispatcher("../common/alertMsg.jsp");
+			rd.forward(request, response);
+		}
+		else if (action.equals("logout")) {
+			cookies = request.getCookies();
+			for (Cookie cookie: cookies) {
+				LOG.debug("logout: {}, {}", cookie.getName(), cookie.getValue());
+				cookie.setMaxAge(0);
+				response.addCookie(cookie);
+			}
+			rd = request.getRequestDispatcher("../user/login.jsp");
 			rd.forward(request, response);
 		}
 	}

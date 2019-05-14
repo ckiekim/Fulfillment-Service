@@ -7,6 +7,14 @@ public class RecordDTO {
 	private String rmonth;
 	private int rdata;
 	private String rcomName;
+	private String rroleName;
+	public String getRroleName() {
+		return rroleName;
+	}
+	public void setRroleName(String rroleName) {
+		this.rroleName = rroleName;
+	}
+	private String rdataComma;
 	
 	public RecordDTO() {
 	}
@@ -53,9 +61,15 @@ public class RecordDTO {
 	public void setRcomName(String rcomName) {
 		this.rcomName = rcomName;
 	}
+	public String getRdataComma() {
+		return rdataComma;
+	}
+	public void setRdataComma(String rdataComma) {
+		this.rdataComma = rdataComma;
+	}
 	@Override
 	public String toString() {
 		return "RecordDTO [rid=" + rid + ", rcomId=" + rcomId + ", rrole=" + rrole + ", rmonth=" + rmonth + ", rdata="
-				+ rdata + ", rcomName=" + rcomName + "]";
+				+ rdata + ", rcomName=" + rcomName + ", rroleName=" + rroleName + ", rdataComma=" + rdataComma + "]";
 	}
 }

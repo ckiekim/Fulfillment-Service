@@ -23,7 +23,7 @@
 				<div class="row" style="margin-left: 30px">
 					<div class="col-md-8"><h3>주문 조회</h3></div>
 					<div class="col-md-4"><br>
-						<a class="btn btn-primary" href="adminServlet?action=procInvoice" role="button">주문 처리</a>
+						<a class="btn btn-primary" href="../admin/adminServlet?action=procInvoice" role="button">주문 처리</a>
 					</div>
 					<div class="col-md-12"><hr></div>
 					<div class="col-md-10">
@@ -41,7 +41,7 @@
 								<c:set var="vList" value="${requestScope.invoiceList}"/>
 								<c:forEach var="vDto" items="${vList}">
 								<tr>
-									<td><a href="adminServlet?action=invoiceDetail&vid=${vDto.vid}">${vDto.vid}</a></td>
+									<td><a href="../admin/adminServlet?action=invoiceDetail&vid=${vDto.vid}">${vDto.vid}</a></td>
 									<td>${vDto.vname}</td>
 									<td>${vDto.vcomName}</td>
 									<td>${vDto.vdate}</td>
@@ -61,7 +61,7 @@
 														<li class="active"><a href="#">${page}<span class="sr-only">(current)</span></a></li>
 													</c:when>
 													<c:otherwise>
-														<li><a href="adminServlet?action=invoice&page=${page}">${page}</a></li>
+														<li><a href="../admin/adminServlet?action=invoice&page=${page}">${page}</a></li>
 													</c:otherwise>
 												</c:choose>
 											</c:forEach>

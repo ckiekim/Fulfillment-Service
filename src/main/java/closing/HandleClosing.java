@@ -19,8 +19,14 @@ public class HandleClosing {
 		int logisTotal = closeDeliveries(logistics, month, flag);
 		int purchaseTotal = closePurchases(suppliers, month, flag);
 		int grossMargin = incomeTotal - logisTotal - purchaseTotal;
-		LOG.debug("{}: {}, {}, {}, {}", month, incomeTotal, logisTotal, purchaseTotal, grossMargin);
-		return new ClosingDTO(incomeTotal, logisTotal, purchaseTotal, grossMargin);
+		LOG.trace("{}: {}, {}, {}, {}", month, incomeTotal, logisTotal, purchaseTotal, grossMargin);
+		
+		ClosingDTO cDto = new ClosingDTO(incomeTotal, logisTotal, purchaseTotal, grossMargin);
+		cDto.setIncomeComma(String.format("%,d", incomeTotal));
+		cDto.setLogisExpenseComma(String.format("%,d", logisTotal));
+		cDto.setPurchaseExpenseComma(String.format("%,d", purchaseTotal));
+		cDto.setGrossMarginComma(String.format("%,d", grossMargin));
+		return cDto;
 	}
 	
 	public ClosingDTO showClosing(String month) {
@@ -43,8 +49,14 @@ public class HandleClosing {
 			purchaseTotal += rDto.getRdata();
 		
 		int grossMargin = incomeTotal - logisTotal - purchaseTotal;
-		LOG.debug("{}: {}, {}, {}, {}", month, incomeTotal, logisTotal, purchaseTotal, grossMargin);
-		return new ClosingDTO(incomeTotal, logisTotal, purchaseTotal, grossMargin);
+		LOG.trace("{}: {}, {}, {}, {}", month, incomeTotal, logisTotal, purchaseTotal, grossMargin);
+		
+		ClosingDTO cDto = new ClosingDTO(incomeTotal, logisTotal, purchaseTotal, grossMargin);
+		cDto.setIncomeComma(String.format("%,d", incomeTotal));
+		cDto.setLogisExpenseComma(String.format("%,d", logisTotal));
+		cDto.setPurchaseExpenseComma(String.format("%,d", purchaseTotal));
+		cDto.setGrossMarginComma(String.format("%,d", grossMargin));
+		return cDto;
 	}
 	
 	public int closeSales(int comIds[], String month, int flag) {

@@ -11,15 +11,15 @@
 	<link href="../css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-	<%@ include file="../common/_top.jspf" %>
+	<%@ include file="../common/_top_deliver.jspf" %>
 	
 	<div class="container-fluid">
 		<div class="row" style="margin-top: 100px">
 			<div class="col-md-2">
 				<div class="list-group">
 					<a href="#" class="list-group-item active">출고대기 목록</a>
-					<a href="deliverServlet?action=releaseList" class="list-group-item">일별 출고내역</a>
-					<a href="deliverServlet?action=releaseMonthly&page=1" class="list-group-item">월별 출고내역</a>
+					<a href="../deliver/deliverServlet?action=releaseList" class="list-group-item">일별 출고내역</a>
+					<a href="../deliver/deliverServlet?action=releaseMonthly&page=1" class="list-group-item">월별 출고내역</a>
 					<a href="#" class="list-group-item">정산</a>
 				</div>
 			</div>
@@ -27,8 +27,8 @@
 				<div class="row" style="margin-left: 30px">
 					<div class="col-md-7"><h3>출고대기목록 조회</h3></div>
 					<div class="col-md-5"><br>
-						<a class="btn btn-primary" href="deliverServlet?action=release&time=am" role="button">오전 출고처리</a>&nbsp;&nbsp;&nbsp;
-						<a class="btn btn-primary" href="deliverServlet?action=release&time=pm" role="button">오후 출고처리</a>
+						<a class="btn btn-primary" href="../deliver/deliverServlet?action=release&time=am" role="button">오전 출고처리</a>&nbsp;&nbsp;&nbsp;
+						<a class="btn btn-primary" href="../deliver/deliverServlet?action=release&time=pm" role="button">오후 출고처리</a>
 					</div>
 					<div class="col-md-12"><hr></div>
 					<div class="col-md-11">

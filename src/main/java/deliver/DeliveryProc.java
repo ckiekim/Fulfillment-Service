@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import admin.*;
+import user.*;
 import util.HandleDate;
 
 @WebServlet("/deliver/deliverServlet")
@@ -47,22 +49,57 @@ public class DeliveryProc extends HttpServlet {
 		int curDeliveryPage = 1;
 		List<String> pageList = new ArrayList<String>();
 		
-		// 세션이 만료되었으면 다시 로그인하게 만들어 줌
+		Cookie[] cookies = null; 
+		String cookieId = null;
 		int logisId = 0;
-		try {
-			logisId = (Integer)session.getAttribute("companyId");
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		}
-		if (logisId == 0) {
-			LOG.debug("Session timed-out!!!");
-			action = "timeout";
+		
+		// 세션이 만료되었으면 다시 로그인하게 만들어 줌
+		if (!action.equals("init")) {
+			cookies = request.getCookies();
+			for (Cookie cookie: cookies) {
+				LOG.debug("{}, {}", cookie.getName(), cookie.getValue());
+				if (cookie.getName().equals("EzenFS")) {
+					cookieId = cookie.getValue();
+					break;
+				}
+			}
+			LOG.trace("{}, {}", cookieId, (String)session.getAttribute(cookieId+"companyName"));
+			request.setAttribute("CookieId", cookieId);
+			try {
+				logisId = (Integer)session.getAttribute(cookieId+"companyId");
+			} catch (NullPointerException e) {
+				//e.printStackTrace();
+				LOG.info("NullPointerException occurred!!!");
+			}
+			if (logisId == 0) {
+				LOG.debug("Session timed-out!!!");
+				action = "timeout";
+			}
 		}
 		
-		if (action.equals("list")) {	// 운송업체 담당자가 로그인하였을 때
+		if (action.equals("init")) {
+			InitDTO iDto = (InitDTO)request.getAttribute("InitDTO");
+			HandleDate hd = new HandleDate();
+			cookieId = iDto.getUid() + hd.getDateAndTime();
+			LOG.debug("cookieId = {}", cookieId);
+			Cookie efsCookie = new Cookie("EzenFS", cookieId);
+			efsCookie.setPath("/ezenFS/deliver");
+			response.addCookie(efsCookie);
+			request.setAttribute("CookieId", cookieId);
+			session.setAttribute(cookieId+"userId", iDto.getUid());
+			session.setAttribute(cookieId+"userName", iDto.getUname());
+			session.setAttribute(cookieId+"companyId", iDto.getCid());
+			session.setAttribute(cookieId+"companyName", iDto.getCname());
+			logisId = iDto.getCid();
 			List<InvoiceDTO> vList = dDao.getInvoicesByLogis(logisId);
 			request.setAttribute("deliveryWaitList", vList);
-			rd = request.getRequestDispatcher("list.jsp");
+			rd = request.getRequestDispatcher("../deliver/list.jsp");
+	        rd.forward(request, response);
+		}
+		else if (action.equals("list")) {	// 운송업체 담당자가 로그인하였을 때
+			List<InvoiceDTO> vList = dDao.getInvoicesByLogis(logisId);
+			request.setAttribute("deliveryWaitList", vList);
+			rd = request.getRequestDispatcher("../deliver/list.jsp");
 	        rd.forward(request, response);
 		}
 		else if (action.equals("release")) {	// 출고처리 버튼을 클릭하였을 때
@@ -73,7 +110,7 @@ public class DeliveryProc extends HttpServlet {
 			date = hDate.getToday() + hDate.getNumericTime(time);
 			dList = dDao.getDeliveryReleasedList(logisId, date);
 			request.setAttribute("deliveryReleasedList", dList);
-			rd = request.getRequestDispatcher("release.jsp");
+			rd = request.getRequestDispatcher("../deliver/release.jsp");
 	        rd.forward(request, response);
 		}
 		else if (action.equals("releaseList")) {	// 일별 출고목록 메뉴를 클릭하였을 때
@@ -85,7 +122,7 @@ public class DeliveryProc extends HttpServlet {
 			dList = dDao.getDeliveryReleasedList(logisId, date+"%");
 			request.setAttribute("deliveryReleasedList", dList);
 			request.setAttribute("deliveryDate", date);
-			rd = request.getRequestDispatcher("release.jsp");
+			rd = request.getRequestDispatcher("../deliver/release.jsp");
 	        rd.forward(request, response);
 		}
 		else if (action.equals("releaseMonthly")) {	// 월별 출고목록 메뉴를 클릭하였을 때
@@ -109,7 +146,7 @@ public class DeliveryProc extends HttpServlet {
 			request.setAttribute("deliveryReleasedList", dList);
 			request.setAttribute("pageList", pageList);
 			request.setAttribute("Month", month);
-			rd = request.getRequestDispatcher("releaseMonthly.jsp");
+			rd = request.getRequestDispatcher("../deliver/releaseMonthly.jsp");
 	        rd.forward(request, response);
 		} 
 		else if (action.equals("timeout")) {
@@ -117,6 +154,16 @@ public class DeliveryProc extends HttpServlet {
 			request.setAttribute("message", message);
 			request.setAttribute("url", "../user/login.jsp");
 			rd = request.getRequestDispatcher("../common/alertMsg.jsp");
+			rd.forward(request, response);
+		}
+		else if (action.equals("logout")) {
+			cookies = request.getCookies();
+			for (Cookie cookie: cookies) {
+				LOG.debug("logout: {}, {}", cookie.getName(), cookie.getValue());
+				cookie.setMaxAge(0);
+				response.addCookie(cookie);
+			}
+			rd = request.getRequestDispatcher("../user/login.jsp");
 			rd.forward(request, response);
 		}
 	}

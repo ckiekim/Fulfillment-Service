@@ -24,7 +24,7 @@
 				<div class="row" style="margin-left: 30px">
 					<div class="col-md-7"><h3>재고 조회 : ${requestScope.Month}</h3></div>
 					<div class="col-md-5"><br>
-						<form action="adminServlet?action=inventoryMonth" class="form-horizontal" method="post">
+						<form action="../admin/adminServlet?action=inventoryMonth" class="form-horizontal" method="post">
 							<div class="form-group">
 								<label class="control-label">년월:&nbsp;&nbsp;</label>
 								<input type="text" name="month" id="monthpicker">&nbsp;&nbsp;

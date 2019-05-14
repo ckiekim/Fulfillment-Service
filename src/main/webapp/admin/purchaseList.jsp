@@ -21,9 +21,9 @@
 			</div>
 			<div class="col-md-10">
 				<div class="row" style="margin-left: 30px">
-					<div class="col-md-8"><h3>입고확정 대기목록</h3></div>
+					<div class="col-md-8"><h3>구매확정 대기목록</h3></div>
 					<div class="col-md-4"><br>
-						<a class="btn btn-primary" href="adminServlet?action=purchaseConfirm" role="button">입고 확정</a>
+						<a class="btn btn-primary" href="../admin/adminServlet?action=purchaseConfirm" role="button">구매 확정</a>
 					</div>
 					<div class="col-md-12"><hr></div>
 					<div class="col-md-10">

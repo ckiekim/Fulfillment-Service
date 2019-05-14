@@ -12,14 +12,14 @@
 	<link href="../css/jquery-ui.min.css" rel="stylesheet">
 </head>
 <body>
-	<%@ include file="../common/_top.jspf" %>
+	<%@ include file="../common/_top_purchase.jspf" %>
 	
 	<div class="container-fluid">
 		<div class="row" style="margin-top: 100px">
 			<div class="col-md-2">
 				<div class="list-group">
-					<a href="purchaseServlet?action=list" class="list-group-item">공급요청 목록</a>
-					<a href="purchaseServlet?action=purchaseList" class="list-group-item">일별 공급내역</a>
+					<a href="../purchase/purchaseServlet?action=list" class="list-group-item">공급요청 목록</a>
+					<a href="../purchase/purchaseServlet?action=purchaseList" class="list-group-item">일별 공급내역</a>
 					<a href="#" class="list-group-item active">월별 공급내역</a>
 					<a href="#" class="list-group-item">정산</a>
 				</div>
@@ -28,7 +28,7 @@
 				<div class="row" style="margin-left: 30px">
 					<div class="col-md-7"><h3>월별 공급내역 : ${requestScope.purchaseMonth}</h3></div>
 					<div class="col-md-5"><br>
-						<form action="purchaseServlet?action=purchaseMonthly&page=1" class="form-horizontal" method="post">
+						<form action="../purchase/purchaseServlet?action=purchaseMonthly&page=1" class="form-horizontal" method="post">
 							<div class="form-group">
 								<label class="control-label">년월:&nbsp;&nbsp;</label>
 								<input type="text" name="month" id="monthpicker">&nbsp;&nbsp;
@@ -75,7 +75,7 @@
 														<li class="active"><a href="#">${page}<span class="sr-only">(current)</span></a></li>
 													</c:when>
 													<c:otherwise>
-														<li><a href="adminServlet?action=purchaseMonthly&page=${page}">${page}</a></li>
+														<li><a href="../purchase/purchaseServlet?action=purchaseMonthly&page=${page}">${page}</a></li>
 													</c:otherwise>
 												</c:choose>
 											</c:forEach>

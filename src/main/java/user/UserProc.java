@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +14,8 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import util.*;
 
 @WebServlet("/user/userServlet")
 public class UserProc extends HttpServlet {
@@ -75,19 +78,18 @@ public class UserProc extends HttpServlet {
 			}
 			if (result == UserDAO.ID_PASSWORD_MATCH) {
 				uDto = uDao.getUserInfo(uid);
-				session.setAttribute("userId", uid);
-				session.setAttribute("userName", uDto.getUname());
-				session.setAttribute("companyId", uDto.getUcomId());
-				session.setAttribute("companyName", uDto.getUcomName());
+				InitDTO iDto = new InitDTO(uDto.getUid(), uDto.getUname(), uDto.getUcomId(), uDto.getUcomName());
 				switch(uDto.getUcomRole()) {
 				case UserDAO.ROLE_COMPANY:
-					url = "../admin/index.jsp"; break;
+					url = "../admin/adminServlet?action=init"; break;
 				case UserDAO.ROLE_LOGISTICS:
-					url = "../deliver/index.jsp"; break;
+					url = "../deliver/deliverServlet?action=init"; break;
 				case UserDAO.ROLE_SUPPLIER:
-					url = "../purchase/index.jsp"; break;
+					url = "../purchase/purchaseServlet?action=init"; break;
 				}
-				response.sendRedirect(url);
+				request.setAttribute("InitDTO", iDto);
+				rd = request.getRequestDispatcher(url);
+				rd.forward(request, response);
 			} else {
 				request.setAttribute("message", errorMessage);
 				request.setAttribute("url", "../user/login.jsp");
@@ -96,10 +98,20 @@ public class UserProc extends HttpServlet {
 			}
 		}
 		else if (action.equals("logout")) {
-			session.removeAttribute("userId");
-			session.removeAttribute("userName");
-			session.removeAttribute("companyId");
-			session.removeAttribute("companyName");
+			Cookie[] cookies = request.getCookies();
+			String cookieId = null;
+			for (Cookie cookie: cookies) {
+				LOG.debug(cookie.getName());
+				LOG.debug(cookie.getValue());
+				if (cookie.getName().equals("EzenFS"))
+					cookieId = cookie.getValue();
+				cookie.setMaxAge(0);
+				response.addCookie(cookie);
+			}
+			session.removeAttribute(cookieId+"userId");
+			session.removeAttribute(cookieId+"userName");
+			session.removeAttribute(cookieId+"companyId");
+			session.removeAttribute(cookieId+"companyName");
 			response.sendRedirect("../user/login.jsp");
 		} 
 	}

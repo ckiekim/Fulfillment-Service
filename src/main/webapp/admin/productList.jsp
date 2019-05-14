@@ -52,9 +52,9 @@
 										    <span class="sr-only">Toggle Dropdown</span>
 										</button>
 										<ul class="dropdown-menu" role="menu">
-										    <li><a href="adminServlet?action=productList&category=가전">가전</a></li>
-										    <li><a href="adminServlet?action=productList&category=스포츠">스포츠</a></li>
-										    <li><a href="adminServlet?action=productList&category=식품">식품</a></li>
+										    <li><a href="../admin/adminServlet?action=productList&category=가전">가전</a></li>
+										    <li><a href="../admin/adminServlet?action=productList&category=스포츠">스포츠</a></li>
+										    <li><a href="../admin/adminServlet?action=productList&category=식품">식품</a></li>
 										</ul>
 									</div><br><br>
 								</td></tr>

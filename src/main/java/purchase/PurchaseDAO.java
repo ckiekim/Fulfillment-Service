@@ -61,18 +61,18 @@ public class PurchaseDAO {
 		if (supplierId == 0)
 			query = "select r.rid, r.rinvId, r.rprodId, p.pname, r.rquantity, r.rdate, r.rstatus, p.pstock, c.cname, p.pprice " +
 					"from purchases as r inner join products as p on r.rprodId=p.pid " +
-					"inner join companies as c on r.rcomId=c.cid where r.rstatus=? and " +
+					"inner join companies as c on r.rcomId=c.cid where r.rstatus>=? and " +
 					"r.rdate between date(?) and last_day(?) order by r.rcomId, r.rid limit ?, 10;";
 		else
 			if (page == 0)
 				query = "select r.rid, r.rinvId, r.rprodId, p.pname, r.rquantity, r.rdate, r.rstatus, p.pstock, c.cname, p.pprice " +
 						"from purchases as r inner join products as p on r.rprodId=p.pid " +
-						"inner join companies as c on r.rcomId=c.cid where r.rstatus=? and " +
+						"inner join companies as c on r.rcomId=c.cid where r.rstatus>=? and " +
 						"r.rdate between date(?) and last_day(?) and r.rcomId=? order by r.rid;";
 			else
 				query = "select r.rid, r.rinvId, r.rprodId, p.pname, r.rquantity, r.rdate, r.rstatus, p.pstock, c.cname, p.pprice " +
 						"from purchases as r inner join products as p on r.rprodId=p.pid " +
-						"inner join companies as c on r.rcomId=c.cid where r.rstatus=? and " +
+						"inner join companies as c on r.rcomId=c.cid where r.rstatus>=? and " +
 						"r.rdate between date(?) and last_day(?) and r.rcomId=? order by r.rid limit ?, 10;";
 		int offset = (page - 1) * 10;
 		List<PurchaseDTO> rList = new ArrayList<PurchaseDTO>();
@@ -110,6 +110,8 @@ public class PurchaseDAO {
 						rDto.setRstatusName("실행"); break;
 					case PURCHASE_CONFIRMED:
 						rDto.setRstatusName("확정"); break;
+					case PURCHASE_CLOSED:
+						rDto.setRstatusName("정산"); break;
 					default:
 				}
 				rList.add(rDto);
@@ -132,7 +134,7 @@ public class PurchaseDAO {
 		String query = "select r.rid, r.rinvId, r.rprodId, p.pname, r.rquantity, r.rdate, r.rstatus, p.pstock, c.cname, p.pprice " +
 						"from purchases as r inner join products as p on r.rprodId=p.pid " +
 						"inner join companies as c on r.rcomId=c.cid " +
-						"where r.rstatus=? and r.rdate like ? order by r.rcomId, r.rid;";
+						"where r.rstatus>=? and r.rdate like ? order by r.rcomId, r.rid;";
 		List<PurchaseDTO> rList = new ArrayList<PurchaseDTO>();
 		try {
 			pStmt = conn.prepareStatement(query);
@@ -160,6 +162,8 @@ public class PurchaseDAO {
 						rDto.setRstatusName("실행"); break;
 					case PURCHASE_CONFIRMED:
 						rDto.setRstatusName("확정"); break;
+					case PURCHASE_CLOSED:
+						rDto.setRstatusName("정산"); break;
 					default:
 				}
 				rList.add(rDto);
@@ -209,6 +213,8 @@ public class PurchaseDAO {
 						rDto.setRstatusName("실행"); break;
 					case PURCHASE_CONFIRMED:
 						rDto.setRstatusName("확정"); break;
+					case PURCHASE_CLOSED:
+						rDto.setRstatusName("정산"); break;
 					default:
 				}
 				rList.add(rDto);
@@ -258,6 +264,8 @@ public class PurchaseDAO {
 						rDto.setRstatusName("실행"); break;
 					case PURCHASE_CONFIRMED:
 						rDto.setRstatusName("확정"); break;
+					case PURCHASE_CLOSED:
+						rDto.setRstatusName("정산"); break;
 					default:
 				}
 				rList.add(rDto);
@@ -305,6 +313,8 @@ public class PurchaseDAO {
 						rDto.setRstatusName("실행"); break;
 					case PURCHASE_CONFIRMED:
 						rDto.setRstatusName("확정"); break;
+					case PURCHASE_CLOSED:
+						rDto.setRstatusName("정산"); break;
 					default:
 				}
 				rList.add(rDto);

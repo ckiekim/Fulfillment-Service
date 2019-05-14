@@ -11,15 +11,15 @@
 	<link href="../css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-	<%@ include file="../common/_top.jspf" %>
+	<%@ include file="../common/_top_purchase.jspf" %>
 	
 	<div class="container-fluid">
 		<div class="row" style="margin-top: 100px">
 			<div class="col-md-2">
 				<div class="list-group">
 					<a href="#" class="list-group-item active">공급요청 목록</a>
-					<a href="purchaseServlet?action=purchaseList" class="list-group-item">일별 공급내역</a>
-					<a href="purchaseServlet?action=purchaseMonthly&page=1" class="list-group-item">월별 공급내역</a>
+					<a href="../purchase/purchaseServlet?action=purchaseList" class="list-group-item">일별 공급내역</a>
+					<a href="../purchase/purchaseServlet?action=purchaseMonthly&page=1" class="list-group-item">월별 공급내역</a>
 					<a href="#" class="list-group-item">정산</a>
 				</div>
 			</div>
@@ -27,7 +27,7 @@
 				<div class="row" style="margin-left: 30px">
 					<div class="col-md-8"><h3>공급요청 목록</h3></div>
 					<div class="col-md-4"><br>
-						<a class="btn btn-primary" href="purchaseServlet?action=supply" role="button">입고처리</a>
+						<a class="btn btn-primary" href="../purchase/purchaseServlet?action=supply" role="button">입고처리</a>
 					</div>
 					<div class="col-md-12"><hr></div>
 					<div class="col-md-10">

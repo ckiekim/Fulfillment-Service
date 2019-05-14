@@ -144,18 +144,18 @@ public class DeliveryDAO {
 		if (dcomId == 0)	// 모든 레코드 선택, 관리자 모드
 			query = "select d.did, d.dcomId, d.dinvId, d.ddate, d.dstatus, v.vname, v.vaddr, c.cname " + 
 					"from deliveries as d inner join invoices as v on d.dinvId=v.vid " + 
-					"inner join companies as c on d.dcomId=c.cid where d.dstatus=? and " + 
+					"inner join companies as c on d.dcomId=c.cid where d.dstatus>=? and " + 
 					"d.ddate between date(?) and last_day(?) order by d.dcomId, d.ddate, d.did limit ?, 10;";
 		else
 			if (page == 0)
 				query = "select d.did, d.dcomId, d.dinvId, d.ddate, d.dstatus, v.vname, v.vaddr, c.cname " + 
 						"from deliveries as d inner join invoices as v on d.dinvId=v.vid " + 
-						"inner join companies as c on d.dcomId=c.cid where d.dstatus=? and " + 
+						"inner join companies as c on d.dcomId=c.cid where d.dstatus>=? and " + 
 						"d.ddate between date(?) and last_day(?) and d.dcomId=? order by d.ddate, d.did;";
 			else
 				query = "select d.did, d.dcomId, d.dinvId, d.ddate, d.dstatus, v.vname, v.vaddr, c.cname " + 
 						"from deliveries as d inner join invoices as v on d.dinvId=v.vid " + 
-						"inner join companies as c on d.dcomId=c.cid where d.dstatus=? and " + 
+						"inner join companies as c on d.dcomId=c.cid where d.dstatus>=? and " + 
 						"d.ddate between date(?) and last_day(?) and d.dcomId=? order by d.ddate, d.did limit ?, 10;";
 		int offset = (page - 1) * 10;
 		List<DeliveryDTO> dList = new ArrayList<DeliveryDTO>();
@@ -190,6 +190,8 @@ public class DeliveryDAO {
 						dDto.setDstatusName("실행"); break;
 					case DELIVERY_CONFIRMED:
 						dDto.setDstatusName("확정"); break;
+					case DELIVERY_CLOSED:
+						dDto.setDstatusName("정산"); break;
 					default:
 				}
 				dList.add(dDto);
@@ -212,7 +214,7 @@ public class DeliveryDAO {
 		String query = "select d.did, d.dcomId, d.dinvId, d.ddate, d.dstatus, v.vname, v.vaddr, c.cname " + 
 				"from deliveries as d inner join invoices as v on d.dinvId=v.vid " + 
 				"inner join companies as c on d.dcomId=c.cid " + 
-				"where d.dstatus=? and d.ddate like ? order by d.dcomId, d.ddate, d.did;";
+				"where d.dstatus>=? and d.ddate like ? order by d.dcomId, d.ddate, d.did;";
 		List<DeliveryDTO> dList = new ArrayList<DeliveryDTO>();
 		try {
 			pStmt = conn.prepareStatement(query);
@@ -237,6 +239,8 @@ public class DeliveryDAO {
 						dDto.setDstatusName("실행"); break;
 					case DELIVERY_CONFIRMED:
 						dDto.setDstatusName("확정"); break;
+					case DELIVERY_CLOSED:
+						dDto.setDstatusName("정산"); break;
 					default:
 				}
 				dList.add(dDto);
@@ -283,6 +287,8 @@ public class DeliveryDAO {
 						dDto.setDstatusName("실행"); break;
 					case DELIVERY_CONFIRMED:
 						dDto.setDstatusName("확정"); break;
+					case DELIVERY_CLOSED:
+						dDto.setDstatusName("정산"); break;
 					default:
 				}
 				dList.add(dDto);
@@ -328,6 +334,8 @@ public class DeliveryDAO {
 						dDto.setDstatusName("실행"); break;
 					case DELIVERY_CONFIRMED:
 						dDto.setDstatusName("확정"); break;
+					case DELIVERY_CLOSED:
+						dDto.setDstatusName("정산"); break;
 					default:
 				}
 				dList.add(dDto);
@@ -379,6 +387,8 @@ public class DeliveryDAO {
 						vDto.setVstatusName("확정"); break;
 					case InvoiceDAO.INVOICE_DELAY_READY:
 						vDto.setVstatusName("우선대기"); break;
+					case InvoiceDAO.INVOICE_CLOSED:
+						vDto.setVstatusName("정산"); break;	
 					default:
 				}
 				vList.add(vDto);

@@ -12,14 +12,14 @@
 	<link href="../css/jquery-ui.min.css" rel="stylesheet">
 </head>
 <body>
-	<%@ include file="../common/_top.jspf" %>
+	<%@ include file="../common/_top_deliver.jspf" %>
 	
 	<div class="container-fluid">
 		<div class="row" style="margin-top: 100px">
 			<div class="col-md-2">
 				<div class="list-group">
-					<a href="deliverServlet?action=list" class="list-group-item">출고대기 목록</a>
-					<a href="deliverServlet?action=releaseList" class="list-group-item">일별 출고내역</a>
+					<a href="../deliver/deliverServlet?action=list" class="list-group-item">출고대기 목록</a>
+					<a href="../deliver/deliverServlet?action=releaseList" class="list-group-item">일별 출고내역</a>
 					<a href="#" class="list-group-item active">월별 출고내역</a>
 					<a href="#" class="list-group-item">정산</a>
 				</div>
@@ -28,7 +28,7 @@
 				<div class="row" style="margin-left: 30px">
 					<div class="col-md-7"><h3>월별 출고내역 : ${requestScope.Month}</h3></div>
 					<div class="col-md-5"><br>
-						<form action="deliverServlet?action=releaseMonthly&page=1" class="form-horizontal" method="post">
+						<form action="../deliver/deliverServlet?action=releaseMonthly&page=1" class="form-horizontal" method="post">
 							<div class="form-group">
 								<label class="control-label">년월:&nbsp;&nbsp;</label>
 								<input type="text" name="monthRelease" id="monthpicker">&nbsp;&nbsp;

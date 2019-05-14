@@ -5,6 +5,10 @@ public class ClosingDTO {
 	private int logisExpense;
 	private int purchaseExpense;
 	private int grossMargin;
+	private String incomeComma;
+	private String logisExpenseComma;
+	private String purchaseExpenseComma;
+	private String grossMarginComma;
 	
 	public ClosingDTO() {
 	}
@@ -38,9 +42,33 @@ public class ClosingDTO {
 	public void setGrossMargin(int grossMargin) {
 		this.grossMargin = grossMargin;
 	}
+	public String getIncomeComma() {
+		return incomeComma;
+	}
+	public void setIncomeComma(String incomeComma) {
+		this.incomeComma = incomeComma;
+	}
+	public String getLogisExpenseComma() {
+		return logisExpenseComma;
+	}
+	public void setLogisExpenseComma(String logisExpenseComma) {
+		this.logisExpenseComma = logisExpenseComma;
+	}
+	public String getPurchaseExpenseComma() {
+		return purchaseExpenseComma;
+	}
+	public void setPurchaseExpenseComma(String purchaseExpenseComma) {
+		this.purchaseExpenseComma = purchaseExpenseComma;
+	}
+	public String getGrossMarginComma() {
+		return grossMarginComma;
+	}
+	public void setGrossMarginComma(String grossMarginComma) {
+		this.grossMarginComma = grossMarginComma;
+	}
 	@Override
 	public String toString() {
-		return "ClosingDTO [income=" + income + ", logisExpense=" + logisExpense + ", purchaseExpense="
-				+ purchaseExpense + ", grossMargin=" + grossMargin + "]";
+		return "ClosingDTO [incomeComma=" + incomeComma + ", logisExpenseComma=" + logisExpenseComma
+				+ ", purchaseExpenseComma=" + purchaseExpenseComma + ", grossMarginComma=" + grossMarginComma + "]";
 	}
 }

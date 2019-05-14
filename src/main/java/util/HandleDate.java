@@ -32,4 +32,10 @@ public class HandleDate {
 			timeStr = " 18:00:00";
 		return timeStr;
 	}
+	
+	public String getDateAndTime() {
+		SimpleDateFormat formatter = new SimpleDateFormat ("MMddhhmmss", Locale.KOREA);
+		String dateAndTime = formatter.format(new Date());
+		return dateAndTime;
+	}
 }

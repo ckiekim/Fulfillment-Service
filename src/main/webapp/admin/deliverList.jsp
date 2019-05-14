@@ -23,7 +23,7 @@
 				<div class="row" style="margin-left: 30px">
 					<div class="col-md-8"><h3>출고확정 대기목록</h3></div>
 					<div class="col-md-4"><br>
-						<a class="btn btn-primary" href="adminServlet?action=deliverConfirm" role="button">출고 확정</a>
+						<a class="btn btn-primary" href="../admin/adminServlet?action=deliverConfirm" role="button">출고 확정</a>
 					</div>
 					<div class="col-md-12"><hr></div>
 					<div class="col-md-10">
