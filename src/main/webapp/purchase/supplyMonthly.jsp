@@ -21,7 +21,7 @@
 					<a href="../purchase/purchaseServlet?action=list" class="list-group-item">공급요청 목록</a>
 					<a href="../purchase/purchaseServlet?action=purchaseList" class="list-group-item">일별 공급내역</a>
 					<a href="#" class="list-group-item active">월별 공급내역</a>
-					<a href="#" class="list-group-item">정산</a>
+					<a href="../purchase/purchaseServlet?action=closingResult" class="list-group-item">정산 내역</a>
 				</div>
 			</div>
 			<div class="col-md-10">

@@ -20,7 +20,7 @@
 					<a href="#" class="list-group-item active">출고대기 목록</a>
 					<a href="../deliver/deliverServlet?action=releaseList" class="list-group-item">일별 출고내역</a>
 					<a href="../deliver/deliverServlet?action=releaseMonthly&page=1" class="list-group-item">월별 출고내역</a>
-					<a href="#" class="list-group-item">정산</a>
+					<a href="../deliver/deliverServlet?action=closingResult" class="list-group-item">정산 내역</a>
 				</div>
 			</div>
 			<div class="col-md-10">

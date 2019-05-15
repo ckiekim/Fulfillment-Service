@@ -100,6 +100,8 @@ public class InvoiceDAO {
 						vDto.setVstatusName("확정"); break;
 					case INVOICE_DELAY_READY:
 						vDto.setVstatusName("우선대기"); break;
+					case INVOICE_CLOSED:
+						vDto.setVstatusName("정산"); break;
 					default:
 				}
 				vList.add(vDto);
@@ -162,6 +164,8 @@ public class InvoiceDAO {
 						vDto.setVstatusName("확정"); break;
 					case INVOICE_DELAY_READY:
 						vDto.setVstatusName("우선대기"); break;
+					case INVOICE_CLOSED:
+						vDto.setVstatusName("정산"); break;
 					default:
 				}
 				vList.add(vDto);
@@ -256,6 +260,8 @@ public class InvoiceDAO {
 						vDto.setVstatusName("확정"); break;
 					case INVOICE_DELAY_READY:
 						vDto.setVstatusName("우선대기"); break;
+					case INVOICE_CLOSED:
+						vDto.setVstatusName("정산"); break;
 					default:
 				}
 				LOG.debug(vDto.toString());

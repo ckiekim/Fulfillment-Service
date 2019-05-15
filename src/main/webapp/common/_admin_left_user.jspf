@@ -2,7 +2,7 @@
 
 	<!-- Nav tabs -->
 	<ul class="nav nav-pills nav-tabs tabs-left">
-		<li><a href="../admin/adminServlet?action=userList">사용자 조회</a></li>
+		<li class="active"><a href="#">사용자 조회</a></li>
 		<li><a href="../admin/adminServlet?action=productList&category=가전">상품 조회</a></li>
 		<li><a href="../admin/adminServlet?action=invoice&page=1">주문</a></li>
 		<li class="dropdown">

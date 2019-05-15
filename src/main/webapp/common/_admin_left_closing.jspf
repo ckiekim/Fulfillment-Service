@@ -22,7 +22,7 @@
 			</ul>
 		</li>
 		<li><a href="../admin/adminServlet?action=inventory&page=1">재고</a></li>
-		<li class="dropdown">
+		<li class="dropdown active">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">정산 <span class="caret"></span></a>
 			<ul class="dropdown-menu" role="menu">
 				<li><a href="../admin/adminServlet?action=doClosing">정산확정 대기</a></li>

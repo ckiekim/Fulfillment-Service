@@ -69,8 +69,9 @@ public class AdminProc extends HttpServlet {
 		int logistics[] = {1002, 1003, 1004, 1005};
 		int suppliers[] = {1006, 1007, 1008, 1009, 1010};
 		HandleClosing hClosing = null;
-		String date = null;
 		HandleDate hDate = null;
+		String date = null;
+		String month = null;
 		
 		Cookie[] cookies = null; 
 		String cookieId = null;
@@ -78,7 +79,7 @@ public class AdminProc extends HttpServlet {
 		if (!action.equals("init")) {
 			cookies = request.getCookies();
 			for (Cookie cookie: cookies) {
-				LOG.debug("{}, {}", cookie.getName(), cookie.getValue());
+				LOG.trace("{}, {}", cookie.getName(), cookie.getValue());
 				if (cookie.getName().equals("EzenFS")) {
 					cookieId = cookie.getValue();
 					break;
@@ -92,12 +93,11 @@ public class AdminProc extends HttpServlet {
 					action = "timeout";
 				}
 			} catch (IllegalStateException e) {
-				//e.printStackTrace();
 				LOG.info("IllegalStateException occurred!!!");
 			}
 		}
 		
-		if (action.equals("init")) {
+		if (action.equals("init")) {	// 관리자가 로그인하였을 때
 			InitDTO iDto = (InitDTO)request.getAttribute("InitDTO");
 			HandleDate hd = new HandleDate();
 			cookieId = iDto.getUid() + hd.getDateAndTime();
@@ -110,6 +110,7 @@ public class AdminProc extends HttpServlet {
 			session.setAttribute(cookieId+"userName", iDto.getUname());
 			session.setAttribute(cookieId+"companyId", iDto.getCid());
 			session.setAttribute(cookieId+"companyName", iDto.getCname());
+			
 			uList = uDao.getAllUsers();
 			cList = uDao.getAllCompanies();
 			request.setAttribute("userList", uList);
@@ -196,8 +197,8 @@ public class AdminProc extends HttpServlet {
 			if (!request.getParameter("page").equals("")) {
 				currentPage = Integer.parseInt(request.getParameter("page"));
 			}
-			String month = request.getParameter("month");
-			if (month == null) {
+			month = request.getParameter("month");
+			if (month == null || month.equals("")) {
 				hDate = new HandleDate();
 				month = hDate.getToday().substring(0, 7);
 			}
@@ -244,8 +245,8 @@ public class AdminProc extends HttpServlet {
 			if (!request.getParameter("page").equals("")) {
 				currentPage = Integer.parseInt(request.getParameter("page"));
 			}
-			String month = request.getParameter("month");
-			if (month == null) {
+			month = request.getParameter("month");
+			if (month == null || month.equals("")) {
 				hDate = new HandleDate();
 				month = hDate.getToday().substring(0, 7);
 			}
@@ -280,7 +281,11 @@ public class AdminProc extends HttpServlet {
 	        rd.forward(request, response);
 		}
 		else if (action.equals("inventoryMonth")) {	// 월별 재고를 클릭했을 때
-			String month = request.getParameter("month");
+			month = request.getParameter("month");
+			if (month == null || month.equals("")) {
+				hDate = new HandleDate();
+				month = hDate.getToday().substring(0, 7);
+			}
 			HandleInventory hInventory = new HandleInventory();
 			iList = hInventory.getMonthlyInventories(month);
 			request.setAttribute("inventoryList", iList);
@@ -289,7 +294,6 @@ public class AdminProc extends HttpServlet {
 	        rd.forward(request, response);
 		} 
 		else if (action.equals("doClosing")) {	// 내비게이션 메뉴에서 정산 실행을 클릭했을 때
-			String month = null;
 			hDate = new HandleDate();
 			date = hDate.getToday().substring(8);
 			if (Integer.parseInt(date) > 10)
@@ -311,7 +315,6 @@ public class AdminProc extends HttpServlet {
 	        rd.forward(request, response);
 		} 
 		else if (action.equals("closingConfirm")) {	// 정산 확정 버튼을 클릭했을 때
-			String month = null;
 			hDate = new HandleDate();
 			date = hDate.getToday().substring(8);
 			if (Integer.parseInt(date) > 10)
@@ -323,8 +326,8 @@ public class AdminProc extends HttpServlet {
 			response.sendRedirect("../admin/adminServlet?action=showClosingMonthly");
 		}
 		else if (action.equals("showClosingMonthly")) {	// 내비게이션 메뉴에서 월별 정산내역을 클릭했을 때
-			String month = request.getParameter("month");
-			if (month == null) {
+			month = request.getParameter("month");
+			if (month == null || month.equals("")) {
 				hDate = new HandleDate();
 				date = hDate.getToday().substring(8);
 				if (Integer.parseInt(date) > 10)
@@ -345,14 +348,26 @@ public class AdminProc extends HttpServlet {
 			rd = request.getRequestDispatcher("../admin/closingMonthly.jsp");
 	        rd.forward(request, response);
 		}
-		else if (action.equals("timeout")) {
+		else if (action.equals("showClosingYearly")) {	// 내비게이션 메뉴에서 년간 정산내역을 클릭했을 때
+			rd = request.getRequestDispatcher("../admin/closingYearly.jsp");
+	        rd.forward(request, response);
+		}
+		else if (action.equals("showClosingGraph")) {	// 내비게이션 메뉴에서 월간 추이를 클릭했을 때
+			int[] closingRecords = {23500, 19450, 50000, 34550, 54000, 39000, 50000, 48000, 40000, 55000, 62000, 49000};
+			int[] closingRecords2 = {50000, 48000, 40000, 55000, 62000, 49000, 28500, 22450, 50000, 34550, 54000, 39000};
+			request.setAttribute("ClosingRecords", closingRecords);
+			request.setAttribute("ClosingRecords2", closingRecords2);
+			rd = request.getRequestDispatcher("../admin/closingGraph.jsp");
+			rd.forward(request, response);
+		}
+		else if (action.equals("timeout")) {	// 강제 로그아웃 당하는 경우
 			String message = "30분 동안 액션이 없어서 로그아웃 되었습니다.";
 			request.setAttribute("message", message);
 			request.setAttribute("url", "../user/login.jsp");
 			rd = request.getRequestDispatcher("../common/alertMsg.jsp");
 			rd.forward(request, response);
 		}
-		else if (action.equals("logout")) {
+		else if (action.equals("logout")) {		// 상단 로그아웃을 클릭하였을 때
 			cookies = request.getCookies();
 			for (Cookie cookie: cookies) {
 				LOG.debug("logout: {}, {}", cookie.getName(), cookie.getValue());

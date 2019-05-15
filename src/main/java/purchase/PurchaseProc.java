@@ -78,7 +78,7 @@ public class PurchaseProc extends HttpServlet {
 			}
 		}
 		
-		if (action.equals("init")) {
+		if (action.equals("init")) {	// 공급업체 담당자가 로그인하였을 때
 			InitDTO iDto = (InitDTO)request.getAttribute("InitDTO");
 			HandleDate hd = new HandleDate();
 			cookieId = iDto.getUid() + hd.getDateAndTime();
@@ -97,7 +97,7 @@ public class PurchaseProc extends HttpServlet {
 			rd = request.getRequestDispatcher("list.jsp");
 	        rd.forward(request, response);
 		}
-		else if (action.equals("list")) {	// 공급업체 담당자가 로그인하였을 때
+		else if (action.equals("list")) {	// 공급요청 목록 메뉴를 클릭하였을 때
 			rList = rDao.getPurchaseListBySupplier(suppId);
 			request.setAttribute("purchaseWaitList", rList);
 			rd = request.getRequestDispatcher("../purchase/list.jsp");
@@ -146,14 +146,20 @@ public class PurchaseProc extends HttpServlet {
 			rd = request.getRequestDispatcher("../purchase/supplyMonthly.jsp");
 			rd.forward(request, response);
 		} 
-		else if (action.equals("timeout")) {
+		else if (action.equals("closingResult")) {	// 정산 메뉴를 클릭하였을 때
+			int[] closingRecords = {23500, 12450, 50000, 34550, 54000, 39000, 50000, 48000, 40000, 55000, 62000, 49000};
+			request.setAttribute("ClosingRecords", closingRecords);
+			rd = request.getRequestDispatcher("../purchase/closingGraph.jsp");
+			rd.forward(request, response);
+		}
+		else if (action.equals("timeout")) {	// 강제 로그아웃 당하는 경우
 			String message = "30분 동안 액션이 없어서 로그아웃 되었습니다.";
 			request.setAttribute("message", message);
 			request.setAttribute("url", "../user/login.jsp");
 			rd = request.getRequestDispatcher("../common/alertMsg.jsp");
 			rd.forward(request, response);
 		}
-		else if (action.equals("logout")) {
+		else if (action.equals("logout")) {		// 상단 로그아웃을 클릭하였을 때
 			cookies = request.getCookies();
 			for (Cookie cookie: cookies) {
 				LOG.debug("logout: {}, {}", cookie.getName(), cookie.getValue());

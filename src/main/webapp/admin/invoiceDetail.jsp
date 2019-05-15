@@ -17,7 +17,7 @@
 	<div class="container-fluid">
 		<div class="row" style="margin-top: 100px">
 			<div class="col-md-2">
-				<%@ include file="../common/_admin_left.jspf" %>
+				<%@ include file="../common/_admin_left_invoice.jspf" %>
 			</div>
 			<div class="col-md-10">
 				<div class="row" style="margin-left: 30px">
