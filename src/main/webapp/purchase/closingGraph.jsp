@@ -75,7 +75,7 @@
 		    data: {
 		        labels: ["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"],
 		        datasets: [{
-		            label: '정산 내역',
+		            label: '정산 금액',
 		            data: records,
 		            backgroundColor: [
 		                'rgba(255, 99, 132, 0.3)',

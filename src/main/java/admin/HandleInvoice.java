@@ -38,7 +38,7 @@ public class HandleInvoice {
 							+ " " + s.substring(8,10) + ":" + s.substring(10) + ":00";
 			String mall = invFile.getName().substring(12, 14);
 			int mallId = uDao.getCompanyCode(mall);
-			LOG.debug("{}, {}", date, mallId);
+			LOG.trace("{}, {}", date, mallId);
 			try {
 				reader = new FileReader(invFile);
 				br = new BufferedReader(reader);
@@ -182,6 +182,7 @@ public class HandleInvoice {
 			// 발주 요청 목록에 등록
 			PurchaseDTO rDto = new PurchaseDTO(suppId, invoiceId, pDto.getPid(), purchaseQuantity);
 			rDao.insertPurchases(rDto);
+			LOG.debug(rDto.toString());
 		}
 	}
 	

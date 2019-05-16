@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -35,7 +36,7 @@
 								주문처:&nbsp;&nbsp;${vDto.vcomName}<br>
 								주문자:&nbsp;&nbsp;${vDto.vname}, ${vDto.vtel}, ${vDto.vaddr}<br>
 								운송처:&nbsp;&nbsp;${vDto.vlogisName}<br>
-								총 금액:&nbsp;&nbsp;${vDto.vtotal}원
+								총 금액:&nbsp;&nbsp;<fmt:formatNumber value="${vDto.vtotal}" pattern="#,###"/>원
 							</div>
 							<table class="table table-striped">
 								<tr class="active">
@@ -49,7 +50,7 @@
 								<tr>
 									<td>${sDto.sprodId}</td>
 									<td>${sDto.sprodName}</td>
-									<td>${sDto.sprice}</td>
+									<td><fmt:formatNumber value="${sDto.sprice}" pattern="#,###"/></td>
 									<td>${sDto.squantity}</td>
 								</tr>
 								</c:forEach>

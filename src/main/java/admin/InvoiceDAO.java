@@ -16,9 +16,9 @@ public class InvoiceDAO {
 	private static final Logger LOG = LoggerFactory.getLogger(InvoiceDAO.class);
 	public static final int INVOICE_READY = 0;
 	public static final int INVOICE_DELAYED = 1;
-	public static final int INVOICE_RELEASED = 2;
-	public static final int INVOICE_CONFIRMED = 3;
-	public static final int INVOICE_DELAY_READY = 4;
+	public static final int INVOICE_DELAY_READY = 2;
+	public static final int INVOICE_RELEASED = 3;
+	public static final int INVOICE_CONFIRMED = 4;
 	public static final int INVOICE_CLOSED = 5;
 	Connection conn;
 	PreparedStatement pStmt;
@@ -94,12 +94,12 @@ public class InvoiceDAO {
 						vDto.setVstatusName("대기"); break;
 					case INVOICE_DELAYED:
 						vDto.setVstatusName("지연"); break;
+					case INVOICE_DELAY_READY:
+						vDto.setVstatusName("우선대기"); break;
 					case INVOICE_RELEASED:
 						vDto.setVstatusName("실행"); break;
 					case INVOICE_CONFIRMED:
 						vDto.setVstatusName("확정"); break;
-					case INVOICE_DELAY_READY:
-						vDto.setVstatusName("우선대기"); break;
 					case INVOICE_CLOSED:
 						vDto.setVstatusName("정산"); break;
 					default:
@@ -158,12 +158,12 @@ public class InvoiceDAO {
 						vDto.setVstatusName("대기"); break;
 					case INVOICE_DELAYED:
 						vDto.setVstatusName("지연"); break;
+					case INVOICE_DELAY_READY:
+						vDto.setVstatusName("우선대기"); break;
 					case INVOICE_RELEASED:
 						vDto.setVstatusName("실행"); break;
 					case INVOICE_CONFIRMED:
 						vDto.setVstatusName("확정"); break;
-					case INVOICE_DELAY_READY:
-						vDto.setVstatusName("우선대기"); break;
 					case INVOICE_CLOSED:
 						vDto.setVstatusName("정산"); break;
 					default:
@@ -254,17 +254,17 @@ public class InvoiceDAO {
 						vDto.setVstatusName("대기"); break;
 					case INVOICE_DELAYED:
 						vDto.setVstatusName("지연"); break;
+					case INVOICE_DELAY_READY:
+						vDto.setVstatusName("우선대기"); break;
 					case INVOICE_RELEASED:
 						vDto.setVstatusName("실행"); break;
 					case INVOICE_CONFIRMED:
 						vDto.setVstatusName("확정"); break;
-					case INVOICE_DELAY_READY:
-						vDto.setVstatusName("우선대기"); break;
 					case INVOICE_CLOSED:
 						vDto.setVstatusName("정산"); break;
 					default:
 				}
-				LOG.debug(vDto.toString());
+				LOG.trace(vDto.toString());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -293,7 +293,7 @@ public class InvoiceDAO {
 				vDto.setVaddr(rs.getString(4));
 				vDto.setVcomId(rs.getInt(5));
 				vDto.setVdate(rs.getString(6).substring(0, 16));
-				LOG.debug(vDto.toString());
+				LOG.trace(vDto.toString());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

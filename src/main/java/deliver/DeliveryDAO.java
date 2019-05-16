@@ -381,12 +381,12 @@ public class DeliveryDAO {
 						vDto.setVstatusName("대기"); break;
 					case InvoiceDAO.INVOICE_DELAYED:
 						vDto.setVstatusName("지연"); break;
+					case InvoiceDAO.INVOICE_DELAY_READY:
+						vDto.setVstatusName("우선대기"); break;
 					case InvoiceDAO.INVOICE_RELEASED:
 						vDto.setVstatusName("실행"); break;
 					case InvoiceDAO.INVOICE_CONFIRMED:
 						vDto.setVstatusName("확정"); break;
-					case InvoiceDAO.INVOICE_DELAY_READY:
-						vDto.setVstatusName("우선대기"); break;
 					case InvoiceDAO.INVOICE_CLOSED:
 						vDto.setVstatusName("정산"); break;	
 					default:

@@ -35,7 +35,7 @@ create table invoices (
   vstatus int default 0,
   vlogisId int unsigned default 0,
   foreign key(vcomId) references companies(cid)
-) auto_increment=10001 default charset=utf8;
+) auto_increment=101 default charset=utf8;
 
 create table soldProducts (
   sinvId int unsigned not null,
@@ -54,7 +54,7 @@ create table deliveries (
   dstatus int default 0,
   foreign key(dcomId) references companies(cid),
   foreign key(dinvId) references invoices(vid)
-) auto_increment=101 default charset=utf8;
+) auto_increment=101;
 
 create table purchases (
   rid int unsigned auto_increment primary key,
@@ -66,8 +66,8 @@ create table purchases (
   rstatus int default 0,
   foreign key(rcomId) references companies(cid),
   foreign key(rinvId) references invoices(vid),
-  foreign key(rproId) references products(pid)
-) auto_increment=101 default charset=utf8;
+  foreign key(rprodId) references products(pid)
+) auto_increment=101;
 
 create table inventories (
   iid int unsigned not null auto_increment primary key,
@@ -76,8 +76,8 @@ create table inventories (
   iinward int default 0,
   ioutward int default 0,
   icurrent int default 0,
-  foreign key(iproId) references products(pid)
-) auto_increment=1001;
+  foreign key(iprodId) references products(pid)
+) auto_increment=101;
 
 create table sales (
   lid int unsigned not null auto_increment primary key,
@@ -92,7 +92,8 @@ create table records (
   rcomId int unsigned not null,
   rrole int unsigned not null,
   rmonth varchar(8) not null,
-  rdata int default 0
+  rdata int default 0,
+  foreign key(rcomId) references companies(cid)
 ) auto_increment=101;
 
 insert into companies values

@@ -366,7 +366,7 @@ public class PurchaseDAO {
 			pStmt.setInt(3, rDto.getRprodId());
 			pStmt.setInt(4, rDto.getRquantity());
 			pStmt.executeUpdate();
-			LOG.debug(rDto.toString());
+			LOG.trace(rDto.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -387,7 +387,7 @@ public class PurchaseDAO {
 			pStmt.setInt(2, rDto.getRstatus());
 			pStmt.setInt(3, rDto.getRid());
 			pStmt.executeUpdate();
-			LOG.debug(rDto.toString());
+			LOG.trace(rDto.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
