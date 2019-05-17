@@ -70,19 +70,33 @@
 	    <groupId>de.svenkubiak</groupId>
 	    <artifactId>jBCrypt</artifactId>
 	    <version>0.4</version>
-	</dependency>	
+	</dependency>
   </dependencies>
   
   <build>
     <finalName>ezenFS</finalName>
     <plugins>
-	    <plugin>    
+	    <plugin>
+	    	<groupId>org.apache.maven.plugins</groupId>    
 	        <artifactId>maven-compiler-plugin</artifactId>
+	        <version>3.5.1</version>
 	        <configuration>
 	            <source>1.8</source>
 	            <target>1.8</target>
 	        </configuration>
 	    </plugin>
+	    <!-- Tomcat plugin -->  
+		<plugin>  
+			<groupId>org.apache.tomcat.maven</groupId>  
+			<artifactId>tomcat7-maven-plugin</artifactId>  
+			<version>2.2</version>  
+			<configuration>  
+				<url>http://localhost:8080/manager/text</url>  
+				<server>TomcatServer</server>
+				<username>tomcat</username>  
+				<password>tomcat</password>   
+			</configuration>   
+		</plugin> 
 	</plugins>
   </build>
 </project>

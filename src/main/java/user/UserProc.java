@@ -87,6 +87,7 @@ public class UserProc extends HttpServlet {
 				case UserDAO.ROLE_SUPPLIER:
 					url = "../purchase/purchaseServlet?action=init"; break;
 				}
+				LOG.info("사용자 {} 이/가 {} 에서 로그인하였습니다.", uDto.getUid(), request.getRemoteAddr());
 				request.setAttribute("InitDTO", iDto);
 				rd = request.getRequestDispatcher(url);
 				rd.forward(request, response);
