@@ -93,20 +93,20 @@ public class HandleInvoice {
 		for (SoldProductDTO sDto: sList) {	// 재고 부족이 있는지 먼저 확인
 			pDto = pDao.getProductById(sDto.getSprodId());
 			criteria = pDto.getPstock() - sDto.getSquantity();
-			LOG.trace("{}, {}, {}", criteria, pDto.getPstock(), sDto.getSquantity());
-			if (criteria < 0) {		// 재고 부족한 상품이 있으면 products 테이블에서 pstock을 감소시키지 않음
+			LOG.debug("{}, {}, {}", criteria, pDto.getPstock(), sDto.getSquantity());
+			if (criteria < 0) 		// 재고 부족한 상품이 있으면 products 테이블에서 pstock을 감소시키지 않음
 				break;
-			}
 		}
+		if (criteria < 0) 
+			vDto.setVstatus(InvoiceDAO.INVOICE_DELAYED);
 		for (SoldProductDTO sDto: sList) {
 			pDto = pDao.getProductById(sDto.getSprodId());
 			sDto.setSinvId(vDto.getVid());
 			sDao.insertSoldProduct(sDto);
-			if (criteria < 0) 
-				vDto.setVstatus(InvoiceDAO.INVOICE_DELAYED);
 			if (pDto.getPstock() - sDto.getSquantity() < 10) 
 				issuePurchaseOrder(vDto.getVid(), pDto, criteria);
 			if (criteria >= 0) {
+				LOG.debug("{} - 재고: {}, 출고: {}, 계: {}", pDto.getPid(), pDto.getPstock(), sDto.getSquantity(), pDto.getPstock() - sDto.getSquantity());
 				pDto.setPstock(pDto.getPstock() - sDto.getSquantity());
 				pDao.updateStock(pDto);
 			}
@@ -133,14 +133,15 @@ public class HandleInvoice {
 		
 		List<InvoiceDTO> vList = vDao.getInvoicesByStatus(InvoiceDAO.INVOICE_DELAY_READY);
 		for (InvoiceDTO vDto: vList) {
-			LOG.debug(vDto.toString());
+			LOG.trace(vDto.toString());
 			List<SoldProductDTO> sList = sDao.getSoldProducts(vDto.getVid());
 			for (SoldProductDTO sDto: sList) {	// 재고 부족이 있는지 먼저 확인
 				pDto = pDao.getProductById(sDto.getSprodId());
 				criteria = pDto.getPstock() - sDto.getSquantity();
 				LOG.debug("{}, {}, {}", criteria, pDto.getPstock(), sDto.getSquantity());
 				if (criteria < 0) {		// 재고 부족한 상품이 있으면 products 테이블에서 pstock을 감소시키지 않음
-					issuePurchaseOrder(vDto.getVid(), pDto, criteria);
+					if (sDto.getSquantity() > 10)	// 주문량이 상당하면 발주 요청을 함
+						issuePurchaseOrder(vDto.getVid(), pDto, criteria);
 					break;
 				}
 			}
@@ -153,6 +154,7 @@ public class HandleInvoice {
 				pDto = pDao.getProductById(sDto.getSprodId());
 				if (pDto.getPstock() - sDto.getSquantity() < 10) 
 					issuePurchaseOrder(vDto.getVid(), pDto, criteria);
+				LOG.debug("{} - 재고: {}, 출고: {}, 계: {}", pDto.getPid(), pDto.getPstock(), sDto.getSquantity(), pDto.getPstock() - sDto.getSquantity());
 				pDto.setPstock(pDto.getPstock() - sDto.getSquantity());
 				pDao.updateStock(pDto);
 			}

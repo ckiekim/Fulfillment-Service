@@ -15,6 +15,12 @@ public class HandleClosing {
 	public static final int EXECUTE = 1;
 
 	public ClosingDTO processClosing(int sellers[], int logistics[], int suppliers[], String month, int flag) {
+		if (flag == READY) {
+			ClosingDAO cDao = new ClosingDAO();
+			List<RecordDTO> recList = cDao.getRecordsByCompany(ClosingDAO.ROLE_COMPANY, month);
+			for (RecordDTO rDto: recList)
+				cDao.deleteRecord(rDto.getRid());
+		}
 		int incomeTotal = closeSales(sellers, month, flag);
 		int logisTotal = closeDeliveries(logistics, month, flag);
 		int purchaseTotal = closePurchases(suppliers, month, flag);

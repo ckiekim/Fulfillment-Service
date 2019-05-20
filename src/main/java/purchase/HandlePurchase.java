@@ -22,7 +22,7 @@ public class HandlePurchase {
 		String date = hDate.getToday();
 		List<PurchaseDTO> rList = rDao.getPurchaseListBySupplier(supplierId);
 		for (PurchaseDTO rDto: rList) {
-			// 전일 주문한 것만 처리
+			// 금일 주문한 것은 처리하지 않음
 			InvoiceDTO vDto = vDao.getInvoiceById(rDto.getRinvId());
 			String orderedDate = vDto.getVdate().substring(0, 10);
 			if (orderedDate.equals(date)) 
@@ -33,13 +33,14 @@ public class HandlePurchase {
 			rDao.updatePurchaseStatus(rDto);
 			// products 테이블 pstock 필드 수정
 			ProductDTO pDto = pDao.getProductById(rDto.getRprodId());
-			pDto.setPstock(pDto.getPstock() + rDto.getRpstock());
+			LOG.debug("{} - 재고: {}, 입고: {}, 계: {}", pDto.getPid(), pDto.getPstock(), rDto.getRquantity(), pDto.getPstock() + rDto.getRquantity());
+			pDto.setPstock(pDto.getPstock() + rDto.getRquantity());
 			pDao.updateStock(pDto);
 		}
 		// invoices 테이블에서 지연 상태인 레코드를 Ready 상태로 변경
 		List<InvoiceDTO> vList = vDao.getInvoicesByStatus(InvoiceDAO.INVOICE_DELAYED);	// 지연 상태인 송장을 가져옴
 		for (InvoiceDTO vDto: vList) {
-			LOG.debug(vDto.toString());
+			LOG.debug("지연상태 처리 {}", vDto.toString());
 			boolean toUpdate = true;
 			List<SoldProductDTO> sList = sDao.getSoldProducts(vDto.getVid());
 			for (SoldProductDTO sDto: sList) {

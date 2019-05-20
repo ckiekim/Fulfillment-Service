@@ -24,14 +24,14 @@ public class InvoiceDAO {
 	PreparedStatement pStmt;
 	ResultSet rs;
 
-	public List<InvoiceDTO> getInvoicesByMonth(int comId, String date) {
+	public List<InvoiceDTO> getInvoicesByMonth(int comId, String date) {	// 정산시 사용
 		conn = DBManager.getConnection();
 		String query = null;
 		if (comId == 0)
-			query = "select * from invoices where vstatus=? and " +
+			query = "select * from invoices where vstatus>=? and " +
 					"vdate between date(?) and last_day(?);";
 		else	
-			query = "select * from invoices where vstatus=? and " +
+			query = "select * from invoices where vstatus>=? and " +
 					"vdate between date(?) and last_day(?) and vcomId=?;";
 		List<InvoiceDTO> vList = new ArrayList<InvoiceDTO>();
 		try {

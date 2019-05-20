@@ -13,9 +13,6 @@ import org.slf4j.LoggerFactory;
 
 public class DBManager {
 	private static final Logger LOG = LoggerFactory.getLogger(DBManager.class);
-	// 데이터베이스 관련 객체 선언
-	Statement stmt = null;
-	PreparedStatement pstmt = null;
 	
 	/**
 	 * JNDI 를 이용해 Connection 객체 리턴

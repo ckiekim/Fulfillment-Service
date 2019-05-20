@@ -25,14 +25,21 @@ public class ClosingDAO {
 
 	public List<RecordDTO> getRecordsByCompany(int role, String month) {
 		conn = DBManager.getConnection();
-		String query = "select r.rid, r.rcomId, r.rrole, r.rmonth, r.rdata, c.cname " +
-						"from records as r inner join companies as c on r.rcomId=c.cid " +
-						"where r.rrole=? and r.rmonth like ?;";
+		String query = null;
+		if (role == ROLE_COMPANY)
+			query = "select r.rid, r.rcomId, r.rrole, r.rmonth, r.rdata, c.cname " +
+					"from records as r inner join companies as c on r.rcomId=c.cid " +
+					"where r.rmonth like ?;";
+		else
+			query = "select r.rid, r.rcomId, r.rrole, r.rmonth, r.rdata, c.cname " +
+					"from records as r inner join companies as c on r.rcomId=c.cid " +
+					"where r.rmonth like ? and r.rrole=?;";
 		List<RecordDTO> rList = new ArrayList<RecordDTO>();
 		try {
 			pStmt = conn.prepareStatement(query);
-			pStmt.setInt(1, role);
-			pStmt.setString(2, month);
+			pStmt.setString(1, month);
+			if (role != ROLE_COMPANY)
+				pStmt.setInt(2, role);
 			rs = pStmt.executeQuery();
 			
 			while (rs.next()) {
@@ -66,6 +73,24 @@ public class ClosingDAO {
 			}
 		}
 		return rList;
+	}
+	
+	public void deleteRecord(int recordId) {
+		conn = DBManager.getConnection();
+		String query = "delete from records where rid=?;";
+		try {
+			pStmt = conn.prepareStatement(query);
+			pStmt.setInt(1, recordId);
+			pStmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public void insertRecord(RecordDTO rDto) {

@@ -293,7 +293,7 @@ public class AdminProc extends HttpServlet {
 			rd = request.getRequestDispatcher("../admin/inventoryMonthly.jsp");
 	        rd.forward(request, response);
 		} 
-		else if (action.equals("doClosing")) {	// 내비게이션 메뉴에서 정산 실행을 클릭했을 때
+		else if (action.equals("doClosing")) {	// 내비게이션 메뉴에서 정산확정 대기를 클릭했을 때
 			hDate = new HandleDate();
 			date = hDate.getToday().substring(8);
 			if (Integer.parseInt(date) > 10)
