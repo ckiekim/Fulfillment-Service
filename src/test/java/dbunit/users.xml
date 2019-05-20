@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <USER uid='admin' uname='관리자' ucomId='1001' />
+    <USER uid='logis1' uname='김경기' ucomId='1002' />
+    <USER uid='supp1' uname='강삼송' ucomId='1006' />
+</dataset>

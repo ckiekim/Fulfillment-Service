@@ -78,19 +78,34 @@ public class UserProc extends HttpServlet {
 			}
 			if (result == UserDAO.ID_PASSWORD_MATCH) {
 				uDto = uDao.getUserInfo(uid);
-				InitDTO iDto = new InitDTO(uDto.getUid(), uDto.getUname(), uDto.getUcomId(), uDto.getUcomName());
+				HandleDate hd = new HandleDate();
+				String cookieId = uDto.getUid() + hd.getDateAndTime();
+				LOG.debug("cookieId = {}", cookieId);
+				Cookie efsCookie = new Cookie("EzenFS", cookieId);
+				//InitDTO iDto = new InitDTO(uDto.getUid(), uDto.getUname(), uDto.getUcomId(), uDto.getUcomName());
 				switch(uDto.getUcomRole()) {
 				case UserDAO.ROLE_COMPANY:
-					url = "../admin/adminServlet?action=init"; break;
+					efsCookie.setPath("/ezenFS/admin");
+					url = "../admin/index.jsp"; break;
 				case UserDAO.ROLE_LOGISTICS:
-					url = "../deliver/deliverServlet?action=init"; break;
+					efsCookie.setPath("/ezenFS/deliver");
+					url = "../deliver/index.jsp"; break;
 				case UserDAO.ROLE_SUPPLIER:
-					url = "../purchase/purchaseServlet?action=init"; break;
+					efsCookie.setPath("/ezenFS/purchase");
+					url = "../purchase/index.jsp"; break;
 				}
+				response.addCookie(efsCookie);
+				session.setAttribute(cookieId+"userId", uDto.getUid());
+				session.setAttribute(cookieId+"userName", uDto.getUname());
+				session.setAttribute(cookieId+"companyId", uDto.getUcomId());
+				session.setAttribute(cookieId+"companyName", uDto.getUcomName());
 				LOG.info("사용자 {} 이/가 {} 에서 로그인하였습니다.", uDto.getUid(), request.getRemoteAddr());
-				request.setAttribute("InitDTO", iDto);
+				
+				response.sendRedirect(url);
+				
+				/*request.setAttribute("InitDTO", iDto);
 				rd = request.getRequestDispatcher(url);
-				rd.forward(request, response);
+				rd.forward(request, response);*/
 			} else {
 				request.setAttribute("message", errorMessage);
 				request.setAttribute("url", "../user/login.jsp");
@@ -102,8 +117,7 @@ public class UserProc extends HttpServlet {
 			Cookie[] cookies = request.getCookies();
 			String cookieId = null;
 			for (Cookie cookie: cookies) {
-				LOG.debug(cookie.getName());
-				LOG.debug(cookie.getValue());
+				LOG.trace(cookie.getName(), cookie.getValue());
 				if (cookie.getName().equals("EzenFS"))
 					cookieId = cookie.getValue();
 				cookie.setMaxAge(0);

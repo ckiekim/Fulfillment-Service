@@ -49,54 +49,31 @@ public class DeliveryProc extends HttpServlet {
 		int curDeliveryPage = 1;
 		List<String> pageList = new ArrayList<String>();
 		
-		Cookie[] cookies = null; 
 		String cookieId = null;
 		int logisId = 0;
-		
 		// 세션이 만료되었으면 다시 로그인하게 만들어 줌
-		if (!action.equals("init")) {
-			cookies = request.getCookies();
-			for (Cookie cookie: cookies) {
-				LOG.debug("{}, {}", cookie.getName(), cookie.getValue());
-				if (cookie.getName().equals("EzenFS")) {
-					cookieId = cookie.getValue();
-					break;
-				}
+		Cookie[] cookies = request.getCookies();
+		for (Cookie cookie: cookies) {
+			LOG.debug("{}, {}", cookie.getName(), cookie.getValue());
+			if (cookie.getName().equals("EzenFS")) {
+				cookieId = cookie.getValue();
+				break;
 			}
-			LOG.trace("{}, {}", cookieId, (String)session.getAttribute(cookieId+"companyName"));
-			request.setAttribute("CookieId", cookieId);
-			try {
-				logisId = (Integer)session.getAttribute(cookieId+"companyId");
-			} catch (NullPointerException e) {
-				//e.printStackTrace();
-				LOG.info("NullPointerException occurred!!!");
-			}
-			if (logisId == 0) {
-				LOG.debug("Session timed-out!!!");
-				action = "timeout";
-			}
+		}
+		LOG.trace("{}, {}", cookieId, (String)session.getAttribute(cookieId+"companyName"));
+		request.setAttribute("CookieId", cookieId);
+		try {
+			logisId = (Integer)session.getAttribute(cookieId+"companyId");
+		} catch (NullPointerException e) {
+			//e.printStackTrace();
+			LOG.info("NullPointerException occurred!!!");
+		}
+		if (logisId == 0) {
+			LOG.debug("Session timed-out!!!");
+			action = "timeout";
 		}
 		
-		if (action.equals("init")) {	// 운송업체 담당자가 로그인하였을 때
-			InitDTO iDto = (InitDTO)request.getAttribute("InitDTO");
-			HandleDate hd = new HandleDate();
-			cookieId = iDto.getUid() + hd.getDateAndTime();
-			LOG.debug("cookieId = {}", cookieId);
-			Cookie efsCookie = new Cookie("EzenFS", cookieId);
-			efsCookie.setPath("/ezenFS/deliver");
-			response.addCookie(efsCookie);
-			request.setAttribute("CookieId", cookieId);
-			session.setAttribute(cookieId+"userId", iDto.getUid());
-			session.setAttribute(cookieId+"userName", iDto.getUname());
-			session.setAttribute(cookieId+"companyId", iDto.getCid());
-			session.setAttribute(cookieId+"companyName", iDto.getCname());
-			logisId = iDto.getCid();
-			List<InvoiceDTO> vList = dDao.getInvoicesByLogis(logisId);
-			request.setAttribute("deliveryWaitList", vList);
-			rd = request.getRequestDispatcher("../deliver/list.jsp");
-	        rd.forward(request, response);
-		}
-		else if (action.equals("list")) {	// 출고대기 목록 메뉴를 클릭하였을 때(초기화면)
+		if (action.equals("list")) {	// 출고대기 목록 메뉴를 클릭하였을 때(초기화면)
 			List<InvoiceDTO> vList = dDao.getInvoicesByLogis(logisId);
 			request.setAttribute("deliveryWaitList", vList);
 			rd = request.getRequestDispatcher("../deliver/list.jsp");
@@ -160,16 +137,6 @@ public class DeliveryProc extends HttpServlet {
 			request.setAttribute("message", message);
 			request.setAttribute("url", "../user/login.jsp");
 			rd = request.getRequestDispatcher("../common/alertMsg.jsp");
-			rd.forward(request, response);
-		}
-		else if (action.equals("logout")) {		// 상단 로그아웃을 클릭하였을 때
-			cookies = request.getCookies();
-			for (Cookie cookie: cookies) {
-				LOG.debug("logout: {}, {}", cookie.getName(), cookie.getValue());
-				cookie.setMaxAge(0);
-				response.addCookie(cookie);
-			}
-			rd = request.getRequestDispatcher("../user/login.jsp");
 			rd.forward(request, response);
 		}
 	}

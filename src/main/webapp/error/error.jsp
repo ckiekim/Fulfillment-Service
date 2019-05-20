@@ -12,7 +12,7 @@
 </head>
 <jsp:useBean id="now" class="java.util.Date" />
 <body>
-	<%@ include file="../common/_top_deliver.jspf" %>
+	<%@ include file="../common/_top.jspf" %>
 	
 	<div class="container-fluid">
 		<div class="row" style="margin-top: 100px">

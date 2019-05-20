@@ -73,52 +73,28 @@ public class AdminProc extends HttpServlet {
 		String date = null;
 		String month = null;
 		
-		Cookie[] cookies = null; 
 		String cookieId = null;
 		// 세션이 만료되었으면 다시 로그인하게 만들어 줌
-		if (!action.equals("init")) {
-			cookies = request.getCookies();
-			for (Cookie cookie: cookies) {
-				LOG.trace("{}, {}", cookie.getName(), cookie.getValue());
-				if (cookie.getName().equals("EzenFS")) {
-					cookieId = cookie.getValue();
-					break;
-				}
+		Cookie[] cookies = request.getCookies();
+		for (Cookie cookie: cookies) {
+			LOG.trace("{}, {}", cookie.getName(), cookie.getValue());
+			if (cookie.getName().equals("EzenFS")) {
+				cookieId = cookie.getValue();
+				break;
 			}
-			LOG.trace("{}, {}", cookieId, (String)session.getAttribute(cookieId+"companyName"));
-			request.setAttribute("CookieId", cookieId);
-			try {
-				if (session.getAttribute(cookieId+"companyName") == null) {
-					LOG.debug("Session timed-out!!!");
-					action = "timeout";
-				}
-			} catch (IllegalStateException e) {
-				LOG.info("IllegalStateException occurred!!!");
+		}
+		LOG.trace("{}, {}", cookieId, (String)session.getAttribute(cookieId+"companyName"));
+		request.setAttribute("CookieId", cookieId);
+		try {
+			if (session.getAttribute(cookieId+"companyName") == null) {
+				LOG.debug("Session timed-out!!!");
+				action = "timeout";
 			}
+		} catch (IllegalStateException e) {
+			LOG.info("IllegalStateException occurred!!!");
 		}
 		
-		if (action.equals("init")) {	// 관리자가 로그인하였을 때
-			InitDTO iDto = (InitDTO)request.getAttribute("InitDTO");
-			HandleDate hd = new HandleDate();
-			cookieId = iDto.getUid() + hd.getDateAndTime();
-			LOG.debug("cookieId = {}", cookieId);
-			Cookie efsCookie = new Cookie("EzenFS", cookieId);
-			efsCookie.setPath("/ezenFS/admin");
-			response.addCookie(efsCookie);
-			request.setAttribute("CookieId", cookieId);
-			session.setAttribute(cookieId+"userId", iDto.getUid());
-			session.setAttribute(cookieId+"userName", iDto.getUname());
-			session.setAttribute(cookieId+"companyId", iDto.getCid());
-			session.setAttribute(cookieId+"companyName", iDto.getCname());
-			
-			uList = uDao.getAllUsers();
-			cList = uDao.getAllCompanies();
-			request.setAttribute("userList", uList);
-			request.setAttribute("companyList", cList);
-			rd = request.getRequestDispatcher("../admin/userList.jsp");
-	        rd.forward(request, response);
-		}
-		else if (action.equals("userList")) {	// 내비게이션 메뉴에서 사용자 조회를 클릭했을 때
+		if (action.equals("userList")) {	// 내비게이션 메뉴에서 사용자 조회를 클릭했을 때
 			uList = uDao.getAllUsers();
 			cList = uDao.getAllCompanies();
 			request.setAttribute("userList", uList);
@@ -365,16 +341,6 @@ public class AdminProc extends HttpServlet {
 			request.setAttribute("message", message);
 			request.setAttribute("url", "../user/login.jsp");
 			rd = request.getRequestDispatcher("../common/alertMsg.jsp");
-			rd.forward(request, response);
-		}
-		else if (action.equals("logout")) {		// 상단 로그아웃을 클릭하였을 때
-			cookies = request.getCookies();
-			for (Cookie cookie: cookies) {
-				LOG.debug("logout: {}, {}", cookie.getName(), cookie.getValue());
-				cookie.setMaxAge(0);
-				response.addCookie(cookie);
-			}
-			rd = request.getRequestDispatcher("../user/login.jsp");
 			rd.forward(request, response);
 		}
 	}
