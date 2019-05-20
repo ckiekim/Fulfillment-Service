@@ -12,7 +12,7 @@
 	<link href="../css/bootstrap.vertical-tabs.min.css" rel="stylesheet">
 </head>
 <body>
-	<%@ include file="../common/_top_purchase.jspf" %>
+	<%@ include file="../common/_top.jspf" %>
 	
 	<div class="container-fluid">
 		<div class="row" style="margin-top: 100px">
