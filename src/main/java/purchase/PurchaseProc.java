@@ -66,7 +66,6 @@ public class PurchaseProc extends HttpServlet {
 		try {
 			suppId = (Integer)session.getAttribute(cookieId+"companyId");
 		} catch (NullPointerException e) {
-			//e.printStackTrace();
 			LOG.info("NullPointerException occurred!!!");
 		}
 		if (suppId == 0) {
@@ -74,18 +73,19 @@ public class PurchaseProc extends HttpServlet {
 			action = "timeout";
 		}
 		
-		if (action.equals("list")) {	// 공급요청 목록 메뉴를 클릭하였을 때
+		switch(action) {
+		case "list":		// 공급요청 목록 메뉴를 클릭하였을 때
 			rList = rDao.getPurchaseListBySupplier(suppId);
 			request.setAttribute("purchaseWaitList", rList);
 			rd = request.getRequestDispatcher("../purchase/list.jsp");
 	        rd.forward(request, response);
-		}
-		else if (action.equals("supply")) {		// 입고처리 버튼을 클릭했을 때
+			break;
+		case "supply":		// 입고처리 버튼을 클릭했을 때
 			HandlePurchase hp = new HandlePurchase();
 			hp.processPurchase(suppId);
 			response.sendRedirect("../purchase/purchaseServlet?action=purchaseList");
-		}
-		else if (action.equals("purchaseList")) {	// 일별 공급내역 메뉴를 클릭했을 때
+			break;
+		case "purchaseList":	// 일별 공급내역 메뉴를 클릭했을 때
 			date = request.getParameter("datePurchase");
 			if (date == null) {
 				hDate = new HandleDate();
@@ -97,8 +97,8 @@ public class PurchaseProc extends HttpServlet {
 			request.setAttribute("purchaseDate", date);
 			rd = request.getRequestDispatcher("../purchase/supply.jsp");
 	        rd.forward(request, response);
-		}
-		else if (action.equals("purchaseMonthly")) {	// 월별 공급내역 메뉴를 클릭했을 때
+			break;
+		case "purchaseMonthly":	// 월별 공급내역 메뉴를 클릭했을 때
 			if (!request.getParameter("page").equals("")) {
 				curSupplyPage = Integer.parseInt(request.getParameter("page"));
 			}
@@ -122,19 +122,21 @@ public class PurchaseProc extends HttpServlet {
 			request.setAttribute("purchaseMonth", month);
 			rd = request.getRequestDispatcher("../purchase/supplyMonthly.jsp");
 			rd.forward(request, response);
-		} 
-		else if (action.equals("closingResult")) {	// 정산 메뉴를 클릭하였을 때
+			break;
+		case "closingResult":	// 정산 메뉴를 클릭하였을 때
 			int[] closingRecords = {23500, 12450, 50000, 34550, 54000, 39000, 50000, 48000, 40000, 55000, 62000, 49000};
 			request.setAttribute("ClosingRecords", closingRecords);
 			rd = request.getRequestDispatcher("../purchase/closingGraph.jsp");
 			rd.forward(request, response);
-		}
-		else if (action.equals("timeout")) {	// 강제 로그아웃 당하는 경우
+			break;
+		case "timeout":		// 강제 로그아웃 당하는 경우
 			String message = "30분 동안 액션이 없어서 로그아웃 되었습니다.";
 			request.setAttribute("message", message);
 			request.setAttribute("url", "../user/login.jsp");
 			rd = request.getRequestDispatcher("../common/alertMsg.jsp");
 			rd.forward(request, response);
+			break;
+		default:
 		}
 	}
 }

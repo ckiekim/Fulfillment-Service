@@ -72,6 +72,8 @@ public class AdminProc extends HttpServlet {
 		HandleDate hDate = null;
 		String date = null;
 		String month = null;
+		int count = 0;
+		int pageNo = 0;
 		
 		String cookieId = null;
 		// 세션이 만료되었으면 다시 로그인하게 만들어 줌
@@ -94,30 +96,31 @@ public class AdminProc extends HttpServlet {
 			LOG.info("IllegalStateException occurred!!!");
 		}
 		
-		if (action.equals("userList")) {	// 내비게이션 메뉴에서 사용자 조회를 클릭했을 때
+		switch(action) {
+		case "userList":		// 내비게이션 메뉴에서 사용자 조회를 클릭했을 때
 			uList = uDao.getAllUsers();
 			cList = uDao.getAllCompanies();
 			request.setAttribute("userList", uList);
 			request.setAttribute("companyList", cList);
 			rd = request.getRequestDispatcher("../admin/userList.jsp");
 	        rd.forward(request, response);
-		}
-		else if (action.equals("productList")) {	// 내비게이션 메뉴에서 상품 조회를 클릭했을 때
+	        break;
+		case "productList":		// 내비게이션 메뉴에서 상품 조회를 클릭했을 때
 			String category = request.getParameter("category");
 			LOG.trace(category);
 			pList = pDao.getProductsByCategory(category);
 			request.setAttribute("productList", pList);
 			rd = request.getRequestDispatcher("../admin/productList.jsp");
 	        rd.forward(request, response);
-		}
-		else if (action.equals("invoice")) {	// 내비게이션 메뉴에서 주문을 클릭했을 때
+	        break;
+		case "invoice":		// 내비게이션 메뉴에서 주문을 클릭했을 때
 			if (!request.getParameter("page").equals("")) {
 				currentPage = Integer.parseInt(request.getParameter("page"));
 			}
-			int count = vDao.getCount();
+			count = vDao.getCount();
 			if (count == 0)			// 데이터가 없을 때 대비
 				count = 1;
-			int pageNo = (int)Math.ceil(count/10.0);
+			pageNo = (int)Math.ceil(count/10.0);
 			request.setAttribute("currentPage", currentPage);
 			for (int i=1; i<=pageNo; i++) 
 				pageList.add(Integer.toString(i));
@@ -127,13 +130,13 @@ public class AdminProc extends HttpServlet {
 			request.setAttribute("pageList", pageList);
 			rd = request.getRequestDispatcher("../admin/invoice.jsp");
 	        rd.forward(request, response);
-		}
-		else if (action.equals("procInvoice")) {	// 주문처리 버튼을 클릭했을 때
+	        break;
+		case "procInvoice":		// 주문처리 버튼을 클릭했을 때
 			HandleInvoice hi = new HandleInvoice();
 			hi.handleFile();
 			response.sendRedirect("adminServlet?action=invoice&page=1");
-		}
-		else if (action.equals("invoiceDetail")) {	// invoice 리스트에서 id를 클릭했을 때
+			break;
+		case "invoiceDetail":	// invoice 리스트에서 id를 클릭했을 때
 			int invId = 0;
 			if (!request.getParameter("vid").equals("")) {
 				invId = Integer.parseInt(request.getParameter("vid"));
@@ -144,20 +147,20 @@ public class AdminProc extends HttpServlet {
 			request.setAttribute("soldProductList", sList);
 			rd = request.getRequestDispatcher("../admin/invoiceDetail.jsp");
 	        rd.forward(request, response);
-		}
-		else if (action.equals("deliver")) {	// 내비게이션 메뉴에서 출고확정 대기를 클릭했을 때
+	        break;
+		case "deliver":		// 내비게이션 메뉴에서 출고확정 대기를 클릭했을 때
 			dList = dDao.getDeliveryListByStatus(DeliveryDAO.DELIVERY_EXECUTED);
 			request.setAttribute("deliverList", dList);
 			rd = request.getRequestDispatcher("../admin/deliverList.jsp");
 	        rd.forward(request, response);
-		}
-		else if (action.equals("deliverConfirm")) {	// 출고 확정 버튼을 클릭했을 때
+	        break;
+		case "deliverConfirm":	// 출고 확정 버튼을 클릭했을 때
 			dList = dDao.getDeliveryListByStatus(DeliveryDAO.DELIVERY_EXECUTED);
 			HandleDelivery hDelivery = new HandleDelivery();
 			hDelivery.confirmDelivery(dList);
 			response.sendRedirect("../admin/adminServlet?action=deliverDaily");
-		}
-		else if (action.equals("deliverDaily")) {	// 내비게이션 메뉴에서 일별 출고내역을 클릭했을 때
+			break;
+		case "deliverDaily":	// 내비게이션 메뉴에서 일별 출고내역을 클릭했을 때
 			date = request.getParameter("dateRelease");
 			if (date == null) {
 				hDate = new HandleDate();
@@ -168,8 +171,8 @@ public class AdminProc extends HttpServlet {
 			request.setAttribute("deliveryDate", date);
 			rd = request.getRequestDispatcher("../admin/deliverDaily.jsp");
 	        rd.forward(request, response);
-		}
-		else if (action.equals("deliverMonthly")) {	// 내비게이션 메뉴에서 월별 출고내역을 클릭했을 때
+	        break;
+		case "deliverMonthly":		// 내비게이션 메뉴에서 월별 출고내역을 클릭했을 때
 			if (!request.getParameter("page").equals("")) {
 				currentPage = Integer.parseInt(request.getParameter("page"));
 			}
@@ -178,10 +181,10 @@ public class AdminProc extends HttpServlet {
 				hDate = new HandleDate();
 				month = hDate.getToday().substring(0, 7);
 			}
-			int count = dDao.getCountMonthly(0, month+"-01");
+			count = dDao.getCountMonthly(0, month+"-01");
 			if (count == 0)			// 데이터가 없을 때 대비
 				count = 1;
-			int pageNo = (int)Math.ceil(count/10.0);
+			pageNo = (int)Math.ceil(count/10.0);
 			request.setAttribute("currentPage", currentPage);
 			for (int i=1; i<=pageNo; i++) 
 				pageList.add(Integer.toString(i));
@@ -192,20 +195,20 @@ public class AdminProc extends HttpServlet {
 			request.setAttribute("Month", month);
 			rd = request.getRequestDispatcher("../admin/deliverMonthly.jsp");
 	        rd.forward(request, response);
-		}
-		else if (action.equals("purchase")) {	// 내비게이션 메뉴에서 구매확정 대기 메뉴를 클릭했을 때
+	        break;
+		case "purchase":	// 내비게이션 메뉴에서 구매확정 대기 메뉴를 클릭했을 때
 			rList = rDao.getPurchaseListByStatus(PurchaseDAO.PURCHASE_SUPPLIED);
 			request.setAttribute("purchaseList", rList);
 			rd = request.getRequestDispatcher("../admin/purchaseList.jsp");
 	        rd.forward(request, response);
-		}
-		else if (action.equals("purchaseConfirm")) {	// 입고 확정 버튼을 클릭했을 때
+	        break;
+		case "purchaseConfirm":		// 입고 확정 버튼을 클릭했을 때
 			rList = rDao.getPurchaseListByStatus(PurchaseDAO.PURCHASE_SUPPLIED);
 			HandlePurchase hPurchase = new HandlePurchase();
 			hPurchase.confirmPurchase(rList);
 			response.sendRedirect("../admin/adminServlet?action=purchaseDaily");
-		}
-		else if (action.equals("purchaseDaily")) {	// 내비게이션 메뉴에서 일별 구매내역 메뉴를 클릭했을 때
+			break;
+		case "purchaseDaily":	// 내비게이션 메뉴에서 일별 구매내역 메뉴를 클릭했을 때
 			date = request.getParameter("dateSupply");
 			if (date == null) {
 				hDate = new HandleDate();
@@ -216,8 +219,8 @@ public class AdminProc extends HttpServlet {
 			request.setAttribute("purchaseDate", date);
 			rd = request.getRequestDispatcher("../admin/purchaseDaily.jsp");
 	        rd.forward(request, response);
-		}
-		else if (action.equals("purchaseMonthly")) {	// 내비게이션 메뉴에서 월별 구매내역 메뉴를 클릭했을 때
+	        break;
+		case "purchaseMonthly":		// 내비게이션 메뉴에서 월별 구매내역 메뉴를 클릭했을 때
 			if (!request.getParameter("page").equals("")) {
 				currentPage = Integer.parseInt(request.getParameter("page"));
 			}
@@ -226,10 +229,10 @@ public class AdminProc extends HttpServlet {
 				hDate = new HandleDate();
 				month = hDate.getToday().substring(0, 7);
 			}
-			int count = rDao.getCountMonthly(0, month+"-01");
+			count = rDao.getCountMonthly(0, month+"-01");
 			if (count == 0)			// 데이터가 없을 때 대비
 				count = 1;
-			int pageNo = (int)Math.ceil(count/10.0);
+			pageNo = (int)Math.ceil(count/10.0);
 			request.setAttribute("currentPage", currentPage);
 			for (int i=1; i<=pageNo; i++) 
 				pageList.add(Integer.toString(i));
@@ -240,13 +243,13 @@ public class AdminProc extends HttpServlet {
 			request.setAttribute("Month", month);
 			rd = request.getRequestDispatcher("../admin/purchaseMonthly.jsp");
 	        rd.forward(request, response);
-		}
-		else if (action.equals("inventory")) {	// 내비게이션 메뉴에서 재고를 클릭했을 때
+	        break;
+		case "inventory":	// 내비게이션 메뉴에서 재고를 클릭했을 때
 			if (!request.getParameter("page").equals("")) {
 				currentPage = Integer.parseInt(request.getParameter("page"));
 			}
-			int count = iDao.getCount();
-			int pageNo = (int)Math.ceil(count/10.0);
+			count = iDao.getCount();
+			pageNo = (int)Math.ceil(count/10.0);
 			request.setAttribute("currentPage", currentPage);
 			for (int i=1; i<=pageNo; i++) 
 				pageList.add(Integer.toString(i));
@@ -255,8 +258,8 @@ public class AdminProc extends HttpServlet {
 			request.setAttribute("pageList", pageList);
 			rd = request.getRequestDispatcher("../admin/inventoryList.jsp");
 	        rd.forward(request, response);
-		}
-		else if (action.equals("inventoryMonth")) {	// 월별 재고를 클릭했을 때
+	        break;
+		case "inventoryMonth":	// 월별 재고를 클릭했을 때
 			month = request.getParameter("month");
 			if (month == null || month.equals("")) {
 				hDate = new HandleDate();
@@ -268,15 +271,14 @@ public class AdminProc extends HttpServlet {
 			request.setAttribute("Month", month);
 			rd = request.getRequestDispatcher("../admin/inventoryMonthly.jsp");
 	        rd.forward(request, response);
-		} 
-		else if (action.equals("doClosing")) {	// 내비게이션 메뉴에서 정산확정 대기를 클릭했을 때
+	        break;
+		case "doClosing":	// 내비게이션 메뉴에서 정산확정 대기를 클릭했을 때
 			hDate = new HandleDate();
 			date = hDate.getToday().substring(8);
 			if (Integer.parseInt(date) > 10)
 				month = hDate.getToday().substring(0, 7);
 			else 
 				month = hDate.getLastMonth();
-			
 			hClosing = new HandleClosing();
 			cDto = hClosing.processClosing(sellers, logistics, suppliers, month, HandleClosing.READY);
 			request.setAttribute("ClosingDto", cDto);
@@ -289,8 +291,8 @@ public class AdminProc extends HttpServlet {
 			request.setAttribute("Month", month);
 			rd = request.getRequestDispatcher("../admin/closing.jsp");
 	        rd.forward(request, response);
-		} 
-		else if (action.equals("closingConfirm")) {	// 정산 확정 버튼을 클릭했을 때
+	        break;
+		case "closingConfirm":		// 정산 확정 버튼을 클릭했을 때
 			hDate = new HandleDate();
 			date = hDate.getToday().substring(8);
 			if (Integer.parseInt(date) > 10)
@@ -300,8 +302,8 @@ public class AdminProc extends HttpServlet {
 			hClosing = new HandleClosing();
 			cDto = hClosing.processClosing(sellers, logistics, suppliers, month, HandleClosing.EXECUTE);
 			response.sendRedirect("../admin/adminServlet?action=showClosingMonthly");
-		}
-		else if (action.equals("showClosingMonthly")) {	// 내비게이션 메뉴에서 월별 정산내역을 클릭했을 때
+			break;
+		case "showClosingMonthly":	// 내비게이션 메뉴에서 월별 정산내역을 클릭했을 때
 			month = request.getParameter("month");
 			if (month == null || month.equals("")) {
 				hDate = new HandleDate();
@@ -323,25 +325,27 @@ public class AdminProc extends HttpServlet {
 			request.setAttribute("Month", month);
 			rd = request.getRequestDispatcher("../admin/closingMonthly.jsp");
 	        rd.forward(request, response);
-		}
-		else if (action.equals("showClosingYearly")) {	// 내비게이션 메뉴에서 년간 정산내역을 클릭했을 때
+	        break;
+		case "showClosingYearly":	// 내비게이션 메뉴에서 년간 정산내역을 클릭했을 때
 			rd = request.getRequestDispatcher("../admin/closingYearly.jsp");
-	        rd.forward(request, response);
-		}
-		else if (action.equals("showClosingGraph")) {	// 내비게이션 메뉴에서 월간 추이를 클릭했을 때
+			rd.forward(request, response);
+			break;
+		case "showClosingGraph":	// 내비게이션 메뉴에서 월간 추이를 클릭했을 때
 			int[] closingRecords = {23500, 19450, 50000, 34550, 54000, 39000, 50000, 48000, 40000, 55000, 62000, 49000};
 			int[] closingRecords2 = {50000, 48000, 40000, 55000, 62000, 49000, 28500, 22450, 50000, 34550, 54000, 39000};
 			request.setAttribute("ClosingRecords", closingRecords);
 			request.setAttribute("ClosingRecords2", closingRecords2);
 			rd = request.getRequestDispatcher("../admin/closingGraph.jsp");
 			rd.forward(request, response);
-		}
-		else if (action.equals("timeout")) {	// 강제 로그아웃 당하는 경우
+			break;
+		case "timeout":		// 강제 로그아웃 당하는 경우
 			String message = "30분 동안 액션이 없어서 로그아웃 되었습니다.";
 			request.setAttribute("message", message);
 			request.setAttribute("url", "../user/login.jsp");
 			rd = request.getRequestDispatcher("../common/alertMsg.jsp");
 			rd.forward(request, response);
+			break;
+		default:
 		}
 	}
 }

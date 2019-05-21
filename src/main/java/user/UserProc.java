@@ -44,14 +44,15 @@ public class UserProc extends HttpServlet {
 		String upass = null;
 		String url = null;
 		
-		if (action.equals("prepareForm")) {
+		switch(action) {
+		case "prepareForm":
 			LOG.trace("prepareForm:");
 			List<CompanyDTO> cList = uDao.getAllCompanies();
 			request.setAttribute("companyList", cList);
 			rd = request.getRequestDispatcher("../user/register.jsp");
-	        rd.forward(request, response);
-		} 
-		else if (action.equals("register")) {
+			rd.forward(request, response);
+			break;
+		case "register":
 			uid = request.getParameter("uid");
 			upass = request.getParameter("upass");
 			String uname = request.getParameter("uname");
@@ -60,8 +61,8 @@ public class UserProc extends HttpServlet {
 			uDto = new UserDTO(uid, upass, uname, ucomId);
 			uDao.registerUser(uDto);
 			response.sendRedirect("../user/login.jsp");
-		} 
-		else if (action.equals("login")) {
+			break;
+		case "login":
 			uid = request.getParameter("uid");
 			upass = request.getParameter("upass");
 			int result = uDao.verifyIdPassword(uid, upass);
@@ -82,7 +83,6 @@ public class UserProc extends HttpServlet {
 				String cookieId = uDto.getUid() + hd.getDateAndTime();
 				LOG.debug("cookieId = {}", cookieId);
 				Cookie efsCookie = new Cookie("EzenFS", cookieId);
-				//InitDTO iDto = new InitDTO(uDto.getUid(), uDto.getUname(), uDto.getUcomId(), uDto.getUcomName());
 				switch(uDto.getUcomRole()) {
 				case UserDAO.ROLE_COMPANY:
 					efsCookie.setPath("/ezenFS/admin");
@@ -100,20 +100,15 @@ public class UserProc extends HttpServlet {
 				session.setAttribute(cookieId+"companyId", uDto.getUcomId());
 				session.setAttribute(cookieId+"companyName", uDto.getUcomName());
 				LOG.info("사용자 {} 이/가 {} 에서 로그인하였습니다.", uDto.getUid(), request.getRemoteAddr());
-				
 				response.sendRedirect(url);
-				
-				/*request.setAttribute("InitDTO", iDto);
-				rd = request.getRequestDispatcher(url);
-				rd.forward(request, response);*/
 			} else {
 				request.setAttribute("message", errorMessage);
 				request.setAttribute("url", "../user/login.jsp");
 				rd = request.getRequestDispatcher("../common/alertMsg.jsp");
 				rd.forward(request, response);
 			}
-		}
-		else if (action.equals("logout")) {
+			break;
+		case "logout":
 			Cookie[] cookies = request.getCookies();
 			String cookieId = null;
 			for (Cookie cookie: cookies) {
@@ -128,6 +123,8 @@ public class UserProc extends HttpServlet {
 			session.removeAttribute(cookieId+"companyId");
 			session.removeAttribute(cookieId+"companyName");
 			response.sendRedirect("../user/login.jsp");
-		} 
+			break;
+		default:
+		}
 	}
 }

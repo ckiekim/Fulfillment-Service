@@ -65,7 +65,6 @@ public class DeliveryProc extends HttpServlet {
 		try {
 			logisId = (Integer)session.getAttribute(cookieId+"companyId");
 		} catch (NullPointerException e) {
-			//e.printStackTrace();
 			LOG.info("NullPointerException occurred!!!");
 		}
 		if (logisId == 0) {
@@ -73,13 +72,14 @@ public class DeliveryProc extends HttpServlet {
 			action = "timeout";
 		}
 		
-		if (action.equals("list")) {	// 출고대기 목록 메뉴를 클릭하였을 때(초기화면)
+		switch(action) {
+		case "list":		// 출고대기 목록 메뉴를 클릭하였을 때(초기화면)
 			List<InvoiceDTO> vList = dDao.getInvoicesByLogis(logisId);
 			request.setAttribute("deliveryWaitList", vList);
 			rd = request.getRequestDispatcher("../deliver/list.jsp");
 	        rd.forward(request, response);
-		}
-		else if (action.equals("release")) {	// 출고처리 버튼을 클릭하였을 때
+			break;
+		case "release":		// 출고처리 버튼을 클릭하였을 때
 			String time = request.getParameter("time");
 			HandleDelivery hd = new HandleDelivery();
 			hd.processDelivery(time, logisId);
@@ -89,8 +89,8 @@ public class DeliveryProc extends HttpServlet {
 			request.setAttribute("deliveryReleasedList", dList);
 			rd = request.getRequestDispatcher("../deliver/release.jsp");
 	        rd.forward(request, response);
-		}
-		else if (action.equals("releaseList")) {	// 일별 출고목록 메뉴를 클릭하였을 때
+			break;
+		case "releaseList":		// 일별 출고목록 메뉴를 클릭하였을 때
 			date = request.getParameter("dateRelease");
 			if (date == null) {
 				hDate = new HandleDate();
@@ -101,8 +101,8 @@ public class DeliveryProc extends HttpServlet {
 			request.setAttribute("deliveryDate", date);
 			rd = request.getRequestDispatcher("../deliver/release.jsp");
 	        rd.forward(request, response);
-		}
-		else if (action.equals("releaseMonthly")) {	// 월별 출고목록 메뉴를 클릭하였을 때
+			break;
+		case "releaseMonthly":	// 월별 출고목록 메뉴를 클릭하였을 때
 			if (!request.getParameter("page").equals("")) {
 				curDeliveryPage = Integer.parseInt(request.getParameter("page"));
 			}
@@ -125,19 +125,21 @@ public class DeliveryProc extends HttpServlet {
 			request.setAttribute("Month", month);
 			rd = request.getRequestDispatcher("../deliver/releaseMonthly.jsp");
 	        rd.forward(request, response);
-		} 
-		else if (action.equals("closingResult")) {	// 정산 메뉴를 클릭하였을 때
+			break;
+		case "closingResult":	// 정산 메뉴를 클릭하였을 때
 			int[] closingRecords = {500000, 450000, 500000, 550000, 600000, 390000, 500000, 480000, 400000, 550000, 620000, 490000};
 			request.setAttribute("ClosingRecords", closingRecords);
 			rd = request.getRequestDispatcher("../deliver/closingGraph.jsp");
 			rd.forward(request, response);
-		}
-		else if (action.equals("timeout")) {	// 강제 로그아웃 당하는 경우
+			break;
+		case "timeout":		// 강제 로그아웃 당하는 경우
 			String message = "30분 동안 액션이 없어서 로그아웃 되었습니다.";
 			request.setAttribute("message", message);
 			request.setAttribute("url", "../user/login.jsp");
 			rd = request.getRequestDispatcher("../common/alertMsg.jsp");
 			rd.forward(request, response);
+			break;
+		default:
 		}
 	}
 }
