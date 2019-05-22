@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import util.*;
+import weather.WeatherUtil;
 
 @WebServlet("/user/userServlet")
 public class UserProc extends HttpServlet {
@@ -100,6 +101,10 @@ public class UserProc extends HttpServlet {
 				session.setAttribute(cookieId+"companyId", uDto.getUcomId());
 				session.setAttribute(cookieId+"companyName", uDto.getUcomName());
 				LOG.info("사용자 {} 이/가 {} 에서 로그인하였습니다.", uDto.getUid(), request.getRemoteAddr());
+				
+				WeatherUtil util = new WeatherUtil();
+				String weatherInfo = util.getWeatherInfo();
+				session.setAttribute("WeatherInfo", weatherInfo);
 				response.sendRedirect(url);
 			} else {
 				request.setAttribute("message", errorMessage);

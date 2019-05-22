@@ -1,32 +1,34 @@
 package weather;
 
 public class WeatherDTO {
-	private String fcst_date;
-	private String fcst_time;
-	private String pop;
-	private String pty;
-	private String r06;
-	private String reh;
-	private String s06;
-	private String sky;
-	private String t3h;
-	private String tmn;
-	private String tmx;
-	private String uuu;
-	private String vvv;
-	private String vec;
-	private String wsd;
-	private String base_date;
-	private String base_time;
+	private String fcstDate;	// 예보 일자
+	private String fcstTime;	// 예보 시각
+	private String baseDate;	// 발표 일자
+	private String baseTime;	// 발표 시각
+	private String pop;		// 강수 확률
+	private String pty;		// 강수 형태
+	private String r06;		// 6시간 강수량
+	private String reh;		// 습도
+	private String s06;		// 6시간 신적설
+	private String sky;		// 하늘 상태
+	private String t3h;		// 3시간 기온
+	private String tmn;		// 아침 최저기온
+	private String tmx;		// 낮 최고기온
+	private String uuu;		// 풍속(동서성분)
+	private String vvv;		// 풍속(남북성분)
+	private String wav;		// 파고
+	private String vec;		// 풍향
+	private String wsd;		// 풍속
 	
 	public WeatherDTO() {
 	}
-	public WeatherDTO(String fcst_date, String fcst_time, String pop, String pty, String r06, String reh, String s06,
-			String sky, String t3h, String tmn, String tmx, String uuu, String vvv, String vec, String wsd,
-			String base_date, String base_time) {
-		super();
-		this.fcst_date = fcst_date;
-		this.fcst_time = fcst_time;
+	public WeatherDTO(String fcstDate, String fcstTime, String baseDate, String baseTime, String pop, String pty,
+			String r06, String reh, String s06, String sky, String t3h, String tmn, String tmx, String uuu, String vvv,
+			String wav, String vec, String wsd) {
+		this.fcstDate = fcstDate;
+		this.fcstTime = fcstTime;
+		this.baseDate = baseDate;
+		this.baseTime = baseTime;
 		this.pop = pop;
 		this.pty = pty;
 		this.r06 = r06;
@@ -38,23 +40,40 @@ public class WeatherDTO {
 		this.tmx = tmx;
 		this.uuu = uuu;
 		this.vvv = vvv;
+		this.wav = wav;
 		this.vec = vec;
 		this.wsd = wsd;
-		this.base_date = base_date;
-		this.base_time = base_time;
 	}
-
-	public String getFcst_date() {
-		return fcst_date;
+	@Override
+	public String toString() {
+		return "WeatherDTO [fcstDate=" + fcstDate + ", fcstTime=" + fcstTime + ", baseDate=" + baseDate + ", baseTime="
+				+ baseTime + ", pop=" + pop + ", pty=" + pty + ", r06=" + r06 + ", reh=" + reh + ", s06=" + s06
+				+ ", sky=" + sky + ", t3h=" + t3h + ", tmn=" + tmn + ", tmx=" + tmx + ", uuu=" + uuu + ", vvv=" + vvv
+				+ ", wav=" + wav + ", vec=" + vec + ", wsd=" + wsd + "]";
 	}
-	public void setFcst_date(String fcst_date) {
-		this.fcst_date = fcst_date;
+	public String getFcstDate() {
+		return fcstDate;
 	}
-	public String getFcst_time() {
-		return fcst_time;
+	public void setFcstDate(String fcstDate) {
+		this.fcstDate = fcstDate;
 	}
-	public void setFcst_time(String fcst_time) {
-		this.fcst_time = fcst_time;
+	public String getFcstTime() {
+		return fcstTime;
+	}
+	public void setFcstTime(String fcstTime) {
+		this.fcstTime = fcstTime;
+	}
+	public String getBaseDate() {
+		return baseDate;
+	}
+	public void setBaseDate(String baseDate) {
+		this.baseDate = baseDate;
+	}
+	public String getBaseTime() {
+		return baseTime;
+	}
+	public void setBaseTime(String baseTime) {
+		this.baseTime = baseTime;
 	}
 	public String getPop() {
 		return pop;
@@ -122,6 +141,12 @@ public class WeatherDTO {
 	public void setVvv(String vvv) {
 		this.vvv = vvv;
 	}
+	public String getWav() {
+		return wav;
+	}
+	public void setWav(String wav) {
+		this.wav = wav;
+	}
 	public String getVec() {
 		return vec;
 	}
@@ -133,24 +158,5 @@ public class WeatherDTO {
 	}
 	public void setWsd(String wsd) {
 		this.wsd = wsd;
-	}
-	public String getBase_date() {
-		return base_date;
-	}
-	public void setBase_date(String base_date) {
-		this.base_date = base_date;
-	}
-	public String getBase_time() {
-		return base_time;
-	}
-	public void setBase_time(String base_time) {
-		this.base_time = base_time;
-	}
-	@Override
-	public String toString() {
-		return "WeatherDTO [fcst_date=" + fcst_date + ", fcst_time=" + fcst_time + ", pop=" + pop + ", pty=" + pty
-				+ ", r06=" + r06 + ", reh=" + reh + ", s06=" + s06 + ", sky=" + sky + ", t3h=" + t3h + ", tmn=" + tmn
-				+ ", tmx=" + tmx + ", uuu=" + uuu + ", vvv=" + vvv + ", vec=" + vec + ", wsd=" + wsd + ", base_date="
-				+ base_date + ", base_time=" + base_time + "]";
 	}
 }

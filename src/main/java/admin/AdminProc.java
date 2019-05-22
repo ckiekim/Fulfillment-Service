@@ -22,6 +22,7 @@ import purchase.*;
 import user.*;
 import inventory.*;
 import util.HandleDate;
+import weather.WeatherUtil;
 
 @WebServlet("/admin/adminServlet")
 public class AdminProc extends HttpServlet {
@@ -94,6 +95,13 @@ public class AdminProc extends HttpServlet {
 			}
 		} catch (IllegalStateException e) {
 			LOG.info("IllegalStateException occurred!!!");
+		}
+		// 일기예보 반영
+		WeatherUtil util = new WeatherUtil();
+		if (util.checkWeather()) {
+			util.changeWeather();
+			String weatherInfo = util.getWeatherInfo();
+			session.setAttribute("WeatherInfo", weatherInfo);
 		}
 		
 		switch(action) {

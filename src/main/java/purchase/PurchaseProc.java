@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import admin.*;
 import user.*;
 import util.HandleDate;
+import weather.*;
 
 @WebServlet("/purchase/purchaseServlet")
 public class PurchaseProc extends HttpServlet {
@@ -71,6 +72,13 @@ public class PurchaseProc extends HttpServlet {
 		if (suppId == 0) {
 			LOG.debug("Session timed-out!!!");
 			action = "timeout";
+		}
+		// 일기예보 반영
+		WeatherUtil util = new WeatherUtil();
+		if (util.checkWeather()) {
+			util.changeWeather();
+			String weatherInfo = util.getWeatherInfo();
+			session.setAttribute("WeatherInfo", weatherInfo);
 		}
 		
 		switch(action) {
