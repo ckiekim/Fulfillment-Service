@@ -126,7 +126,7 @@ create table weather (
   fcstTime char(4) not null,
   baseDate char(8) not null,
   baseTime char(4) not null,
-  pop varchar(4), pty varchar(4), p06 varchar(4), reh varchar(4),
+  pop varchar(4), pty varchar(4), r06 varchar(4), reh varchar(4),
   s06 varchar(4), sky varchar(4), t3h varchar(4), tmn varchar(4),
   tmx varchar(4), uuu varchar(4), vvv varchar(4), wav varchar(4),
   vec varchar(4), wsd varchar(4),
