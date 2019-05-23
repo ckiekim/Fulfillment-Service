@@ -49,6 +49,7 @@ public class WeatherUtil {
 				case "4":	info.append("<img src=\"../img/cloud.png\" width=\"20\" height=\"20\"> "); break;
 				default:	info.append("없음 ");
 			}
+			wDto = wDao.getMinMaxTemp(fcstDate);
 			info.append(wDto.getTmn() + "&deg;, " + wDto.getTmx() +"&deg;C");
 		} else if (wDto.getPty().equals("1")) {
 			info.append("<img src=\"../img/rain.png\" width=\"20\" height=\"20\"> " + wDto.getPop() + "%");

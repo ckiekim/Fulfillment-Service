@@ -18,6 +18,31 @@ public class WeatherDAO {
 	PreparedStatement pStmt;
 	ResultSet rs;
 
+	public WeatherDTO getMinMaxTemp(String fcstDate) {
+		WeatherDTO wDto = new WeatherDTO();
+		conn = DBManager.getConnection();
+		String query = "select max(tmn), max(tmx) from weather where fcstDate like ?;";
+		try {
+			pStmt = conn.prepareStatement(query);
+			pStmt.setString(1, fcstDate);
+			rs = pStmt.executeQuery(); 
+			while (rs.next()) { 
+				wDto.setTmn(rs.getString(1));
+				wDto.setTmx(rs.getString(2));
+				LOG.debug(wDto.toString());
+			}
+		} catch (Exception e) {
+			LOG.error("Exception occurred!!!");
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return wDto;
+	}
+	
 	public WeatherDTO weatherGetValue(String fcstDate, String fcstTime) {
 		WeatherDTO wDto = new WeatherDTO();
 		conn = DBManager.getConnection();

@@ -73,7 +73,7 @@ public class ForecastTownParser {
 				lwDto = wDao.weatherGetValue(fcstDate, fcstTime);
 				if (fcstDate.equals(lwDto.getFcstDate())) {
 					// Missing Data이면 이전 데이터로 채워줌
-					if (wDto.getPop().equals("-1"))	wDto.setPop(lwDto.getPop());
+					/*if (wDto.getPop().equals("-1"))	wDto.setPop(lwDto.getPop());
 					if (wDto.getPty().equals("-1"))	wDto.setPty(lwDto.getPty());
 					if (wDto.getR06().equals("-1"))	wDto.setR06(lwDto.getR06());
 					if (wDto.getReh().equals("-1"))	wDto.setReh(lwDto.getReh());
@@ -86,7 +86,7 @@ public class ForecastTownParser {
 					if (wDto.getVvv().equals("-100")) wDto.setVvv(lwDto.getVvv());
 					if (wDto.getWav().equals("-1"))	wDto.setWav(lwDto.getWav());
 					if (wDto.getVec().equals("-1"))	wDto.setVec(lwDto.getVec());
-					if (wDto.getWsd().equals("-1"))	wDto.setWsd(lwDto.getWsd());
+					if (wDto.getWsd().equals("-1"))	wDto.setWsd(lwDto.getWsd());*/
 					wDao.weatherChangeValue(wDto); 	// 기존 데이터가 있으면 Update
 				} else {
 					wDao.weatherSetValue(wDto); 	// 기존 데이터가 없으면 Insert
