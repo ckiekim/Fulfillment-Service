@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 public class ForecastTownParser { 
 	private static final Logger LOG = LoggerFactory.getLogger(ForecastTownParser.class); 
-	private static final String authKey = "7t1%2BJu7GtCa%2BLEPxtUypI5MoMfYEvnA77nfvT%2FA3snI9YBNqDRmfdsuYAh5kAxsXae1vs%2FX9WdowCCoQHbuJwQ%3D%3D";
+	private static final String authKey = "Service Key from Public Data Portal";
 	private static final String reqUrl = "http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService2/ForecastSpaceData";
 	private static final String gridX = "67"; 	// 대전시 서구 월평1동 
 	private static final String gridY = "100";
